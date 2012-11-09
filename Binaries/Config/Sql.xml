@@ -1,0 +1,284 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Sql xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+  <Queries>
+    <SqlQuery>
+      <Query>SQL_EVENTS</Query>
+      <Data><![CDATA[SELECT event.*, 
+				   IFNULL(cast(inet_ntoa(iphdr.ip_src) as char(15)), 0) as ip_src, 
+				   IFNULL(cast(inet_ntoa(iphdr.ip_dst) as char(15)), 0) as ip_dst,  
+				   IFNULL(iphdr.ip_ver, 0) as ip_ver,
+				   IFNULL(iphdr.ip_hlen, 0) as ip_hlen,
+				   IFNULL(iphdr.ip_tos, 0) as ip_tos,
+				   IFNULL(iphdr.ip_len, 0) as ip_len,
+				   IFNULL(iphdr.ip_id, 0) as ip_id,
+				   IFNULL(iphdr.ip_flags, 0) as ip_flags,
+				   IFNULL(iphdr.ip_off, 0) as ip_off,
+				   IFNULL(iphdr.ip_ttl, 0) as ip_ttl,
+				   IFNULL(iphdr.ip_proto, 0) as ip_proto,
+				   IFNULL(iphdr.ip_csum, 0) as ip_csum,
+				   IFNULL(tcphdr.tcp_sport, 0) as tcp_sport, 
+				   IFNULL(udphdr.udp_sport, 0) as udp_sport,                                                   
+				   IFNULL(tcphdr.tcp_dport, 0) as tcp_dport, 
+				   IFNULL(udphdr.udp_dport, 0) as udp_dport,
+				   signature.sig_sid as sig_sid,
+				   signature.sig_name as sig_name, 
+				   IFNULL(signature.sig_priority, 0) as sig_priority,
+				   IFNULL(signature.sig_rev, 0) as sig_rev,
+				   IFNULL(signature.sig_gid, 0) as sig_gid,
+				   IFNULL(sig_class.sig_class_name,'') as sig_class_name,
+				   IFNULL(tcphdr.tcp_seq, 0) as tcp_seq, 
+				   IFNULL(tcphdr.tcp_ack, 0) as tcp_ack, 
+				   IFNULL(tcphdr.tcp_off, 0) as tcp_off, 
+				   IFNULL(tcphdr.tcp_res, 0) as tcp_res, 
+				   IFNULL(tcphdr.tcp_flags, 0) as tcp_flags, 
+				   IFNULL(tcphdr.tcp_win, 0) as tcp_win, 
+				   IFNULL(tcphdr.tcp_csum, 0) as tcp_csum, 
+				   IFNULL(tcphdr.tcp_urp, 0) as tcp_urp, 
+				   IFNULL(udphdr.udp_len, 0) as udp_len,   
+				   IFNULL(udphdr.udp_csum, 0) as udp_csum,           
+				   data.data_payload as data_payload    
+			  FROM (SELECT event.timestamp as timestamp,
+				           event.sid as sid,
+				           event.cid as cid,
+				           event.signature
+			          FROM event
+		          ORDER BY event.timestamp  desc
+			         LIMIT @0,@1) as event                                         
+	      LEFT JOIN data ON (data.sid = event.sid AND data.cid = event.cid )    
+	      LEFT JOIN iphdr  ON (event.sid = iphdr.sid AND event.cid = iphdr.cid) 
+	      LEFT JOIN tcphdr ON (event.sid = tcphdr.sid AND event.cid = tcphdr.cid) 
+		  LEFT JOIN udphdr ON (event.sid = udphdr.sid AND event.cid = udphdr.cid) 
+	      LEFT JOIN signature ON (signature.sig_id = event.signature) 	
+		  LEFT JOIN sig_class on (signature.sig_class_id = sig_class.sig_class_id)  
+			  WHERE ]]></Data>
+    </SqlQuery>
+    
+    <SqlQuery>
+      <Query>SQL_RULES_FROM</Query>
+      <Data><![CDATA[SELECT signature.sig_name, 
+				   signature.sig_sid, 
+				   IFNULL(signature.sig_priority, 0) as sig_priority,
+				   count(signature.sig_name) AS count          
+			  FROM signature          
+			  JOIN event ON (signature.sig_id = event.signature)          
+			  JOIN iphdr ON (iphdr.cid = event.cid AND iphdr.sid = event.sid)
+		     WHERE event.timestamp > @0
+		  GROUP BY signature.sig_id 
+		  ORDER BY signature.sig_priority DESC, 
+		           signature.sig_name;]]></Data>
+    </SqlQuery>
+    
+    <SqlQuery>
+      <Query>SQL_RULES_FROM_TO</Query>
+      <Data><![CDATA[<SELECT signature.sig_name, 
+				   signature.sig_sid, 
+				   IFNULL(signature.sig_priority, 0) as sig_priority,
+				   count(signature.sig_name) AS count          
+			  FROM signature          
+			  JOIN event ON (signature.sig_id = event.signature)          
+			  JOIN iphdr ON (iphdr.cid = event.cid AND iphdr.sid = event.sid)
+		     WHERE event.timestamp > @0 
+			   AND event.timestamp < @1
+		  GROUP BY signature.sig_id 
+		  ORDER BY signature.sig_priority DESC, 
+		           signature.sig_name;]]></Data>
+    </SqlQuery>
+    
+    <SqlQuery>
+      <Query>SQL_EVENTS_RULES_FROM</Query>
+      <Data><![CDATA[SELECT IFNULL(event.cid, 0) as cid,
+				   IFNULL(cast(inet_ntoa(iphdr.ip_src) as char(15)), 0) as ip_src, 
+				   IFNULL(cast(inet_ntoa(iphdr.ip_dst) as char(15)), 0) as ip_dst, 
+				   IFNULL(iphdr.ip_ver, 0) as ip_ver,
+				   IFNULL(iphdr.ip_hlen, 0) as ip_hlen,
+				   IFNULL(iphdr.ip_tos, 0) as ip_tos,
+				   IFNULL(iphdr.ip_len, 0) as ip_len,
+				   IFNULL(iphdr.ip_id, 0) as ip_id,
+				   IFNULL(iphdr.ip_flags, 0) as ip_flags,
+				   IFNULL(iphdr.ip_off, 0) as ip_off,
+				   IFNULL(iphdr.ip_ttl, 0) as ip_ttl,
+				   IFNULL(iphdr.ip_proto, 0) as ip_proto,
+				   IFNULL(iphdr.ip_csum, 0) as ip_csum,
+				   IFNULL(tcphdr.tcp_sport, 0) as tcp_sport, 
+				   IFNULL(udphdr.udp_sport, 0) as udp_sport,                                                   
+				   IFNULL(tcphdr.tcp_dport, 0) as tcp_dport, 
+				   IFNULL(udphdr.udp_dport, 0) as udp_dport,
+				   event.timestamp as timestamp, 
+				   signature.sig_sid as sig_sid,
+				   signature.sig_name as sig_name, 
+				   IFNULL(signature.sig_priority, 0) as sig_priority,
+				   IFNULL(signature.sig_rev, 0) as sig_rev,
+				   IFNULL(signature.sig_gid, 0) as sig_gid,
+				   IFNULL(sig_class.sig_class_name,'') as sig_class_name,
+				   IFNULL(tcphdr.tcp_seq, 0) as tcp_seq, 
+				   IFNULL(tcphdr.tcp_ack, 0) as tcp_ack, 
+				   IFNULL(tcphdr.tcp_off, 0) as tcp_off, 
+				   IFNULL(tcphdr.tcp_res, 0) as tcp_res, 
+				   IFNULL(tcphdr.tcp_flags, 0) as tcp_flags, 
+				   IFNULL(tcphdr.tcp_win, 0) as tcp_win, 
+				   IFNULL(tcphdr.tcp_csum, 0) as tcp_csum, 
+				   IFNULL(tcphdr.tcp_urp, 0) as tcp_urp, 
+				   IFNULL(udphdr.udp_len, 0) as udp_len,   
+				   IFNULL(udphdr.udp_csum, 0) as udp_csum,           
+				   data.data_payload as data_payload     
+			  FROM event    
+	     LEFT JOIN data ON (data.sid = event.sid AND data.cid = event.cid )    
+	     LEFT JOIN iphdr  ON (event.sid = iphdr.sid AND event.cid = iphdr.cid) 
+		 LEFT JOIN tcphdr ON (event.sid = tcphdr.sid AND event.cid = tcphdr.cid) 
+		 LEFT JOIN udphdr ON (event.sid = udphdr.sid AND event.cid = udphdr.cid) 
+		 LEFT JOIN signature ON (signature.sig_id = event.signature) 	
+		 LEFT JOIN sig_class on (signature.sig_class_id = sig_class.sig_class_id)  
+			 WHERE event.timestamp > @0
+			   AND signature.sig_sid = @1 
+			 LIMIT @2, @3]]></Data>
+    </SqlQuery>
+    
+    <SqlQuery>
+      <Query>SQL_EVENTS_RULES_FROM_TO</Query>
+      <Data><![CDATA[SELECT IFNULL(event.cid, 0) as cid,
+				   IFNULL(cast(inet_ntoa(iphdr.ip_src) as char(15)), 0) as ip_src, 
+				   IFNULL(cast(inet_ntoa(iphdr.ip_dst) as char(15)), 0) as ip_dst, 
+				   IFNULL(iphdr.ip_ver, 0) as ip_ver,
+				   IFNULL(iphdr.ip_hlen, 0) as ip_hlen,
+				   IFNULL(iphdr.ip_tos, 0) as ip_tos,
+				   IFNULL(iphdr.ip_len, 0) as ip_len,
+				   IFNULL(iphdr.ip_id, 0) as ip_id,
+				   IFNULL(iphdr.ip_flags, 0) as ip_flags,
+				   IFNULL(iphdr.ip_off, 0) as ip_off,
+				   IFNULL(iphdr.ip_ttl, 0) as ip_ttl,
+				   IFNULL(iphdr.ip_proto, 0) as ip_proto,
+				   IFNULL(iphdr.ip_csum, 0) as ip_csum,
+				   IFNULL(tcphdr.tcp_sport, 0) as tcp_sport, 
+				   IFNULL(udphdr.udp_sport, 0) as udp_sport,                                                   
+				   IFNULL(tcphdr.tcp_dport, 0) as tcp_dport, 
+				   IFNULL(udphdr.udp_dport, 0) as udp_dport,
+				   event.timestamp as timestamp, 
+				   signature.sig_sid as sig_sid,
+				   signature.sig_name as sig_name, 
+				   IFNULL(signature.sig_priority, 0) as sig_priority,
+				   IFNULL(signature.sig_rev, 0) as sig_rev,
+				   IFNULL(signature.sig_gid, 0) as sig_gid,
+				   IFNULL(sig_class.sig_class_name,'') as sig_class_name,
+				   IFNULL(tcphdr.tcp_seq, 0) as tcp_seq, 
+				   IFNULL(tcphdr.tcp_ack, 0) as tcp_ack, 
+				   IFNULL(tcphdr.tcp_off, 0) as tcp_off, 
+				   IFNULL(tcphdr.tcp_res, 0) as tcp_res, 
+				   IFNULL(tcphdr.tcp_flags, 0) as tcp_flags, 
+				   IFNULL(tcphdr.tcp_win, 0) as tcp_win, 
+				   IFNULL(tcphdr.tcp_csum, 0) as tcp_csum, 
+				   IFNULL(tcphdr.tcp_urp, 0) as tcp_urp, 
+				   IFNULL(udphdr.udp_len, 0) as udp_len,   
+				   IFNULL(udphdr.udp_csum, 0) as udp_csum,           
+				   data.data_payload as data_payload     
+			  FROM event    
+	     left JOIN data ON (data.sid = event.sid AND data.cid = event.cid )    
+		 left JOIN iphdr  ON (event.sid = iphdr.sid AND event.cid = iphdr.cid) 
+		 left JOIN tcphdr ON (event.sid = tcphdr.sid AND event.cid = tcphdr.cid) 
+		 left JOIN udphdr ON (event.sid = udphdr.sid AND event.cid = udphdr.cid) 
+		 left JOIN signature ON (signature.sig_id = event.signature) 	
+		 left JOIN sig_class ON (signature.sig_class_id = sig_class.sig_class_id)  
+			 WHERE event.timestamp > @0 
+			   AND event.timestamp < @1
+			   AND signature.sig_sid = @2 
+			 LIMIT @3, @4]]></Data>
+    </SqlQuery>
+    
+    <SqlQuery>
+      <Query>SQL_EVENTS_SEARCH</Query>
+      <Data><![CDATA[SELECT event.*, 
+				   IFNULL(cast(inet_ntoa(iphdr.ip_src) as char(15)), 0) as ip_src, 
+				   IFNULL(cast(inet_ntoa(iphdr.ip_dst) as char(15)), 0) as ip_dst, 
+				   IFNULL(iphdr.ip_ver, 0) as ip_ver,
+				   IFNULL(iphdr.ip_hlen, 0) as ip_hlen,
+				   IFNULL(iphdr.ip_tos, 0) as ip_tos,
+				   IFNULL(iphdr.ip_len, 0) as ip_len,
+				   IFNULL(iphdr.ip_id, 0) as ip_id,
+				   IFNULL(iphdr.ip_flags, 0) as ip_flags,
+				   IFNULL(iphdr.ip_off, 0) as ip_off,
+				   IFNULL(iphdr.ip_ttl, 0) as ip_ttl,
+				   IFNULL(iphdr.ip_proto, 0) as ip_proto,
+				   IFNULL(iphdr.ip_csum, 0) as ip_csum,
+				   IFNULL(tcphdr.tcp_sport, 0) as tcp_sport, 
+				   IFNULL(udphdr.udp_sport, 0) as udp_sport,                                                   
+				   IFNULL(tcphdr.tcp_dport, 0) as tcp_dport, 
+				   IFNULL(udphdr.udp_dport, 0) as udp_dport,
+				   signature.sig_sid as sig_sid,
+				   signature.sig_name as sig_name, 
+				   IFNULL(signature.sig_priority, 0) as sig_priority,
+				   IFNULL(signature.sig_rev, 0) as sig_rev,
+				   IFNULL(signature.sig_gid, 0) as sig_gid,
+				   IFNULL(sig_class.sig_class_name,'') as sig_class_name,
+				   IFNULL(tcphdr.tcp_seq, 0) as tcp_seq, 
+				   IFNULL(tcphdr.tcp_ack, 0) as tcp_ack, 
+				   IFNULL(tcphdr.tcp_off, 0) as tcp_off, 
+				   IFNULL(tcphdr.tcp_res, 0) as tcp_res, 
+				   IFNULL(tcphdr.tcp_flags, 0) as tcp_flags, 
+				   IFNULL(tcphdr.tcp_win, 0) as tcp_win, 
+				   IFNULL(tcphdr.tcp_csum, 0) as tcp_csum, 
+				   IFNULL(tcphdr.tcp_urp, 0) as tcp_urp, 
+				   IFNULL(udphdr.udp_len, 0) as udp_len,   
+				   IFNULL(udphdr.udp_csum, 0) as udp_csum,           
+				   data.data_payload as data_payload     
+			 FROM  (SELECT event.timestamp as timestamp,
+				           event.sid as sid,
+				           event.cid as cid,
+				           event.signature
+			          FROM event
+		          ORDER BY event.timestamp desc) as event                                        
+	     LEFT JOIN data ON (data.sid = event.sid AND data.cid = event.cid )    
+	     LEFT JOIN iphdr  ON (event.sid = iphdr.sid AND event.cid = iphdr.cid) 
+		 LEFT JOIN tcphdr ON (event.sid = tcphdr.sid AND event.cid = tcphdr.cid) 
+		 LEFT JOIN udphdr ON (event.sid = udphdr.sid AND event.cid = udphdr.cid) 
+		 LEFT JOIN signature ON (signature.sig_id = event.signature) 	
+		 LEFT JOIN sig_class on (signature.sig_class_id = sig_class.sig_class_id)  
+		     WHERE ]]></Data>
+    </SqlQuery>
+    
+    <SqlQuery>
+      <Query>SQL_REFERENCES</Query>
+      <Data><![CDATA[SELECT reference.ref_tag,
+				   reference_system.ref_system_name
+			  FROM reference 
+		 LEFT JOIN sig_reference on reference.ref_id = sig_reference.ref_id
+		 LEFT JOIN signature on sig_reference.sig_id = signature.sig_id
+		 LEFT JOIN reference_system on reference.ref_system_id = reference_system.ref_system_id
+			 WHERE signature.sig_sid = @0
+		  ORDER BY sig_reference.ref_seq]]></Data>
+    </SqlQuery>
+    
+    <SqlQuery>
+      <Query>SQL_SIG_NAMES</Query>
+      <Data><![CDATA[SELECT DISTINCT sig_name, 
+                            sig_sid 
+                       FROM signature 
+                   ORDER BY sig_name]]></Data>
+    </SqlQuery>
+    
+    <SqlQuery>
+      <Query>SQL_SIG_PRIORITIES</Query>
+      <Data><![CDATA[SELECT distinct sig_priority 
+              FROM signature 
+          ORDER BY sig_priority DESC]]></Data>
+    </SqlQuery>
+    
+    <SqlQuery>
+      <Query>SQL_SIG_CLASS</Query>
+      <Data><![CDATA[SELECT sig_class_id, 
+                   sig_class_name 
+              FROM sig_class 
+          ORDER BY sig_class_name]]></Data>
+    </SqlQuery>
+    
+    <SqlQuery>
+      <Query>SQL_SENSORS</Query>
+      <Data><![CDATA[SELECT sensor.sid as sid,
+				   sensor.hostname as hostname,
+				   sensor.interface as inter,
+				   IFNULL(event.timestamp, '') as timestamp,
+				   (select count(1) from event where event.sid=sensor.sid) as eventcount
+			  FROM sensor
+		 LEFT JOIN event ON event.cid = sensor.last_cid and event.sid = sensor.sid]]></Data>
+    </SqlQuery>
+    
+  </Queries>
+</Sql>
