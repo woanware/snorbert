@@ -1,0 +1,230 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{D0EDB975-033B-487B-81F8-49BA440F7224}</ProjectGuid>
+    <OutputType>WinExe</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>snorbert</RootNamespace>
+    <AssemblyName>snorbert</AssemblyName>
+    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <TargetFrameworkProfile />
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <PlatformTarget>x86</PlatformTarget>
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <PlatformTarget>x86</PlatformTarget>
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup>
+    <ApplicationIcon>App.ico</ApplicationIcon>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="Be.Windows.Forms.HexBox">
+      <HintPath>..\Dependencies\HexBox\Be.Windows.Forms.HexBox.dll</HintPath>
+    </Reference>
+    <Reference Include="Esent.Collections">
+      <HintPath>..\Dependencies\ManagedEsent\Esent.Collections.dll</HintPath>
+    </Reference>
+    <Reference Include="IPAddressControlLib">
+      <HintPath>..\Dependencies\IpAddress\IPAddressControlLib.dll</HintPath>
+    </Reference>
+    <Reference Include="MySql.Data">
+      <HintPath>..\Dependencies\MySql\MySql.Data.dll</HintPath>
+    </Reference>
+    <Reference Include="ObjectListView">
+      <HintPath>..\Dependencies\ObjectListView\ObjectListView.dll</HintPath>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.Configuration" />
+    <Reference Include="System.Core" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Design" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Windows.Forms" />
+    <Reference Include="System.Windows.Forms.DataVisualization" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="ControlEventInfo.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="ControlEventInfo.Designer.cs">
+      <DependentUpon>ControlEventInfo.cs</DependentUpon>
+    </Compile>
+    <Compile Include="ControlEvents.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="ControlEvents.Designer.cs">
+      <DependentUpon>ControlEvents.cs</DependentUpon>
+    </Compile>
+    <Compile Include="ControlRules.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="ControlRules.Designer.cs">
+      <DependentUpon>ControlRules.cs</DependentUpon>
+    </Compile>
+    <Compile Include="ControlSearch.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="ControlSearch.Designer.cs">
+      <DependentUpon>ControlSearch.cs</DependentUpon>
+    </Compile>
+    <Compile Include="ControlSensors.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="ControlSensors.Designer.cs">
+      <DependentUpon>ControlSensors.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Event.cs" />
+    <Compile Include="Connection.cs" />
+    <Compile Include="Connections.cs" />
+    <Compile Include="Filter.cs" />
+    <Compile Include="FilterDefinition.cs" />
+    <Compile Include="FormFilter.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="FormFilter.Designer.cs">
+      <DependentUpon>FormFilter.cs</DependentUpon>
+    </Compile>
+    <Compile Include="FormRule.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="FormRule.Designer.cs">
+      <DependentUpon>FormRule.cs</DependentUpon>
+    </Compile>
+    <Compile Include="FormAbout.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="FormAbout.Designer.cs">
+      <DependentUpon>FormAbout.cs</DependentUpon>
+    </Compile>
+    <Compile Include="FormConnection.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="FormConnection.Designer.cs">
+      <DependentUpon>FormConnection.cs</DependentUpon>
+    </Compile>
+    <Compile Include="FormConnections.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="FormConnections.Designer.cs">
+      <DependentUpon>FormConnections.cs</DependentUpon>
+    </Compile>
+    <Compile Include="FormMain.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="FormMain.Designer.cs">
+      <DependentUpon>FormMain.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Global.cs" />
+    <Compile Include="Helper.cs" />
+    <Compile Include="Massive.MySql.cs" />
+    <Compile Include="MassiveObjects.cs" />
+    <Compile Include="Program.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Querier.cs" />
+    <Compile Include="Reference.cs" />
+    <Compile Include="Rule.cs" />
+    <Compile Include="RuleFile.cs" />
+    <Compile Include="RuleImporter.cs" />
+    <Compile Include="Sensor.cs" />
+    <Compile Include="Settings.cs" />
+    <Compile Include="Sql.cs" />
+    <Compile Include="SqlQuery.cs" />
+    <EmbeddedResource Include="ControlEventInfo.resx">
+      <DependentUpon>ControlEventInfo.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ControlEvents.resx">
+      <DependentUpon>ControlEvents.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ControlRules.resx">
+      <DependentUpon>ControlRules.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ControlSearch.resx">
+      <DependentUpon>ControlSearch.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ControlSensors.resx">
+      <DependentUpon>ControlSensors.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="FormFilter.resx">
+      <DependentUpon>FormFilter.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="FormRule.resx">
+      <DependentUpon>FormRule.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="FormAbout.resx">
+      <DependentUpon>FormAbout.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="FormConnection.resx">
+      <DependentUpon>FormConnection.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="FormConnections.resx">
+      <DependentUpon>FormConnections.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="FormMain.resx">
+      <DependentUpon>FormMain.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Properties\Resources.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <Compile Include="Properties\Resources.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Resources.resx</DependentUpon>
+      <DesignTime>True</DesignTime>
+    </Compile>
+    <None Include="Properties\Settings.settings">
+      <Generator>SettingsSingleFileGenerator</Generator>
+      <LastGenOutput>Settings.Designer.cs</LastGenOutput>
+    </None>
+    <Compile Include="Properties\Settings.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Settings.settings</DependentUpon>
+      <DesignTimeSharedInput>True</DesignTimeSharedInput>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="App.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\..\..\Libraries\Utility\Source\Utility.csproj">
+      <Project>{31638293-73bf-4208-bea3-ac47117cef3a}</Project>
+      <Name>Utility</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Import\" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Config\Sql.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>
