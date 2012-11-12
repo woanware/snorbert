@@ -232,10 +232,11 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
+    <Folder Include="Config\" />
     <Folder Include="Import\" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Config\Sql.xml">
+    <Content Include="Sql.xml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
   </ItemGroup>
