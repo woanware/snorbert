@@ -109,6 +109,8 @@
             this.ctxMenuHexSelectAll = new System.Windows.Forms.ToolStripMenuItem();
             this.tabPageAscii = new System.Windows.Forms.TabPage();
             this.txtPayloadAscii = new System.Windows.Forms.RichTextBox();
+            this.ctxMenuHexCopyHexSpaces = new System.Windows.Forms.ToolStripMenuItem();
+            this.ctxMenuHexCopyHexNoSpaces = new System.Windows.Forms.ToolStripMenuItem();
             this.tabEvent.SuspendLayout();
             this.tabPageIpHeader.SuspendLayout();
             this.tabPageSignature.SuspendLayout();
@@ -851,31 +853,33 @@
             this.ctxMenuHexSelectAll});
             this.ctxMenuHex.Name = "ctxMenuHex";
             this.ctxMenuHex.RenderMode = System.Windows.Forms.ToolStripRenderMode.System;
-            this.ctxMenuHex.Size = new System.Drawing.Size(128, 76);
+            this.ctxMenuHex.Size = new System.Drawing.Size(153, 98);
             // 
             // ctxMenuHexCopyText
             // 
             this.ctxMenuHexCopyText.Name = "ctxMenuHexCopyText";
-            this.ctxMenuHexCopyText.Size = new System.Drawing.Size(127, 22);
+            this.ctxMenuHexCopyText.Size = new System.Drawing.Size(152, 22);
             this.ctxMenuHexCopyText.Text = "Copy Text";
             this.ctxMenuHexCopyText.Click += new System.EventHandler(this.ctxMenuHexCopyText_Click);
             // 
             // ctxMenuHexCopyHex
             // 
+            this.ctxMenuHexCopyHex.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.ctxMenuHexCopyHexSpaces,
+            this.ctxMenuHexCopyHexNoSpaces});
             this.ctxMenuHexCopyHex.Name = "ctxMenuHexCopyHex";
-            this.ctxMenuHexCopyHex.Size = new System.Drawing.Size(127, 22);
+            this.ctxMenuHexCopyHex.Size = new System.Drawing.Size(152, 22);
             this.ctxMenuHexCopyHex.Text = "Copy Hex";
-            this.ctxMenuHexCopyHex.Click += new System.EventHandler(this.ctxMenuHexCopyHex_Click);
             // 
             // ctxMenuHexSep1
             // 
             this.ctxMenuHexSep1.Name = "ctxMenuHexSep1";
-            this.ctxMenuHexSep1.Size = new System.Drawing.Size(124, 6);
+            this.ctxMenuHexSep1.Size = new System.Drawing.Size(149, 6);
             // 
             // ctxMenuHexSelectAll
             // 
             this.ctxMenuHexSelectAll.Name = "ctxMenuHexSelectAll";
-            this.ctxMenuHexSelectAll.Size = new System.Drawing.Size(127, 22);
+            this.ctxMenuHexSelectAll.Size = new System.Drawing.Size(152, 22);
             this.ctxMenuHexSelectAll.Text = "Select All";
             this.ctxMenuHexSelectAll.Click += new System.EventHandler(this.ctxMenuHexSelectAll_Click);
             // 
@@ -900,6 +904,20 @@
             this.txtPayloadAscii.Size = new System.Drawing.Size(762, 140);
             this.txtPayloadAscii.TabIndex = 0;
             this.txtPayloadAscii.Text = "";
+            // 
+            // ctxMenuHexCopyHexSpaces
+            // 
+            this.ctxMenuHexCopyHexSpaces.Name = "ctxMenuHexCopyHexSpaces";
+            this.ctxMenuHexCopyHexSpaces.Size = new System.Drawing.Size(152, 22);
+            this.ctxMenuHexCopyHexSpaces.Text = "With Spaces";
+            this.ctxMenuHexCopyHexSpaces.Click += new System.EventHandler(this.ctxMenuHexCopyHexSpaces_Click_1);
+            // 
+            // ctxMenuHexCopyHexNoSpaces
+            // 
+            this.ctxMenuHexCopyHexNoSpaces.Name = "ctxMenuHexCopyHexNoSpaces";
+            this.ctxMenuHexCopyHexNoSpaces.Size = new System.Drawing.Size(152, 22);
+            this.ctxMenuHexCopyHexNoSpaces.Text = "No Spaces";
+            this.ctxMenuHexCopyHexNoSpaces.Click += new System.EventHandler(this.ctxMenuHexCopyHexNoSpaces_Click_1);
             // 
             // ControlEventInfo
             // 
@@ -1008,5 +1026,7 @@
         private System.Windows.Forms.ToolStripMenuItem ctxMenuHexCopyHex;
         private System.Windows.Forms.ToolStripSeparator ctxMenuHexSep1;
         private System.Windows.Forms.ToolStripMenuItem ctxMenuHexSelectAll;
+        private System.Windows.Forms.ToolStripMenuItem ctxMenuHexCopyHexSpaces;
+        private System.Windows.Forms.ToolStripMenuItem ctxMenuHexCopyHexNoSpaces;
     }
 }

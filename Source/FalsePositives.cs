@@ -10,19 +10,19 @@ namespace snorbert
     /// <summary>
     /// 
     /// </summary>
-    public class Connections
+    public class FalsePositives
     {
         #region Member Variables
-        public List<Connection> Data { get; set; }
-        private const string FILENAME = "Connections.xml";
+        public List<FalsePositive> Data { get; set; }
+        private const string FILENAME = "FalsePositives.xml";
         #endregion
 
         /// <summary>
         /// 
         /// </summary>
-        public Connections()
+        public FalsePositives()
         {
-            Data = new List<Connection>();
+            Data = new List<FalsePositive>();
         }
 
         /// <summary>
@@ -40,18 +40,18 @@ namespace snorbert
                     return string.Empty;
                 }
 
-                XmlSerializer serializer = new XmlSerializer(typeof(Connections));
+                XmlSerializer serializer = new XmlSerializer(typeof(FalsePositives));
                 if (File.Exists(path) == false)
                 {
-                    return "Cannot locate connections file: " + path;
+                    return "Cannot locate false positives file: " + path;
                 }
 
                 FileInfo info = new FileInfo(path);
                 using (FileStream stream = info.OpenRead())
                 {
-                    Connections connections = (Connections)serializer.Deserialize(stream);
+                    FalsePositives falsePositives = (FalsePositives)serializer.Deserialize(stream);
 
-                    Data = connections.Data;
+                    Data = falsePositives.Data;
 
                     return string.Empty;
                 }
@@ -82,7 +82,7 @@ namespace snorbert
         {
             try
             {
-                XmlSerializer serializer = new XmlSerializer(typeof(Connections));
+                XmlSerializer serializer = new XmlSerializer(typeof(FalsePositives));
                 using (StreamWriter writer = new StreamWriter(GetPath(), false))
                 {
                     serializer.Serialize((TextWriter)writer, this);

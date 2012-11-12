@@ -38,16 +38,16 @@ namespace snorbert
             
             this.Show();
 
-            _rules = new PersistentDictionary<string, string>("Rules");
+            _rules = new PersistentDictionary<string, string>(System.IO.Path.Combine(Misc.GetUserDataDirectory(), "Rules"));
 
             cboPageLimit.SelectedIndex = 6; // 100
 
             _sql = new Sql();
-            string retSql = _sql.Load();
-            if (retSql.Length > 0)
+            string ret = _sql.Load();
+            if (ret.Length > 0)
             {
-                UserInterface.DisplayErrorMessageBox(this, "An error occurred whilst loading the SQL queries, the application cannot continue: " + retSql);
-                Misc.WriteToEventLog(Application.ProductName, "An error occurred whilst loading the SQL queries, the application cannot continue: " + retSql, System.Diagnostics.EventLogEntryType.Error);
+                UserInterface.DisplayErrorMessageBox(this, "An error occurred whilst loading the SQL queries, the application cannot continue: " + ret);
+                Misc.WriteToEventLog(Application.ProductName, "An error occurred whilst loading the SQL queries, the application cannot continue: " + ret, System.Diagnostics.EventLogEntryType.Error);
 
                 Application.Exit();
             }
@@ -145,8 +145,13 @@ namespace snorbert
         /// </summary>
         private void CheckImportFiles()
         {
+            if (Directory.Exists(System.IO.Path.Combine(Misc.GetUserDataDirectory(), "Import")) == false)
+            {
+                return;
+            }
+
             List<string> newFiles = new List<string>();
-            DirectoryInfo directoryInfo = new DirectoryInfo(System.IO.Path.Combine(Misc.GetApplicationDirectory(), "Import"));
+            DirectoryInfo directoryInfo = new DirectoryInfo(System.IO.Path.Combine(Misc.GetUserDataDirectory(), "Import"));
             FileInfo[] fileInfos = directoryInfo.GetFiles("*.rules");
             foreach (FileInfo fileInfo in fileInfos)
             {
@@ -393,7 +398,21 @@ namespace snorbert
             }
 
             CheckImportFiles();
-        } 
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void menuToolsFalsePositives_Click(object sender, EventArgs e)
+        {
+            using (FormFalsePositives formFalsePositives = new FormFalsePositives())
+            {
+                formFalsePositives.ShowDialog(this);
+                controlRules.LoadFalsePositives();
+            }
+        }
         #endregion
 
         #region Combo Box Event Handlers
@@ -473,7 +492,5 @@ namespace snorbert
             }
         }
         #endregion
-
-        
     }
 }

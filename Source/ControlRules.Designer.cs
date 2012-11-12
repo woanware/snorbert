@@ -59,6 +59,8 @@
             this.dtpDateFrom = new System.Windows.Forms.DateTimePicker();
             this.btnRefresh = new System.Windows.Forms.Button();
             this.controlEventInfo = new snorbert.ControlEventInfo();
+            this.ctxMenuSep1 = new System.Windows.Forms.ToolStripSeparator();
+            this.ctxMenuHide = new System.Windows.Forms.ToolStripMenuItem();
             ((System.ComponentModel.ISupportInitialize)(this.splitter)).BeginInit();
             this.splitter.Panel1.SuspendLayout();
             this.splitter.Panel2.SuspendLayout();
@@ -133,10 +135,12 @@
             // ctxMenuEvent
             // 
             this.ctxMenuEvent.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.ctxMenuCopy});
+            this.ctxMenuCopy,
+            this.ctxMenuSep1,
+            this.ctxMenuHide});
             this.ctxMenuEvent.Name = "ctxMenuEvent";
             this.ctxMenuEvent.RenderMode = System.Windows.Forms.ToolStripRenderMode.System;
-            this.ctxMenuEvent.Size = new System.Drawing.Size(103, 26);
+            this.ctxMenuEvent.Size = new System.Drawing.Size(153, 76);
             this.ctxMenuEvent.Opening += new System.ComponentModel.CancelEventHandler(this.ctxMenuEvent_Opening);
             // 
             // ctxMenuCopy
@@ -152,7 +156,7 @@
             this.ctxMenuCopyTimestamp,
             this.ctxMenuCopyPayloadAscii});
             this.ctxMenuCopy.Name = "ctxMenuCopy";
-            this.ctxMenuCopy.Size = new System.Drawing.Size(102, 22);
+            this.ctxMenuCopy.Size = new System.Drawing.Size(152, 22);
             this.ctxMenuCopy.Text = "Copy";
             // 
             // ctxMenuCopySourceIp
@@ -412,6 +416,18 @@
             this.controlEventInfo.Size = new System.Drawing.Size(748, 309);
             this.controlEventInfo.TabIndex = 1;
             // 
+            // ctxMenuSep1
+            // 
+            this.ctxMenuSep1.Name = "ctxMenuSep1";
+            this.ctxMenuSep1.Size = new System.Drawing.Size(149, 6);
+            // 
+            // ctxMenuHide
+            // 
+            this.ctxMenuHide.Name = "ctxMenuHide";
+            this.ctxMenuHide.Size = new System.Drawing.Size(152, 22);
+            this.ctxMenuHide.Text = "Hide";
+            this.ctxMenuHide.Click += new System.EventHandler(this.ctxMenuHide_Click);
+            // 
             // ControlRules
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
@@ -465,5 +481,7 @@
         private System.Windows.Forms.ToolStripMenuItem ctxMenuCopySigName;
         private System.Windows.Forms.ToolStripMenuItem ctxMenuCopyTimestamp;
         private System.Windows.Forms.ToolStripMenuItem ctxMenuCopyPayloadAscii;
+        private System.Windows.Forms.ToolStripSeparator ctxMenuSep1;
+        private System.Windows.Forms.ToolStripMenuItem ctxMenuHide;
     }
 }

@@ -279,7 +279,17 @@ namespace snorbert
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        private void ctxMenuHexCopyHex_Click(object sender, EventArgs e)
+        private void ctxMenuHexCopyHexNoSpaces_Click_1(object sender, EventArgs e)
+        {
+            hexEvent.CopyHexNoSpace();
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void ctxMenuHexCopyHexSpaces_Click_1(object sender, EventArgs e)
         {
             hexEvent.CopyHex();
         }

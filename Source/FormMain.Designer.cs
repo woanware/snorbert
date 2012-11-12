@@ -35,9 +35,11 @@
             this.menuFileExit = new System.Windows.Forms.ToolStripMenuItem();
             this.menuTools = new System.Windows.Forms.ToolStripMenuItem();
             this.menuToolsConnections = new System.Windows.Forms.ToolStripMenuItem();
-            this.toolStripMenuItem1 = new System.Windows.Forms.ToolStripSeparator();
+            this.menuToolsSep1 = new System.Windows.Forms.ToolStripSeparator();
             this.menuToolsImportRules = new System.Windows.Forms.ToolStripMenuItem();
             this.menuHelp = new System.Windows.Forms.ToolStripMenuItem();
+            this.menuHelpHelp = new System.Windows.Forms.ToolStripMenuItem();
+            this.menuHelpSep1 = new System.Windows.Forms.ToolStripSeparator();
             this.menuHelpAbout = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStrip = new System.Windows.Forms.ToolStrip();
             this.toolStripLabel1 = new System.Windows.Forms.ToolStripLabel();
@@ -67,8 +69,8 @@
             this.controlSearch = new snorbert.ControlSearch();
             this.tabPageSensors = new System.Windows.Forms.TabPage();
             this.controlSensors = new snorbert.ControlSensors();
-            this.menuHelpHelp = new System.Windows.Forms.ToolStripMenuItem();
-            this.menuHelpSep1 = new System.Windows.Forms.ToolStripSeparator();
+            this.menuToolsSep2 = new System.Windows.Forms.ToolStripSeparator();
+            this.menuToolsFalsePositives = new System.Windows.Forms.ToolStripMenuItem();
             this.menuStrip.SuspendLayout();
             this.toolStrip.SuspendLayout();
             this.ctxMenuEvent.SuspendLayout();
@@ -114,8 +116,10 @@
             // 
             this.menuTools.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.menuToolsConnections,
-            this.toolStripMenuItem1,
-            this.menuToolsImportRules});
+            this.menuToolsSep1,
+            this.menuToolsImportRules,
+            this.menuToolsSep2,
+            this.menuToolsFalsePositives});
             this.menuTools.Name = "menuTools";
             this.menuTools.Size = new System.Drawing.Size(48, 20);
             this.menuTools.Text = "&Tools";
@@ -123,19 +127,19 @@
             // menuToolsConnections
             // 
             this.menuToolsConnections.Name = "menuToolsConnections";
-            this.menuToolsConnections.Size = new System.Drawing.Size(141, 22);
+            this.menuToolsConnections.Size = new System.Drawing.Size(152, 22);
             this.menuToolsConnections.Text = "Connections";
             this.menuToolsConnections.Click += new System.EventHandler(this.menuToolsConnections_Click);
             // 
-            // toolStripMenuItem1
+            // menuToolsSep1
             // 
-            this.toolStripMenuItem1.Name = "toolStripMenuItem1";
-            this.toolStripMenuItem1.Size = new System.Drawing.Size(138, 6);
+            this.menuToolsSep1.Name = "menuToolsSep1";
+            this.menuToolsSep1.Size = new System.Drawing.Size(149, 6);
             // 
             // menuToolsImportRules
             // 
             this.menuToolsImportRules.Name = "menuToolsImportRules";
-            this.menuToolsImportRules.Size = new System.Drawing.Size(141, 22);
+            this.menuToolsImportRules.Size = new System.Drawing.Size(152, 22);
             this.menuToolsImportRules.Text = "Import Rules";
             this.menuToolsImportRules.Click += new System.EventHandler(this.menuToolsImportRules_Click);
             // 
@@ -149,10 +153,22 @@
             this.menuHelp.Size = new System.Drawing.Size(44, 20);
             this.menuHelp.Text = "&Help";
             // 
+            // menuHelpHelp
+            // 
+            this.menuHelpHelp.Name = "menuHelpHelp";
+            this.menuHelpHelp.Size = new System.Drawing.Size(107, 22);
+            this.menuHelpHelp.Text = "Help";
+            this.menuHelpHelp.Click += new System.EventHandler(this.menuHelpHelp_Click);
+            // 
+            // menuHelpSep1
+            // 
+            this.menuHelpSep1.Name = "menuHelpSep1";
+            this.menuHelpSep1.Size = new System.Drawing.Size(104, 6);
+            // 
             // menuHelpAbout
             // 
             this.menuHelpAbout.Name = "menuHelpAbout";
-            this.menuHelpAbout.Size = new System.Drawing.Size(152, 22);
+            this.menuHelpAbout.Size = new System.Drawing.Size(107, 22);
             this.menuHelpAbout.Text = "&About";
             this.menuHelpAbout.Click += new System.EventHandler(this.menuHelpAbout_Click);
             // 
@@ -414,17 +430,17 @@
             this.controlSensors.Size = new System.Drawing.Size(761, 453);
             this.controlSensors.TabIndex = 0;
             // 
-            // menuHelpHelp
+            // menuToolsSep2
             // 
-            this.menuHelpHelp.Name = "menuHelpHelp";
-            this.menuHelpHelp.Size = new System.Drawing.Size(152, 22);
-            this.menuHelpHelp.Text = "Help";
-            this.menuHelpHelp.Click += new System.EventHandler(this.menuHelpHelp_Click);
+            this.menuToolsSep2.Name = "menuToolsSep2";
+            this.menuToolsSep2.Size = new System.Drawing.Size(149, 6);
             // 
-            // menuHelpSep1
+            // menuToolsFalsePositives
             // 
-            this.menuHelpSep1.Name = "menuHelpSep1";
-            this.menuHelpSep1.Size = new System.Drawing.Size(149, 6);
+            this.menuToolsFalsePositives.Name = "menuToolsFalsePositives";
+            this.menuToolsFalsePositives.Size = new System.Drawing.Size(152, 22);
+            this.menuToolsFalsePositives.Text = "False Positives";
+            this.menuToolsFalsePositives.Click += new System.EventHandler(this.menuToolsFalsePositives_Click);
             // 
             // FormMain
             // 
@@ -485,7 +501,7 @@
         private System.Windows.Forms.ToolStripMenuItem ctxMenuCopySigName;
         private System.Windows.Forms.ToolStripMenuItem ctxMenuCopyTimestamp;
         private System.Windows.Forms.ToolStripMenuItem ctxMenuCopyPayloadAscii;
-        private System.Windows.Forms.ToolStripSeparator toolStripMenuItem1;
+        private System.Windows.Forms.ToolStripSeparator menuToolsSep1;
         private System.Windows.Forms.ToolStripMenuItem menuToolsImportRules;
         private System.Windows.Forms.ToolStripLabel toolStripLabel1;
         private System.Windows.Forms.ToolStripComboBox cboConnections;
@@ -503,6 +519,8 @@
         private ControlSensors controlSensors;
         private System.Windows.Forms.ToolStripMenuItem menuHelpHelp;
         private System.Windows.Forms.ToolStripSeparator menuHelpSep1;
+        private System.Windows.Forms.ToolStripSeparator menuToolsSep2;
+        private System.Windows.Forms.ToolStripMenuItem menuToolsFalsePositives;
     }
 }
 

@@ -4,6 +4,7 @@ using System.IO;
 using System.Text.RegularExpressions;
 using System.Threading;
 using System.Linq;
+using woanware;
 
 namespace snorbert
 {
@@ -62,7 +63,7 @@ namespace snorbert
             {
                 _isRunning = true;
 
-                if (PersistentDictionaryFile.Exists("Rules") == true)
+                if (PersistentDictionaryFile.Exists(System.IO.Path.Combine(Misc.GetUserDataDirectory(), "Rules")) == true)
                 {
                     rules.Dispose();
                     //PersistentDictionaryFile.DeleteFiles("Rules");

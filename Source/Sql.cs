@@ -163,7 +163,7 @@ namespace snorbert
         /// <returns></returns>
         private string GetPath()
         {
-            return System.IO.Path.Combine(Misc.GetApplicationDirectory(), "Config", FILENAME);
+            return System.IO.Path.Combine(Misc.GetApplicationDirectory(), FILENAME);
         }
         #endregion
     }

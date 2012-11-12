@@ -28,6 +28,7 @@ namespace snorbert
         private Querier _querier;
         private HourGlass _hourGlass;
         private Sql _sql;
+        private FalsePositives _falsePostives;
         #endregion
 
         #region Constructor
@@ -58,6 +59,8 @@ namespace snorbert
             _querier.Exclamation += OnQuerier_Exclamation;
             _querier.RuleQueryComplete += OnQuerier_RuleQueryComplete;
             _querier.EventQueryComplete += OnQuerier_EventQueryComplete;
+
+            LoadFalsePositives();
         }
         #endregion
 
@@ -139,7 +142,9 @@ namespace snorbert
                         _totalPages++;
                     }
 
-                    listEvents.SetObjects(data);
+                    int preFilterCount = data.Count;
+
+                    listEvents.SetObjects(FilterData(rule.Sid, data));
 
                     if (data.Any() == true)
                     {
@@ -148,7 +153,7 @@ namespace snorbert
                     }
 
                     lblPagingRules.Text = "Page " + _currentPage + " (" + _totalPages + ")";
-                    OnMessage("Loaded " + data.Count + " results (" + _totalRecords + ")");
+                    OnMessage("Loaded " + data.Count + " results (Hidden: " + (preFilterCount - data.Count) + "/Total: " + _totalRecords + ")");
                 }
                 catch (Exception ex)
                 {
@@ -193,6 +198,82 @@ namespace snorbert
             _hourGlass.Dispose();
             OnError(message);
             SetProcessingStatus(true);
+        }
+        #endregion
+
+        #region False Positive Filter Methods
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="sid"></param>
+        /// <param name="data"></param>
+        /// <returns></returns>
+        private List<Event> FilterData(string sid, List<Event> data)
+        {
+            // Get all of the FP's relating to this particular rule
+            var fps = from f in _falsePostives.Data where f.Sid == sid select f;
+
+            foreach (FalsePositive fp in fps)
+            {
+                switch (fp.Definition.Field.ToLower())
+                {
+                    case "source ip":
+                        data.RemoveAll(d => CompareFalsePositive(d.IpSrc.ToString(), fp.Display, fp.Condition));
+                        break;
+                    case "tcp source port":
+                        data.RemoveAll(d => CompareFalsePositive(d.TcpSrcPort.ToString(), fp.Value, fp.Condition));
+                        break;
+                    case "udp source port":
+                        data.RemoveAll(d => CompareFalsePositive(d.UdpSrcPort.ToString(), fp.Value, fp.Condition));
+                        break;
+                    case "destination ip":
+                        data.RemoveAll(d => CompareFalsePositive(d.IpDst.ToString(), fp.Display, fp.Condition));
+                        break;
+                    case "tcp destination port":
+                        data.RemoveAll(d => CompareFalsePositive(d.TcpDstPort.ToString(), fp.Value, fp.Condition));
+                        break;
+                    case "udp destination port":
+                        data.RemoveAll(d => CompareFalsePositive(d.UdpDstPort.ToString(), fp.Value, fp.Condition));
+                        break;
+                    case "protocol":
+                        data.RemoveAll(d => CompareFalsePositive(d.IpProto.ToString(), fp.Value, fp.Condition));
+                        break;
+                    case "payload (ascii)":
+                        data.RemoveAll(d => CompareFalsePositive(d.PayloadAscii.ToString(), fp.Display, fp.Condition));
+                        break;
+                    case "payload (hex)":
+                        data.RemoveAll(d => CompareFalsePositive(woanware.Text.ConvertByteArrayToHexString(d.PayloadHex), fp.Value, fp.Condition));
+                        break;
+                }
+            }
+
+            return data;
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="eventData"></param>
+        /// <param name="fpData"></param>
+        /// <param name="operation"></param>
+        /// <returns></returns>
+        private bool CompareFalsePositive(string eventData,
+                                          string fpData,
+                                          string operation)
+        {
+            switch (operation)
+            {
+                case "=":
+                    return eventData == fpData;
+                case "!":
+                    return eventData != fpData;
+                case "LIKE":
+                    return eventData.IndexOf(fpData, StringComparison.InvariantCultureIgnoreCase) > -1;
+                case "NOT LIKE":
+                    return eventData.IndexOf(fpData, StringComparison.InvariantCultureIgnoreCase) == -1;
+                default:
+                    return false;
+            }
         }
         #endregion
 
@@ -508,6 +589,22 @@ namespace snorbert
         }
         #endregion
 
+        #region Misc Methods
+        /// <summary>
+        /// 
+        /// </summary>
+        public void LoadFalsePositives()
+        {
+            _falsePostives = new FalsePositives();
+            string ret = _falsePostives.Load();
+            if (ret.Length > 0)
+            {
+                UserInterface.DisplayErrorMessageBox(this, "An error occurred whilst loading the false positive data: " + ret);
+                Misc.WriteToEventLog(Application.ProductName, "An error occurred whilst loading the false positive data: " + ret, System.Diagnostics.EventLogEntryType.Error);
+            }
+        }
+        #endregion
+
         #region Control Event Handlers
         /// <summary>
         /// 
@@ -626,6 +723,37 @@ namespace snorbert
         private void ctxMenuCopyPayloadAscii_Click(object sender, EventArgs e)
         {
             Helper.CopyDataToClipboard(this, listEvents, Global.FieldsEventCopy.PayloadAscii);
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void ctxMenuHide_Click(object sender, EventArgs e)
+        {
+            if (listEvents.SelectedObjects.Count != 1)
+            {
+                return;
+            }
+
+            Event temp = (Event)listEvents.SelectedObjects[0];
+            if (temp == null)
+            {
+                UserInterface.DisplayErrorMessageBox(this, "Unable to locate event");
+                return;
+            }
+
+            using (FormFalsePositive formFalsePositive = new FormFalsePositive(_falsePostives, temp))
+            {
+                if (formFalsePositive.ShowDialog(this) == DialogResult.Cancel)
+                {
+                    return;
+                }
+
+                LoadFalsePositives();
+                LoadRuleEvents(_currentPage);
+            }
         }
         #endregion
     }

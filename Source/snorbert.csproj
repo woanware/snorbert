@@ -99,6 +99,20 @@
     <Compile Include="ControlSensors.Designer.cs">
       <DependentUpon>ControlSensors.cs</DependentUpon>
     </Compile>
+    <Compile Include="FalsePositive.cs" />
+    <Compile Include="FalsePositives.cs" />
+    <Compile Include="FormFalsePositives.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="FormFalsePositives.Designer.cs">
+      <DependentUpon>FormFalsePositives.cs</DependentUpon>
+    </Compile>
+    <Compile Include="FormFalsePositive.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="FormFalsePositive.Designer.cs">
+      <DependentUpon>FormFalsePositive.cs</DependentUpon>
+    </Compile>
     <Compile Include="Event.cs" />
     <Compile Include="Connection.cs" />
     <Compile Include="Connections.cs" />
@@ -169,6 +183,12 @@
     </EmbeddedResource>
     <EmbeddedResource Include="ControlSensors.resx">
       <DependentUpon>ControlSensors.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="FormFalsePositive.resx">
+      <DependentUpon>FormFalsePositive.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="FormFalsePositives.resx">
+      <DependentUpon>FormFalsePositives.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="FormFilter.resx">
       <DependentUpon>FormFilter.cs</DependentUpon>
