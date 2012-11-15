@@ -32,6 +32,7 @@
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(ControlSearch));
             this.splitter = new System.Windows.Forms.SplitContainer();
             this.label33 = new System.Windows.Forms.Label();
+            this.lblPaging = new System.Windows.Forms.Label();
             this.cboSearch = new System.Windows.Forms.ComboBox();
             this.label32 = new System.Windows.Forms.Label();
             this.listEvents = new BrightIdeasSoftware.FastObjectListView();
@@ -49,7 +50,6 @@
             this.btnPagingNextPage = new System.Windows.Forms.Button();
             this.btnPagingPreviousPage = new System.Windows.Forms.Button();
             this.controlEventInfo = new snorbert.ControlEventInfo();
-            this.lblPaging = new System.Windows.Forms.Label();
             this.panelTop = new System.Windows.Forms.Panel();
             this.listFilters = new BrightIdeasSoftware.ObjectListView();
             this.btnFilterAdd = new System.Windows.Forms.Button();
@@ -101,6 +101,16 @@
             this.label33.Size = new System.Drawing.Size(122, 15);
             this.label33.TabIndex = 28;
             this.label33.Text = "of the following rules:";
+            // 
+            // lblPaging
+            // 
+            this.lblPaging.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.lblPaging.Location = new System.Drawing.Point(27, 92);
+            this.lblPaging.Name = "lblPaging";
+            this.lblPaging.Size = new System.Drawing.Size(738, 23);
+            this.lblPaging.TabIndex = 22;
+            this.lblPaging.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             // 
             // cboSearch
             // 
@@ -260,16 +270,6 @@
             this.controlEventInfo.Size = new System.Drawing.Size(792, 145);
             this.controlEventInfo.TabIndex = 23;
             // 
-            // lblPaging
-            // 
-            this.lblPaging.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.lblPaging.Location = new System.Drawing.Point(27, 92);
-            this.lblPaging.Name = "lblPaging";
-            this.lblPaging.Size = new System.Drawing.Size(738, 23);
-            this.lblPaging.TabIndex = 22;
-            this.lblPaging.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
-            // 
             // panelTop
             // 
             this.panelTop.Controls.Add(this.listFilters);
@@ -361,6 +361,7 @@
             this.Controls.Add(this.panelBottom);
             this.Controls.Add(this.panelTop);
             this.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.Margin = new System.Windows.Forms.Padding(0);
             this.Name = "ControlSearch";
             this.Size = new System.Drawing.Size(792, 382);
             this.Load += new System.EventHandler(this.Control_Load);

@@ -9,7 +9,7 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>snorbert</RootNamespace>
     <AssemblyName>snorbert</AssemblyName>
-    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <TargetFrameworkProfile />
   </PropertyGroup>
@@ -38,7 +38,8 @@
     <ApplicationIcon>App.ico</ApplicationIcon>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Be.Windows.Forms.HexBox">
+    <Reference Include="Be.Windows.Forms.HexBox, Version=1.5.0.35198, Culture=neutral, PublicKeyToken=e0e5adf0ebc99863, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
       <HintPath>..\Dependencies\HexBox\Be.Windows.Forms.HexBox.dll</HintPath>
     </Reference>
     <Reference Include="Esent.Collections">

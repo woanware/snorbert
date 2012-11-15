@@ -13,10 +13,7 @@ namespace snorbert
     public partial class ControlEvents : UserControl
     {
         #region Events
-        public delegate void MessageEvent(string message);
-        public event MessageEvent Message;
-        public event MessageEvent Error;
-        public event MessageEvent Exclamation;
+        public event Global.MessageEvent Message;
         #endregion
 
         #region Member Variables
@@ -66,7 +63,7 @@ namespace snorbert
                 {
                     if (data == null)
                     {
-                        OnExclamation("No data retrieved for query");
+                        UserInterface.DisplayMessageBox(this, "No data retrieved for query", MessageBoxIcon.Exclamation);
                         return;
                     }
 
@@ -93,7 +90,7 @@ namespace snorbert
                 }
                 catch (Exception ex)
                 {
-                    OnError("An error occurred whilst performing the search: " + ex.Message);
+                    UserInterface.DisplayErrorMessageBox(this, "An error occurred whilst performing the search: " + ex.Message);
                 }
                 finally
                 {
@@ -121,7 +118,7 @@ namespace snorbert
         private void OnQuerier_Exclamation(string message)
         {
             _hourGlass.Dispose();
-            OnExclamation(message);
+            UserInterface.DisplayMessageBox(this, message, MessageBoxIcon.Exclamation);
             SetProcessingStatus(true);
         }
 
@@ -132,7 +129,7 @@ namespace snorbert
         private void OnQuerier_Error(string message)
         {
             _hourGlass.Dispose();
-            OnError(message);
+            UserInterface.DisplayErrorMessageBox(this, message);
             SetProcessingStatus(true);
         }
         #endregion
@@ -284,14 +281,14 @@ namespace snorbert
             Clear();
         }
 
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="enabled"></param>
-        public void SetState(bool enabled)
-        {
-            this.Enabled = enabled;
-        }
+        ///// <summary>
+        ///// 
+        ///// </summary>
+        ///// <param name="enabled"></param>
+        //public void SetState(bool enabled)
+        //{
+        //    this.Enabled = enabled;
+        //}
 
         /// <summary>
         /// 
@@ -313,32 +310,6 @@ namespace snorbert
         private void OnMessage(string message)
         {
             var handler = Message;
-            if (handler != null)
-            {
-                handler(message);
-            }
-        }
-
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="message"></param>
-        private void OnExclamation(string message)
-        {
-            var handler = Exclamation;
-            if (handler != null)
-            {
-                handler(message);
-            }
-        }
-
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="message"></param>
-        private void OnError(string message)
-        {
-            var handler = Error;
             if (handler != null)
             {
                 handler(message);

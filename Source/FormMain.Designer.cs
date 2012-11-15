@@ -416,6 +416,7 @@
             this.tabPageSensors.Controls.Add(this.controlSensors);
             this.tabPageSensors.Location = new System.Drawing.Point(4, 24);
             this.tabPageSensors.Name = "tabPageSensors";
+            this.tabPageSensors.Padding = new System.Windows.Forms.Padding(3);
             this.tabPageSensors.Size = new System.Drawing.Size(761, 453);
             this.tabPageSensors.TabIndex = 3;
             this.tabPageSensors.Text = "Sensors";

@@ -34,76 +34,60 @@ namespace snorbert
         /// </summary>
         public FormMain()
         {
-            InitializeComponent();
-            
-            this.Show();
-
-            _rules = new PersistentDictionary<string, string>(System.IO.Path.Combine(Misc.GetUserDataDirectory(), "Rules"));
-
-            cboPageLimit.SelectedIndex = 6; // 100
-
-            _sql = new Sql();
-            string ret = _sql.Load();
-            if (ret.Length > 0)
+            try
             {
-                UserInterface.DisplayErrorMessageBox(this, "An error occurred whilst loading the SQL queries, the application cannot continue: " + ret);
-                Misc.WriteToEventLog(Application.ProductName, "An error occurred whilst loading the SQL queries, the application cannot continue: " + ret, System.Diagnostics.EventLogEntryType.Error);
+                InitializeComponent();
 
-                Application.Exit();
+                this.Show();
+
+                _rules = new PersistentDictionary<string, string>(System.IO.Path.Combine(Misc.GetUserDataDirectory(), "Rules"));
+
+                cboPageLimit.SelectedIndex = 6; // 100
+
+                _sql = new Sql();
+                string ret = _sql.Load();
+                if (ret.Length > 0)
+                {
+                    UserInterface.DisplayErrorMessageBox(this, "An error occurred whilst loading the SQL queries, the application cannot continue: " + ret);
+                    Misc.WriteToEventLog(Application.ProductName, "An error occurred whilst loading the SQL queries, the application cannot continue: " + ret, System.Diagnostics.EventLogEntryType.Error);
+
+                    Application.Exit();
+                }
+
+                controlEvents.SetRules(_rules);
+                controlEvents.SetSql(_sql);
+
+                controlRules.SetRules(_rules);
+                controlRules.SetSql(_sql);
+
+                controlSearch.SetRules(_rules);
+                controlSearch.SetSql(_sql);
+
+                controlSensors.SetSql(_sql);
+
+
+                LoadConnections();
+
+                _ruleImporter = new RuleImporter();
+                _ruleImporter.Complete += OnRuleImporter_Complete;
+                _ruleImporter.Error += OnRuleImporter_Error;
+
+                CheckImportFiles();
             }
-
-            controlEvents.SetRules(_rules);
-            controlEvents.SetSql(_sql);
-            controlEvents.Error += Control_OnError;
-            controlEvents.Message += Control_OnMessage;
-            controlEvents.Exclamation += Control_OnExclamation;
-
-            controlRules.SetRules(_rules);
-            controlRules.SetSql(_sql);
-            controlRules.Error += Control_OnError;
-            controlRules.Message += Control_OnMessage;
-            controlRules.Exclamation += Control_OnExclamation;
-
-            controlSearch.SetRules(_rules);
-            controlSearch.SetSql(_sql);
-            controlSearch.Error += Control_OnError;
-            controlSearch.Message += Control_OnMessage;
-            controlSearch.Exclamation += Control_OnExclamation;
-
-            controlSensors.SetSql(_sql);
-            controlSensors.Error += Control_OnError;
-            controlSensors.Message += Control_OnMessage;
-            controlSensors.Exclamation += Control_OnExclamation;
-
-            LoadConnections();
-
-            _ruleImporter = new RuleImporter();
-            _ruleImporter.Complete += OnRuleImporter_Complete;
-            _ruleImporter.Error += OnRuleImporter_Error;
-
-            CheckImportFiles();
+            catch (TypeLoadException tlEx)
+            {
+                IO.WriteTextToFile(tlEx.ToString(), "C:\\Error.txt", true);
+                //Misc.WriteToEventLog(Application.ProductName, tlEx.ToString(), System.Diagnostics.EventLogEntryType.Error);
+            }
+            catch (Exception ex)
+            {
+                IO.WriteTextToFile(ex.ToString(), "C:\\Error.txt", true);
+                //Misc.WriteToEventLog(Application.ProductName, ex.ToString(), System.Diagnostics.EventLogEntryType.Error);
+            }
         }
         #endregion
 
         #region Control Event Handlers
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="message"></param>
-        private void Control_OnError(string message)
-        {
-            UserInterface.DisplayErrorMessageBox(this, message);
-        }
-
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="message"></param>
-        private void Control_OnExclamation(string message)
-        {
-            UserInterface.DisplayMessageBox(this, message, MessageBoxIcon.Exclamation);
-        }
-
         /// <summary>
         /// 
         /// </summary>
@@ -207,17 +191,17 @@ namespace snorbert
                 {
                     cboConnections.SelectedIndex = 0;
                     UpdateConnectionString();
-                    controlEvents.SetState(true);
-                    controlRules.SetState(true);
-                    controlSearch.SetState(true);
-                    controlSensors.SetState(true);
+                    controlEvents.SetProcessingStatus(true);
+                    controlRules.SetProcessingStatus(true);
+                    controlSearch.SetProcessingStatus(true);
+                    controlSensors.SetProcessingStatus(true);
                 }
                 else
                 {
-                    controlEvents.SetState(false);
-                    controlRules.SetState(false);
-                    controlSearch.SetState(false);
-                    controlSensors.SetState(false);
+                    controlEvents.SetProcessingStatus(false);
+                    controlRules.SetProcessingStatus(false);
+                    controlSearch.SetProcessingStatus(false);
+                    controlSensors.SetProcessingStatus(false);
                 }
             }
         }
@@ -279,6 +263,7 @@ namespace snorbert
         {
             controlEvents.SetProcessingStatus(enabled);
             controlRules.SetProcessingStatus(enabled);
+            controlSearch.SetProcessingStatus(enabled);
             controlSearch.SetProcessingStatus(enabled);
         }
         #endregion

@@ -11,10 +11,7 @@ namespace snorbert
     public partial class ControlSensors : UserControl
     {
         #region Events
-        public delegate void MessageEvent(string message);
-        public event MessageEvent Message;
-        public event MessageEvent Error;
-        public event MessageEvent Exclamation;
+        public event Global.MessageEvent Message;
         #endregion
 
         #region Member Variables
@@ -62,7 +59,7 @@ namespace snorbert
                 {
                     if (data == null)
                     {
-                        OnExclamation("No data retrieved for query");
+                        UserInterface.DisplayErrorMessageBox(this, "No data retrieved for query");
                         return;
                     }
 
@@ -70,7 +67,7 @@ namespace snorbert
                 }
                 catch (Exception ex)
                 {
-                    OnError("An error occurred whilst performing the search: " + ex.Message);
+                    UserInterface.DisplayMessageBox(this, "An error occurred whilst retrieving the sensor data: " + ex.Message, MessageBoxIcon.Exclamation);
                 }
                 finally
                 {
@@ -97,7 +94,8 @@ namespace snorbert
         private void OnQuerier_Exclamation(string message)
         {
             _hourGlass.Dispose();
-            OnExclamation(message);
+            UserInterface.DisplayMessageBox(this, message, MessageBoxIcon.Exclamation);
+            SetProcessingStatus(true);
         }
 
         /// <summary>
@@ -107,7 +105,8 @@ namespace snorbert
         private void OnQuerier_Error(string message)
         {
             _hourGlass.Dispose();
-            OnError(message);
+            UserInterface.DisplayErrorMessageBox(this, message);
+            SetProcessingStatus(true);
         }
         #endregion
 
@@ -126,19 +125,6 @@ namespace snorbert
         #endregion
 
         #region Public Methods
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="enabled"></param>
-        public void SetState(bool enabled)
-        {
-            this.Enabled = enabled;
-            if (enabled == true)
-            {
-                LoadSensors();
-            }
-        }
-
         /// <summary>
         /// 
         /// </summary>
@@ -209,32 +195,6 @@ namespace snorbert
                 handler(message);
             }
         }
-
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="message"></param>
-        private void OnExclamation(string message)
-        {
-            var handler = Exclamation;
-            if (handler != null)
-            {
-                handler(message);
-            }
-        }
-
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="message"></param>
-        private void OnError(string message)
-        {
-            var handler = Error;
-            if (handler != null)
-            {
-                handler(message);
-            }
-        }
         #endregion
 
         #region Context Menu Event Handlers
@@ -244,6 +204,18 @@ namespace snorbert
         /// <param name="sender"></param>
         /// <param name="e"></param>
         private void ctxMenuRefresh_Click(object sender, EventArgs e)
+        {
+            LoadSensors();
+        }
+        #endregion
+
+        #region Button Event Handlers
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void btnRefresh_Click(object sender, EventArgs e)
         {
             LoadSensors();
         }

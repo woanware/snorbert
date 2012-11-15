@@ -29,6 +29,7 @@
         private void InitializeComponent()
         {
             this.components = new System.ComponentModel.Container();
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(ControlSensors));
             this.listSensors = new BrightIdeasSoftware.ObjectListView();
             this.olvcSensorId = ((BrightIdeasSoftware.OLVColumn)(new BrightIdeasSoftware.OLVColumn()));
             this.olvcSensorHostName = ((BrightIdeasSoftware.OLVColumn)(new BrightIdeasSoftware.OLVColumn()));
@@ -38,6 +39,7 @@
             this.olvcSensorEventPercentage = ((BrightIdeasSoftware.OLVColumn)(new BrightIdeasSoftware.OLVColumn()));
             this.ctxMenu = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.ctxMenuRefresh = new System.Windows.Forms.ToolStripMenuItem();
+            this.btnRefresh = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.listSensors)).BeginInit();
             this.ctxMenu.SuspendLayout();
             this.SuspendLayout();
@@ -63,11 +65,11 @@
             this.listSensors.ContextMenuStrip = this.ctxMenu;
             this.listSensors.FullRowSelect = true;
             this.listSensors.HideSelection = false;
-            this.listSensors.Location = new System.Drawing.Point(4, 6);
+            this.listSensors.Location = new System.Drawing.Point(0, 29);
             this.listSensors.MultiSelect = false;
             this.listSensors.Name = "listSensors";
             this.listSensors.ShowGroups = false;
-            this.listSensors.Size = new System.Drawing.Size(642, 451);
+            this.listSensors.Size = new System.Drawing.Size(652, 433);
             this.listSensors.TabIndex = 1;
             this.listSensors.UseCompatibleStateImageBehavior = false;
             this.listSensors.View = System.Windows.Forms.View.Details;
@@ -75,31 +77,37 @@
             // olvcSensorId
             // 
             this.olvcSensorId.AspectName = "Sid";
+            this.olvcSensorId.CellPadding = null;
             this.olvcSensorId.Text = "ID";
             // 
             // olvcSensorHostName
             // 
             this.olvcSensorHostName.AspectName = "HostName";
+            this.olvcSensorHostName.CellPadding = null;
             this.olvcSensorHostName.Text = "Host Name";
             // 
             // olvcSensorInterface
             // 
             this.olvcSensorInterface.AspectName = "Interface";
+            this.olvcSensorInterface.CellPadding = null;
             this.olvcSensorInterface.Text = "Interface";
             // 
             // olvcSensorLastEvent
             // 
             this.olvcSensorLastEvent.AspectName = "LastEvent";
+            this.olvcSensorLastEvent.CellPadding = null;
             this.olvcSensorLastEvent.Text = "Last Event";
             // 
             // olvcSensorEventCount
             // 
             this.olvcSensorEventCount.AspectName = "EventCount";
+            this.olvcSensorEventCount.CellPadding = null;
             this.olvcSensorEventCount.Text = "Event Count";
             // 
             // olvcSensorEventPercentage
             // 
             this.olvcSensorEventPercentage.AspectName = "EventPercentage";
+            this.olvcSensorEventPercentage.CellPadding = null;
             this.olvcSensorEventPercentage.FillsFreeSpace = true;
             this.olvcSensorEventPercentage.Text = "Event %";
             // 
@@ -118,12 +126,26 @@
             this.ctxMenuRefresh.Text = "Refresh";
             this.ctxMenuRefresh.Click += new System.EventHandler(this.ctxMenuRefresh_Click);
             // 
+            // btnRefresh
+            // 
+            this.btnRefresh.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.btnRefresh.Image = ((System.Drawing.Image)(resources.GetObject("btnRefresh.Image")));
+            this.btnRefresh.Location = new System.Drawing.Point(628, -1);
+            this.btnRefresh.Margin = new System.Windows.Forms.Padding(0);
+            this.btnRefresh.Name = "btnRefresh";
+            this.btnRefresh.Size = new System.Drawing.Size(25, 25);
+            this.btnRefresh.TabIndex = 2;
+            this.btnRefresh.UseVisualStyleBackColor = true;
+            this.btnRefresh.Click += new System.EventHandler(this.btnRefresh_Click);
+            // 
             // ControlSensors
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.Controls.Add(this.btnRefresh);
             this.Controls.Add(this.listSensors);
             this.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.Margin = new System.Windows.Forms.Padding(0);
             this.Name = "ControlSensors";
             this.Size = new System.Drawing.Size(653, 462);
             this.Load += new System.EventHandler(this.ControlSensors_Load);
@@ -144,5 +166,6 @@
         private BrightIdeasSoftware.OLVColumn olvcSensorEventPercentage;
         private System.Windows.Forms.ContextMenuStrip ctxMenu;
         private System.Windows.Forms.ToolStripMenuItem ctxMenuRefresh;
+        private System.Windows.Forms.Button btnRefresh;
     }
 }
