@@ -274,7 +274,7 @@
       <Data><![CDATA[SELECT sensor.sid as sid,
 				   sensor.hostname as hostname,
 				   sensor.interface as inter,
-				   IFNULL(event.timestamp, '') as timestamp,
+				   event.timestamp as timestamp,
 				   (select count(1) from event where event.sid=sensor.sid) as eventcount
 			  FROM sensor
 		 LEFT JOIN event ON event.cid = sensor.last_cid and event.sid = sensor.sid]]></Data>

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
+using woanware;
 
 namespace snorbert
 {
@@ -343,9 +344,9 @@ namespace snorbert
                         sensor.HostName = result.hostname;
                         sensor.Interface = result.inter;
 
-                        if (result.timestamp.ToString().Length > 0)
+                        if (result.timestamp != null)
                         {
-                            sensor.LastEvent = result.timestamp;
+                            sensor.LastEvent = result.timestamp.ToString(); 
                         }
 
                         sensor.EventCount = result.eventcount;
@@ -356,7 +357,10 @@ namespace snorbert
 
                     foreach (Sensor sensor in data)
                     {
-                        sensor.EventPercentage = (int)(sensor.EventCount / count) * 100;
+                        if (sensor.EventCount > 0)
+                        {
+                            sensor.EventPercentage = (int)(sensor.EventCount / count) * 100;
+                        }
                     }
 
                     OnComplete(data);
