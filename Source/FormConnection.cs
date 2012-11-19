@@ -156,5 +156,20 @@ namespace snorbert
             this.DialogResult = System.Windows.Forms.DialogResult.Cancel;
         }
         #endregion
+
+        #region Form Event Handlers
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void FormConnection_Load(object sender, EventArgs e)
+        {
+            if (_connection == null)
+            {
+                txtConnectionString.Text = "Data Source= ; Initial Catalog= ; User Id= ; Password= ";
+            }
+        }
+        #endregion
     }
 }

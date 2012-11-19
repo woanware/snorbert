@@ -127,6 +127,7 @@
             this.ShowInTaskbar = false;
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
             this.Text = "Connection";
+            this.Load += new System.EventHandler(this.FormConnection_Load);
             this.ResumeLayout(false);
             this.PerformLayout();
 
