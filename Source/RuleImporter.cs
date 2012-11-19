@@ -63,13 +63,13 @@ namespace snorbert
             {
                 _isRunning = true;
 
-                if (PersistentDictionaryFile.Exists(System.IO.Path.Combine(Misc.GetUserDataDirectory(), "Rules")) == true)
-                {
-                    rules.Dispose();
-                    //PersistentDictionaryFile.DeleteFiles("Rules");
-                }
+                //if (PersistentDictionaryFile.Exists(System.IO.Path.Combine(Misc.GetUserDataDirectory(), "Rules")) == true)
+                //{
+                //    rules.Dispose();
+                //    //PersistentDictionaryFile.DeleteFiles("Rules");
+                //}
 
-                rules = new PersistentDictionary<string, string>("Rules");
+                //rules = new PersistentDictionary<string, string>(System.IO.Path.Combine(Misc.GetUserDataDirectory(), "Rules"));
 
                 Regex regex = new Regex(@"sid\:(.*?);", RegexOptions.IgnoreCase);
                 foreach (string file in files)

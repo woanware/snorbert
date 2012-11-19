@@ -78,6 +78,7 @@ namespace snorbert
                         return;
                     }
 
+                    cboRule.Items.Clear();
                     cboRule.DisplayMember = "Text";
                     cboRule.ValueMember = "Sid";
                     cboRule.Items.AddRange(data.ToArray());

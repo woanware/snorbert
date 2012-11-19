@@ -337,7 +337,7 @@ namespace snorbert
             List<string> existingFiles = new List<string>();
             foreach (string file in openFileDialog.FileNames)
             {
-                string path = System.IO.Path.Combine(Misc.GetApplicationDirectory(), "Import", System.IO.Path.GetFileName(file));
+                string path = System.IO.Path.Combine(Misc.GetUserDataDirectory(), "Import", System.IO.Path.GetFileName(file));
                 if (File.Exists(path) == false)
                 {
                     continue;
@@ -366,7 +366,7 @@ namespace snorbert
             {
                 foreach (string file in openFileDialog.FileNames)
                 {
-                    string path = System.IO.Path.Combine(Misc.GetApplicationDirectory(), "Import", System.IO.Path.GetFileName(file));
+                    string path = System.IO.Path.Combine(Misc.GetUserDataDirectory(), "Import", System.IO.Path.GetFileName(file));
                     string ret = woanware.IO.CopyFile(file, path, true);
                     if (ret.Length > 0)
                     {
