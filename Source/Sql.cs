@@ -28,7 +28,11 @@ namespace snorbert
             SQL_SIG_NAMES = 7,
             SQL_SIG_PRIORITIES = 8,
             SQL_SIG_CLASS = 9,
-            SQL_SENSORS = 10
+            SQL_SENSORS = 10,
+            SQL_RULES_SRC_IPS_FROM = 11,
+            SQL_RULES_SRC_IPS_FROM_TO = 12,
+            SQL_RULES_DST_IPS_FROM = 13,
+            SQL_RULES_DST_IPS_FROM_TO = 14
         }
         #endregion
 

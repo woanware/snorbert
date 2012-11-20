@@ -47,6 +47,8 @@
             this.ctxMenuCopyPayloadAscii = new System.Windows.Forms.ToolStripMenuItem();
             this.ctxMenuSep1 = new System.Windows.Forms.ToolStripSeparator();
             this.ctxMenuHide = new System.Windows.Forms.ToolStripMenuItem();
+            this.ctxMenuSep2 = new System.Windows.Forms.ToolStripSeparator();
+            this.ctxMenuExtractIpInfo = new System.Windows.Forms.ToolStripMenuItem();
             this.btnPagingPreviousPage = new System.Windows.Forms.Button();
             this.btnPagingNextPage = new System.Windows.Forms.Button();
             this.btnPagingFirstPage = new System.Windows.Forms.Button();
@@ -61,6 +63,8 @@
             this.dtpDateFrom = new System.Windows.Forms.DateTimePicker();
             this.btnRefresh = new System.Windows.Forms.Button();
             this.controlEventInfo = new snorbert.ControlEventInfo();
+            this.ctxMenuExtractIpInfoUniqueSource = new System.Windows.Forms.ToolStripMenuItem();
+            this.ctxMenuExtractIpInfoUniqueDestination = new System.Windows.Forms.ToolStripMenuItem();
             ((System.ComponentModel.ISupportInitialize)(this.splitter)).BeginInit();
             this.splitter.Panel1.SuspendLayout();
             this.splitter.Panel2.SuspendLayout();
@@ -74,9 +78,9 @@
             // 
             this.lblPagingRules.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.lblPagingRules.Location = new System.Drawing.Point(56, 598);
+            this.lblPagingRules.Location = new System.Drawing.Point(56, 285);
             this.lblPagingRules.Name = "lblPagingRules";
-            this.lblPagingRules.Size = new System.Drawing.Size(637, 26);
+            this.lblPagingRules.Size = new System.Drawing.Size(637, 24);
             this.lblPagingRules.TabIndex = 20;
             this.lblPagingRules.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             // 
@@ -94,6 +98,7 @@
             this.splitter.Panel1.Controls.Add(this.btnPagingPreviousPage);
             this.splitter.Panel1.Controls.Add(this.btnPagingNextPage);
             this.splitter.Panel1.Controls.Add(this.btnPagingFirstPage);
+            this.splitter.Panel1.Controls.Add(this.lblPagingRules);
             this.splitter.Panel1.Controls.Add(this.panelTop);
             // 
             // splitter.Panel2
@@ -137,10 +142,12 @@
             this.ctxMenuEvent.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.ctxMenuCopy,
             this.ctxMenuSep1,
-            this.ctxMenuHide});
+            this.ctxMenuHide,
+            this.ctxMenuSep2,
+            this.ctxMenuExtractIpInfo});
             this.ctxMenuEvent.Name = "ctxMenuEvent";
             this.ctxMenuEvent.RenderMode = System.Windows.Forms.ToolStripRenderMode.System;
-            this.ctxMenuEvent.Size = new System.Drawing.Size(103, 54);
+            this.ctxMenuEvent.Size = new System.Drawing.Size(189, 104);
             this.ctxMenuEvent.Opening += new System.ComponentModel.CancelEventHandler(this.ctxMenuEvent_Opening);
             // 
             // ctxMenuCopy
@@ -156,7 +163,7 @@
             this.ctxMenuCopyTimestamp,
             this.ctxMenuCopyPayloadAscii});
             this.ctxMenuCopy.Name = "ctxMenuCopy";
-            this.ctxMenuCopy.Size = new System.Drawing.Size(102, 22);
+            this.ctxMenuCopy.Size = new System.Drawing.Size(188, 22);
             this.ctxMenuCopy.Text = "Copy";
             // 
             // ctxMenuCopySourceIp
@@ -225,14 +232,28 @@
             // ctxMenuSep1
             // 
             this.ctxMenuSep1.Name = "ctxMenuSep1";
-            this.ctxMenuSep1.Size = new System.Drawing.Size(99, 6);
+            this.ctxMenuSep1.Size = new System.Drawing.Size(185, 6);
             // 
             // ctxMenuHide
             // 
             this.ctxMenuHide.Name = "ctxMenuHide";
-            this.ctxMenuHide.Size = new System.Drawing.Size(102, 22);
+            this.ctxMenuHide.Size = new System.Drawing.Size(188, 22);
             this.ctxMenuHide.Text = "Hide";
             this.ctxMenuHide.Click += new System.EventHandler(this.ctxMenuHide_Click);
+            // 
+            // ctxMenuSep2
+            // 
+            this.ctxMenuSep2.Name = "ctxMenuSep2";
+            this.ctxMenuSep2.Size = new System.Drawing.Size(185, 6);
+            // 
+            // ctxMenuExtractIpInfo
+            // 
+            this.ctxMenuExtractIpInfo.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.ctxMenuExtractIpInfoUniqueSource,
+            this.ctxMenuExtractIpInfoUniqueDestination});
+            this.ctxMenuExtractIpInfo.Name = "ctxMenuExtractIpInfo";
+            this.ctxMenuExtractIpInfo.Size = new System.Drawing.Size(188, 22);
+            this.ctxMenuExtractIpInfo.Text = "Extract IP Information";
             // 
             // btnPagingPreviousPage
             // 
@@ -428,12 +449,25 @@
             this.controlEventInfo.Size = new System.Drawing.Size(748, 309);
             this.controlEventInfo.TabIndex = 1;
             // 
+            // ctxMenuExtractIpInfoUniqueSource
+            // 
+            this.ctxMenuExtractIpInfoUniqueSource.Name = "ctxMenuExtractIpInfoUniqueSource";
+            this.ctxMenuExtractIpInfoUniqueSource.Size = new System.Drawing.Size(175, 22);
+            this.ctxMenuExtractIpInfoUniqueSource.Text = "Unique Source";
+            this.ctxMenuExtractIpInfoUniqueSource.Click += new System.EventHandler(this.ctxMenuExtractIpInfoUniqueSource_Click);
+            // 
+            // ctxMenuExtractIpInfoUniqueDestination
+            // 
+            this.ctxMenuExtractIpInfoUniqueDestination.Name = "ctxMenuExtractIpInfoUniqueDestination";
+            this.ctxMenuExtractIpInfoUniqueDestination.Size = new System.Drawing.Size(175, 22);
+            this.ctxMenuExtractIpInfoUniqueDestination.Text = "Unique Destination";
+            this.ctxMenuExtractIpInfoUniqueDestination.Click += new System.EventHandler(this.ctxMenuExtractIpInfoUniqueDestination_Click);
+            // 
             // ControlRules
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.Controls.Add(this.splitter);
-            this.Controls.Add(this.lblPagingRules);
             this.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.Name = "ControlRules";
             this.Size = new System.Drawing.Size(748, 623);
@@ -483,5 +517,9 @@
         private System.Windows.Forms.ToolStripMenuItem ctxMenuCopyPayloadAscii;
         private System.Windows.Forms.ToolStripSeparator ctxMenuSep1;
         private System.Windows.Forms.ToolStripMenuItem ctxMenuHide;
+        private System.Windows.Forms.ToolStripSeparator ctxMenuSep2;
+        private System.Windows.Forms.ToolStripMenuItem ctxMenuExtractIpInfo;
+        private System.Windows.Forms.ToolStripMenuItem ctxMenuExtractIpInfoUniqueSource;
+        private System.Windows.Forms.ToolStripMenuItem ctxMenuExtractIpInfoUniqueDestination;
     }
 }

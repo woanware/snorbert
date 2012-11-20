@@ -16,12 +16,14 @@ namespace snorbert
         public event CompleteEvent<Event> EventQueryComplete;
         public event CompleteEvent<Rule> RuleQueryComplete;
         public event CompleteEvent<Sensor> SensorQueryComplete;
+        public event CompleteEvent<string> RuleIpQueryComplete;
         public event Global.MessageEvent Exclamation;
         public event Global.MessageEvent Error;
         #endregion
 
         #region Member Variables
         private Sql _sql;
+        public bool IsRunning { get; private set; }
         #endregion
 
         #region Constructor
@@ -29,10 +31,6 @@ namespace snorbert
         /// 
         /// </summary>
         public Querier(){}
-        #endregion
-
-        #region Member Variables
-        public bool IsRunning { get; private set; }
         #endregion
 
         #region Public Methods
@@ -108,7 +106,8 @@ namespace snorbert
                     {
                         if (rule.sig_priority.ToString().Length > 0)
                         {
-                            Rule temp = new Rule(rule.sig_name + " (SID: " + rule.sig_sid.ToString() + "/Priority: " + rule.sig_priority.ToString() + "): " + rule.count.ToString(),
+                            Rule temp = new Rule(rule.sig_id,
+                                                 rule.sig_name + " (SID: " + rule.sig_sid.ToString() + "/Priority: " + rule.sig_priority.ToString() + "): " + rule.count.ToString(),
                                                  rule.sig_sid.ToString(),
                                                  rule.sig_priority.ToString(),
                                                  int.Parse(rule.count.ToString()));
@@ -116,7 +115,8 @@ namespace snorbert
                         }
                         else
                         {
-                            Rule temp = new Rule(rule.sig_name + " (SID: " + rule.sig_sid.ToString() + "): " + rule.count.ToString(),
+                            Rule temp = new Rule(rule.sig_id, 
+                                                 rule.sig_name + " (SID: " + rule.sig_sid.ToString() + "): " + rule.count.ToString(),
                                                  rule.sig_sid.ToString(),
                                                  string.Empty,
                                                  int.Parse(rule.count.ToString()));
@@ -165,7 +165,8 @@ namespace snorbert
                     {
                         if (rule.sig_priority.ToString().Length > 0)
                         {
-                            Rule temp = new Rule(rule.sig_name + " (SID: " + rule.sig_sid.ToString() + "/Priority: " + rule.sig_priority.ToString() + "): " + rule.count.ToString(),
+                            Rule temp = new Rule(rule.sig_id, 
+                                                 rule.sig_name + " (SID: " + rule.sig_sid.ToString() + "/Priority: " + rule.sig_priority.ToString() + "): " + rule.count.ToString(),
                                                  rule.sig_sid.ToString(),
                                                  rule.sig_priority.ToString(),
                                                  int.Parse(rule.count.ToString()));
@@ -173,7 +174,8 @@ namespace snorbert
                         }
                         else
                         {
-                            Rule temp = new Rule(rule.sig_name + " (SID: " + rule.sig_sid.ToString() + "): " + rule.count.ToString(),
+                            Rule temp = new Rule(rule.sig_id, 
+                                                 rule.sig_name + " (SID: " + rule.sig_sid.ToString() + "): " + rule.count.ToString(),
                                                  rule.sig_sid.ToString(),
                                                  string.Empty,
                                                  int.Parse(rule.count.ToString()));
@@ -375,6 +377,117 @@ namespace snorbert
                 }
             });
         }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="id"></param>
+        /// <param name="dateFrom"></param>
+        /// <param name="dateTo"></param>
+        /// <param name="sourceIps"></param>
+        public void QueryRuleIpsFromTo(string id,
+                                       string dateFrom,
+                                       string dateTo,
+                                       bool sourceIps)
+        {
+            if (IsRunning == true)
+            {
+                OnExclamation("Already performing query");
+                return;
+            }
+
+            IsRunning = true;
+
+            Task task = Task.Factory.StartNew(() =>
+            {
+                try
+                {
+                    List<string> data = new List<string>();
+
+                    var dbSignature = new DbSignature();
+                    if (sourceIps == true)
+                    {
+                        var query = dbSignature.Query(_sql.GetQuery(Sql.Query.SQL_RULES_SRC_IPS_FROM_TO), args: new object[] { id, dateFrom, dateTo });
+                        foreach (var rule in query)
+                        {
+                            data.Add(rule.ip_src);
+                        }
+                    }
+                    else
+                    {
+                        var query = dbSignature.Query(_sql.GetQuery(Sql.Query.SQL_RULES_DST_IPS_FROM_TO), args: new object[] { id, dateFrom, dateTo });
+                        foreach (var rule in query)
+                        {
+                            data.Add(rule.ip_src);
+                        }
+                    }
+                    OnComplete(data);
+                }
+                catch (Exception ex)
+                {
+                    OnError("An error occurred whilst performing the query: " + ex.Message);
+                }
+                finally
+                {
+                    IsRunning = false;
+                }
+            });
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="id"></param>
+        /// <param name="dateFrom"></param>
+        /// <param name="sourceIps"></param>
+        public void QueryRuleIpsFrom(string id,
+                                     string dateFrom,   
+                                     bool sourceIps)
+        {
+            if (IsRunning == true)
+            {
+                OnExclamation("Already performing query");
+                return;
+            }
+
+            IsRunning = true;
+
+            Task task = Task.Factory.StartNew(() =>
+            {
+                try
+                {
+                    List<string> data = new List<string>();
+
+                    var dbSignature = new DbSignature();
+                    if (sourceIps == true)
+                    {
+                        var query = dbSignature.Query(_sql.GetQuery(Sql.Query.SQL_RULES_SRC_IPS_FROM), args: new object[] { id, dateFrom });
+                        foreach (var rule in query)
+                        {
+                            data.Add(rule.ip_src);
+                        }
+                    }
+                    else
+                    {
+                        var query = dbSignature.Query(_sql.GetQuery(Sql.Query.SQL_RULES_DST_IPS_FROM), args: new object[] { id, dateFrom });
+                        foreach (var rule in query)
+                        {
+                            data.Add(rule.ip_src);
+                        }
+                    }
+                    
+                    OnComplete(data);
+                }
+                catch (Exception ex)
+                {
+                    OnError("An error occurred whilst performing the query: " + ex.Message);
+                }
+                finally
+                {
+                    IsRunning = false;
+                }
+            });
+        }
         #endregion
 
         #region Event Methods
@@ -408,6 +521,18 @@ namespace snorbert
         private void OnComplete(List<Sensor> data)
         {
             var handler = SensorQueryComplete;
+            if (handler != null)
+            {
+                handler(data);
+            }
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        private void OnComplete(List<string> data)
+        {
+            var handler = RuleIpQueryComplete;
             if (handler != null)
             {
                 handler(data);

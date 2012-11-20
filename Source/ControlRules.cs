@@ -3,6 +3,7 @@ using Microsoft.Isam.Esent.Collections.Generic;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text;
 using System.Windows.Forms;
 using woanware;
 
@@ -56,6 +57,7 @@ namespace snorbert
             _querier.Exclamation += OnQuerier_Exclamation;
             _querier.RuleQueryComplete += OnQuerier_RuleQueryComplete;
             _querier.EventQueryComplete += OnQuerier_EventQueryComplete;
+            _querier.RuleIpQueryComplete += OnQuerier_RuleIpQueryComplete;
 
             LoadFalsePositives();
         }
@@ -152,6 +154,61 @@ namespace snorbert
 
                     lblPagingRules.Text = "Page " + _currentPage + " (" + _totalPages + ")";
                     OnMessage("Loaded " + data.Count + " results (Hidden: " + (preFilterCount - data.Count) + "/Total: " + _totalRecords + ")");
+                }
+                catch (Exception ex)
+                {
+                    UserInterface.DisplayErrorMessageBox(this, "An error occurred whilst performing the search: " + ex.Message);
+                }
+                finally
+                {
+                    Helper.ResizeEventListColumns(listEvents);
+                    SetPagingControlState();
+                    SetProcessingStatus(true);
+                    _hourGlass.Dispose();
+                }
+            };
+
+            if (this.InvokeRequired == true)
+            {
+                this.BeginInvoke(methodInvoker);
+            }
+            else
+            {
+                methodInvoker.Invoke();
+            }
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="data"></param>
+        private void OnQuerier_RuleIpQueryComplete(List<string> data)
+        {
+            MethodInvoker methodInvoker = delegate
+            {
+                try
+                {
+                    if (data == null)
+                    {
+                        UserInterface.DisplayMessageBox(this, "No data retrieved for query", MessageBoxIcon.Exclamation);
+                        return;
+                    }
+
+                    StringBuilder output = new StringBuilder();
+                    foreach (string ip in data)
+                    {
+                        output.AppendLine(ip);
+                    }
+
+                    if (data.Count > 0)
+                    {
+                        Clipboard.SetText(output.ToString());
+                        OnMessage(data.Count + " IP addresses copied to the clipboard");
+                    }
+                    else
+                    {
+                        UserInterface.DisplayMessageBox(this, "No data retrieved for query", MessageBoxIcon.Exclamation);
+                    }
                 }
                 catch (Exception ex)
                 {
@@ -600,10 +657,12 @@ namespace snorbert
             if (listEvents.SelectedObjects.Count == 0)
             {
                 ctxMenuCopy.Enabled = false;
+                ctxMenuExtractIpInfo.Enabled = false;
             }
             else
             {
                 ctxMenuCopy.Enabled = true;
+                ctxMenuExtractIpInfo.Enabled = true;
             }
         }
 
@@ -725,6 +784,86 @@ namespace snorbert
 
                 LoadFalsePositives();
                 LoadRuleEvents(_currentPage);
+            }
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void ctxMenuExtractIpInfoUniqueSource_Click(object sender, EventArgs e)
+        {
+            if (listEvents.SelectedObjects.Count != 1)
+            {
+                return;
+            }
+
+            Event temp = (Event)listEvents.SelectedObjects[0];
+            if (temp == null)
+            {
+                UserInterface.DisplayErrorMessageBox(this, "Unable to locate event");
+                return;
+            }
+
+            _hourGlass = new HourGlass(this);
+            SetProcessingStatus(false);
+            //Clear();
+
+            Rule rule = (Rule)cboRule.Items[cboRule.SelectedIndex];
+
+            if (dtpDateTo.Checked == true)
+            {
+                _querier.QueryRuleIpsFromTo(rule.Id.ToString(),
+                                            dtpDateFrom.Value.Date.ToString("yyyy-MM-dd") + " " + cboTimeFrom.Text + ":00",
+                                            dtpDateTo.Value.Date.ToString("yyyy-MM-dd") + " " + cboTimeTo.Text + ":00", 
+                                            true);
+            }
+            else
+            {
+                _querier.QueryRuleIpsFrom(rule.Id.ToString(),
+                                          dtpDateFrom.Value.Date.ToString("yyyy-MM-dd") + " " + cboTimeFrom.Text + ":00",
+                                          true);
+            }
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void ctxMenuExtractIpInfoUniqueDestination_Click(object sender, EventArgs e)
+        {
+            if (listEvents.SelectedObjects.Count != 1)
+            {
+                return;
+            }
+
+            Event temp = (Event)listEvents.SelectedObjects[0];
+            if (temp == null)
+            {
+                UserInterface.DisplayErrorMessageBox(this, "Unable to locate event");
+                return;
+            }
+
+            _hourGlass = new HourGlass(this);
+            SetProcessingStatus(false);
+            //Clear();
+
+            Rule rule = (Rule)cboRule.Items[cboRule.SelectedIndex];
+
+            if (dtpDateTo.Checked == true)
+            {
+                _querier.QueryRuleIpsFromTo(rule.Id.ToString(),
+                                            dtpDateFrom.Value.Date.ToString("yyyy-MM-dd") + " " + cboTimeFrom.Text + ":00",
+                                            dtpDateTo.Value.Date.ToString("yyyy-MM-dd") + " " + cboTimeTo.Text + ":00",
+                                            false);
+            }
+            else
+            {
+                _querier.QueryRuleIpsFrom(rule.Id.ToString(),
+                                          dtpDateFrom.Value.Date.ToString("yyyy-MM-dd") + " " + cboTimeFrom.Text + ":00",
+                                          false);
             }
         }
         #endregion

@@ -55,7 +55,8 @@
     
     <SqlQuery>
       <Query>SQL_RULES_FROM</Query>
-      <Data><![CDATA[SELECT signature.sig_name, 
+      <Data><![CDATA[SELECT signature.sig_id, 
+           signature.sig_name, 
 				   signature.sig_sid, 
 				   IFNULL(signature.sig_priority, 0) as sig_priority,
 				   count(signature.sig_name) AS count          
@@ -70,7 +71,8 @@
     
     <SqlQuery>
       <Query>SQL_RULES_FROM_TO</Query>
-      <Data><![CDATA[<SELECT signature.sig_name, 
+      <Data><![CDATA[<SELECT signature.sig_id, 
+					signature.sig_name, 
 				   signature.sig_sid, 
 				   IFNULL(signature.sig_priority, 0) as sig_priority,
 				   count(signature.sig_name) AS count          
@@ -279,6 +281,56 @@
 			  FROM sensor
 		 LEFT JOIN event ON event.cid = sensor.last_cid and event.sid = sensor.sid]]></Data>
     </SqlQuery>
-    
+
+    <SqlQuery>
+      <Query>SQL_RULES_SRC_IPS_FROM</Query>
+      <Data>
+        <![CDATA[SELECT distinct
+                        IFNULL(cast(inet_ntoa(iphdr.ip_src) as char(15)), 0) as ip_src
+                   FROM event
+              LEFT JOIN iphdr  ON (event.sid = iphdr.sid AND event.cid = iphdr.cid)
+                  WHERE event.signature=@0
+                    AND event.timestamp > @1]]>
+      </Data>
+    </SqlQuery>
+
+    <SqlQuery>
+      <Query>SQL_RULES_SRC_IPS_FROM_TO</Query>
+      <Data>
+        <![CDATA[SELECT distinct
+                        IFNULL(cast(inet_ntoa(iphdr.ip_src) as char(15)), 0) as ip_src
+                   FROM event
+              LEFT JOIN iphdr  ON (event.sid = iphdr.sid AND event.cid = iphdr.cid)
+                  WHERE event.signature=@0 
+                    AND event.timestamp > @1
+                    AND event.timestamp < @2]]>
+      </Data>
+    </SqlQuery>
+
+    <SqlQuery>
+      <Query>SQL_RULES_DST_IPS_FROM</Query>
+      <Data>
+        <![CDATA[SELECT distinct
+                        IFNULL(cast(inet_ntoa(iphdr.ip_dst) as char(15)), 0) as ip_src
+                   FROM event
+              LEFT JOIN iphdr  ON (event.sid = iphdr.sid AND event.cid = iphdr.cid)
+                  WHERE event.signature=@0
+                    AND event.timestamp > @1]]>
+      </Data>
+    </SqlQuery>
+
+    <SqlQuery>
+      <Query>SQL_RULES_DST_IPS_FROM_TO</Query>
+      <Data>
+        <![CDATA[SELECT distinct
+                        IFNULL(cast(inet_ntoa(iphdr.ip_dst) as char(15)), 0) as ip_src
+                   FROM event
+              LEFT JOIN iphdr  ON (event.sid = iphdr.sid AND event.cid = iphdr.cid)
+                  WHERE event.signature=@0 
+                    AND event.timestamp > @1
+                    AND event.timestamp < @2]]>
+      </Data>
+    </SqlQuery>
+
   </Queries>
 </Sql>

@@ -56,15 +56,18 @@ namespace snorbert
 
                 controlEvents.SetRules(_rules);
                 controlEvents.SetSql(_sql);
+                controlEvents.Message += Control_OnMessage;
 
                 controlRules.SetRules(_rules);
                 controlRules.SetSql(_sql);
+                controlRules.Message += Control_OnMessage;
 
                 controlSearch.SetRules(_rules);
                 controlSearch.SetSql(_sql);
+                controlSearch.Message += Control_OnMessage;
 
                 controlSensors.SetSql(_sql);
-
+                controlSensors.Message += Control_OnMessage;
 
                 LoadConnections();
 
