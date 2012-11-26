@@ -49,6 +49,12 @@
             this.ctxMenuHide = new System.Windows.Forms.ToolStripMenuItem();
             this.ctxMenuSep2 = new System.Windows.Forms.ToolStripSeparator();
             this.ctxMenuExtractIpInfo = new System.Windows.Forms.ToolStripMenuItem();
+            this.ctxMenuExtractIpInfoUniqueSource = new System.Windows.Forms.ToolStripMenuItem();
+            this.ctxMenuExtractIpInfoUniqueDestination = new System.Windows.Forms.ToolStripMenuItem();
+            this.ctxMenuSep3 = new System.Windows.Forms.ToolStripSeparator();
+            this.ctxMenuExport = new System.Windows.Forms.ToolStripMenuItem();
+            this.ctxMenuExportAll = new System.Windows.Forms.ToolStripMenuItem();
+            this.ctxMenuExportCurrent = new System.Windows.Forms.ToolStripMenuItem();
             this.btnPagingPreviousPage = new System.Windows.Forms.Button();
             this.btnPagingNextPage = new System.Windows.Forms.Button();
             this.btnPagingFirstPage = new System.Windows.Forms.Button();
@@ -63,8 +69,6 @@
             this.dtpDateFrom = new System.Windows.Forms.DateTimePicker();
             this.btnRefresh = new System.Windows.Forms.Button();
             this.controlEventInfo = new snorbert.ControlEventInfo();
-            this.ctxMenuExtractIpInfoUniqueSource = new System.Windows.Forms.ToolStripMenuItem();
-            this.ctxMenuExtractIpInfoUniqueDestination = new System.Windows.Forms.ToolStripMenuItem();
             ((System.ComponentModel.ISupportInitialize)(this.splitter)).BeginInit();
             this.splitter.Panel1.SuspendLayout();
             this.splitter.Panel2.SuspendLayout();
@@ -144,10 +148,12 @@
             this.ctxMenuSep1,
             this.ctxMenuHide,
             this.ctxMenuSep2,
-            this.ctxMenuExtractIpInfo});
+            this.ctxMenuExtractIpInfo,
+            this.ctxMenuSep3,
+            this.ctxMenuExport});
             this.ctxMenuEvent.Name = "ctxMenuEvent";
             this.ctxMenuEvent.RenderMode = System.Windows.Forms.ToolStripRenderMode.System;
-            this.ctxMenuEvent.Size = new System.Drawing.Size(189, 104);
+            this.ctxMenuEvent.Size = new System.Drawing.Size(189, 132);
             this.ctxMenuEvent.Opening += new System.ComponentModel.CancelEventHandler(this.ctxMenuEvent_Opening);
             // 
             // ctxMenuCopy
@@ -254,6 +260,48 @@
             this.ctxMenuExtractIpInfo.Name = "ctxMenuExtractIpInfo";
             this.ctxMenuExtractIpInfo.Size = new System.Drawing.Size(188, 22);
             this.ctxMenuExtractIpInfo.Text = "Extract IP Information";
+            // 
+            // ctxMenuExtractIpInfoUniqueSource
+            // 
+            this.ctxMenuExtractIpInfoUniqueSource.Name = "ctxMenuExtractIpInfoUniqueSource";
+            this.ctxMenuExtractIpInfoUniqueSource.Size = new System.Drawing.Size(175, 22);
+            this.ctxMenuExtractIpInfoUniqueSource.Text = "Unique Source";
+            this.ctxMenuExtractIpInfoUniqueSource.Click += new System.EventHandler(this.ctxMenuExtractIpInfoUniqueSource_Click);
+            // 
+            // ctxMenuExtractIpInfoUniqueDestination
+            // 
+            this.ctxMenuExtractIpInfoUniqueDestination.Name = "ctxMenuExtractIpInfoUniqueDestination";
+            this.ctxMenuExtractIpInfoUniqueDestination.Size = new System.Drawing.Size(175, 22);
+            this.ctxMenuExtractIpInfoUniqueDestination.Text = "Unique Destination";
+            this.ctxMenuExtractIpInfoUniqueDestination.Click += new System.EventHandler(this.ctxMenuExtractIpInfoUniqueDestination_Click);
+            // 
+            // ctxMenuSep3
+            // 
+            this.ctxMenuSep3.Name = "ctxMenuSep3";
+            this.ctxMenuSep3.Size = new System.Drawing.Size(185, 6);
+            // 
+            // ctxMenuExport
+            // 
+            this.ctxMenuExport.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.ctxMenuExportAll,
+            this.ctxMenuExportCurrent});
+            this.ctxMenuExport.Name = "ctxMenuExport";
+            this.ctxMenuExport.Size = new System.Drawing.Size(188, 22);
+            this.ctxMenuExport.Text = "Export";
+            // 
+            // ctxMenuExportAll
+            // 
+            this.ctxMenuExportAll.Name = "ctxMenuExportAll";
+            this.ctxMenuExportAll.Size = new System.Drawing.Size(152, 22);
+            this.ctxMenuExportAll.Text = "All";
+            this.ctxMenuExportAll.Click += new System.EventHandler(this.ctxMenuExportAll_Click);
+            // 
+            // ctxMenuExportCurrent
+            // 
+            this.ctxMenuExportCurrent.Name = "ctxMenuExportCurrent";
+            this.ctxMenuExportCurrent.Size = new System.Drawing.Size(152, 22);
+            this.ctxMenuExportCurrent.Text = "Current";
+            this.ctxMenuExportCurrent.Click += new System.EventHandler(this.ctxMenuExportCurrent_Click);
             // 
             // btnPagingPreviousPage
             // 
@@ -449,20 +497,6 @@
             this.controlEventInfo.Size = new System.Drawing.Size(748, 309);
             this.controlEventInfo.TabIndex = 1;
             // 
-            // ctxMenuExtractIpInfoUniqueSource
-            // 
-            this.ctxMenuExtractIpInfoUniqueSource.Name = "ctxMenuExtractIpInfoUniqueSource";
-            this.ctxMenuExtractIpInfoUniqueSource.Size = new System.Drawing.Size(175, 22);
-            this.ctxMenuExtractIpInfoUniqueSource.Text = "Unique Source";
-            this.ctxMenuExtractIpInfoUniqueSource.Click += new System.EventHandler(this.ctxMenuExtractIpInfoUniqueSource_Click);
-            // 
-            // ctxMenuExtractIpInfoUniqueDestination
-            // 
-            this.ctxMenuExtractIpInfoUniqueDestination.Name = "ctxMenuExtractIpInfoUniqueDestination";
-            this.ctxMenuExtractIpInfoUniqueDestination.Size = new System.Drawing.Size(175, 22);
-            this.ctxMenuExtractIpInfoUniqueDestination.Text = "Unique Destination";
-            this.ctxMenuExtractIpInfoUniqueDestination.Click += new System.EventHandler(this.ctxMenuExtractIpInfoUniqueDestination_Click);
-            // 
             // ControlRules
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
@@ -521,5 +555,9 @@
         private System.Windows.Forms.ToolStripMenuItem ctxMenuExtractIpInfo;
         private System.Windows.Forms.ToolStripMenuItem ctxMenuExtractIpInfoUniqueSource;
         private System.Windows.Forms.ToolStripMenuItem ctxMenuExtractIpInfoUniqueDestination;
+        private System.Windows.Forms.ToolStripSeparator ctxMenuSep3;
+        private System.Windows.Forms.ToolStripMenuItem ctxMenuExport;
+        private System.Windows.Forms.ToolStripMenuItem ctxMenuExportAll;
+        private System.Windows.Forms.ToolStripMenuItem ctxMenuExportCurrent;
     }
 }

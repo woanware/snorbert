@@ -32,7 +32,9 @@ namespace snorbert
             SQL_RULES_SRC_IPS_FROM = 11,
             SQL_RULES_SRC_IPS_FROM_TO = 12,
             SQL_RULES_DST_IPS_FROM = 13,
-            SQL_RULES_DST_IPS_FROM_TO = 14
+            SQL_RULES_DST_IPS_FROM_TO = 14,
+            SQL_EVENTS_RULES_FROM_EXPORT = 15,
+            SQL_EVENTS_RULES_FROM_TO_EXPORT = 16
         }
         #endregion
 

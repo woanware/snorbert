@@ -71,7 +71,7 @@
     
     <SqlQuery>
       <Query>SQL_RULES_FROM_TO</Query>
-      <Data><![CDATA[<SELECT signature.sig_id, 
+      <Data><![CDATA[SELECT signature.sig_id, 
 					signature.sig_name, 
 				   signature.sig_sid, 
 				   IFNULL(signature.sig_priority, 0) as sig_priority,
@@ -329,6 +329,56 @@
                   WHERE event.signature=@0 
                     AND event.timestamp > @1
                     AND event.timestamp < @2]]>
+      </Data>
+    </SqlQuery>
+
+    <SqlQuery>
+      <Query>SQL_EVENTS_RULES_FROM_EXPORT</Query>
+      <Data>
+        <![CDATA[SELECT IFNULL(event.cid, 0) as cid,
+            IFNULL(cast(inet_ntoa(iphdr.ip_src) as char(15)), 0) as ip_src, 
+				   IFNULL(cast(inet_ntoa(iphdr.ip_dst) as char(15)), 0) as ip_dst, 
+           IFNULL(iphdr.ip_proto, 0) as ip_proto,
+				   IFNULL(tcphdr.tcp_sport, 0) as tcp_sport, 
+				   IFNULL(udphdr.udp_sport, 0) as udp_sport,                                                   
+				   IFNULL(tcphdr.tcp_dport, 0) as tcp_dport, 
+				   IFNULL(udphdr.udp_dport, 0) as udp_dport,
+				   event.timestamp as timestamp, 
+				   IFNULL(tcphdr.tcp_flags, 0) as tcp_flags, 
+				   data.data_payload as data_payload     
+			  FROM event    
+	     LEFT JOIN data ON (data.sid = event.sid AND data.cid = event.cid )    
+	     LEFT JOIN iphdr  ON (event.sid = iphdr.sid AND event.cid = iphdr.cid) 
+		 LEFT JOIN tcphdr ON (event.sid = tcphdr.sid AND event.cid = tcphdr.cid) 
+		 LEFT JOIN udphdr ON (event.sid = udphdr.sid AND event.cid = udphdr.cid) 
+		 LEFT JOIN signature ON (signature.sig_id = event.signature) 
+			 WHERE event.timestamp > @0
+			   AND signature.sig_sid = @1]]>
+      </Data>
+    </SqlQuery>
+
+    <SqlQuery>
+      <Query>SQL_EVENTS_RULES_FROM_TO_EXPORT</Query>
+      <Data>
+        <![CDATA[SELECT IFNULL(event.cid, 0) as cid,
+           IFNULL(cast(inet_ntoa(iphdr.ip_src) as char(15)), 0) as ip_src, 
+				   IFNULL(cast(inet_ntoa(iphdr.ip_dst) as char(15)), 0) as ip_dst, 
+				   IFNULL(tcphdr.tcp_sport, 0) as tcp_sport, 
+				   IFNULL(udphdr.udp_sport, 0) as udp_sport,                                                   
+				   IFNULL(tcphdr.tcp_dport, 0) as tcp_dport, 
+				   IFNULL(udphdr.udp_dport, 0) as udp_dport,
+				   event.timestamp as timestamp, 
+				   IFNULL(tcphdr.tcp_flags, 0) as tcp_flags, 
+				   data.data_payload as data_payload     
+			  FROM event    
+	     LEFT JOIN data ON (data.sid = event.sid AND data.cid = event.cid )    
+	     LEFT JOIN iphdr  ON (event.sid = iphdr.sid AND event.cid = iphdr.cid) 
+		 LEFT JOIN tcphdr ON (event.sid = tcphdr.sid AND event.cid = tcphdr.cid) 
+		 LEFT JOIN udphdr ON (event.sid = udphdr.sid AND event.cid = udphdr.cid) 
+		 LEFT JOIN signature ON (signature.sig_id = event.signature) 
+			 WHERE event.timestamp > @0 
+			   AND event.timestamp < @1
+			   AND signature.sig_sid = @2]]>
       </Data>
     </SqlQuery>
 

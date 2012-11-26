@@ -24,6 +24,7 @@ namespace snorbert
         private long _totalPages = 0;
         private long _totalRecords = 0;
         private Querier _querier;
+        private Exporter _exporter;
         private HourGlass _hourGlass;
         private Sql _sql;
         private FalsePositives _falsePostives;
@@ -58,6 +59,11 @@ namespace snorbert
             _querier.RuleQueryComplete += OnQuerier_RuleQueryComplete;
             _querier.EventQueryComplete += OnQuerier_EventQueryComplete;
             _querier.RuleIpQueryComplete += OnQuerier_RuleIpQueryComplete;
+
+            _exporter = new Exporter();
+            _exporter.Complete += OnExporter_Complete;
+            _exporter.Error += OnExporter_Error;
+            _exporter.Exclamation += OnExporter_Exclamation;
 
             LoadFalsePositives();
         }
@@ -135,14 +141,24 @@ namespace snorbert
 
                     Rule rule = (Rule)cboRule.Items[cboRule.SelectedIndex];
 
+                    int preFilterCount = data.Count;
                     _totalRecords = rule.Count;
-                    _totalPages = rule.Count / _pageLimit;
-                    if (rule.Count % _pageLimit != 0)
+
+                    // Sometimes there will be more events for a rule, than there originally was 
+                    // when the rule list was generated. But since we don't want to requery the 
+                    // database to get a more accurate count, then we will just the the count of
+                    // the data returned. Though this only works when the amount of data returned 
+                    // is less than the Page Size
+                    if (rule.Count < preFilterCount)
+                    {
+                        _totalRecords = preFilterCount;
+                    }
+
+                    _totalPages = _totalRecords / _pageLimit;
+                    if (_totalRecords % _pageLimit != 0)
                     {
                         _totalPages++;
                     }
-
-                    int preFilterCount = data.Count;
 
                     listEvents.SetObjects(FilterData(rule.Sid, data));
 
@@ -252,6 +268,40 @@ namespace snorbert
         {
             _hourGlass.Dispose();
             UserInterface.DisplayErrorMessageBox(this, message);
+            SetProcessingStatus(true);
+        }
+        #endregion
+
+        #region Exporter Event Handlers
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="message"></param>
+        private void OnExporter_Exclamation(string message)
+        {
+            _hourGlass.Dispose();
+            UserInterface.DisplayMessageBox(this, message, MessageBoxIcon.Exclamation);
+            SetProcessingStatus(true);
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="message"></param>
+        private void OnExporter_Error(string message)
+        {
+            _hourGlass.Dispose();
+            UserInterface.DisplayErrorMessageBox(this, message);
+            SetProcessingStatus(true);
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        private void OnExporter_Complete()
+        {
+            _hourGlass.Dispose();
+            UserInterface.DisplayMessageBox(this, "Export complete", MessageBoxIcon.Information);
             SetProcessingStatus(true);
         }
         #endregion
@@ -599,6 +649,7 @@ namespace snorbert
         {
             _sql = sql;
             _querier.SetSql(_sql);
+            _exporter.SetSql(_sql);
             controlEventInfo.SetSql(_sql);
         }
         #endregion
@@ -808,7 +859,6 @@ namespace snorbert
 
             _hourGlass = new HourGlass(this);
             SetProcessingStatus(false);
-            //Clear();
 
             Rule rule = (Rule)cboRule.Items[cboRule.SelectedIndex];
 
@@ -848,7 +898,6 @@ namespace snorbert
 
             _hourGlass = new HourGlass(this);
             SetProcessingStatus(false);
-            //Clear();
 
             Rule rule = (Rule)cboRule.Items[cboRule.SelectedIndex];
 
@@ -864,6 +913,63 @@ namespace snorbert
                 _querier.QueryRuleIpsFrom(rule.Id.ToString(),
                                           dtpDateFrom.Value.Date.ToString("yyyy-MM-dd") + " " + cboTimeFrom.Text + ":00",
                                           false);
+            }
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void ctxMenuExportCurrent_Click(object sender, EventArgs e)
+        {
+            SaveFileDialog saveFileDialog = new SaveFileDialog();
+            saveFileDialog.Title = "Select the export CSV";
+            saveFileDialog.Filter = "TSV Files|*.tsv";
+            if (saveFileDialog.ShowDialog(this) == DialogResult.Cancel)
+            {
+                return;
+            }
+
+            _hourGlass = new HourGlass(this);
+            SetProcessingStatus(false);
+
+            List<Event> events = (List<Event>)listEvents.Objects.Cast<Event>().ToList();
+            _exporter.ExportCurrent(events, saveFileDialog.FileName);
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void ctxMenuExportAll_Click(object sender, EventArgs e)
+        {
+            SaveFileDialog saveFileDialog = new SaveFileDialog();
+            saveFileDialog.Title = "Select the export CSV";
+            saveFileDialog.Filter = "TSV Files|*.tsv";
+            if (saveFileDialog.ShowDialog(this) == DialogResult.Cancel)
+            {
+                return;
+            }
+
+            _hourGlass = new HourGlass(this);
+            SetProcessingStatus(false);
+
+            Rule rule = (Rule)cboRule.Items[cboRule.SelectedIndex];
+
+            if (dtpDateTo.Checked == true)
+            {
+                _exporter.ExportAll(saveFileDialog.FileName,
+                                    dtpDateFrom.Value.Date.ToString("yyyy-MM-dd") + " " + cboTimeFrom.Text + ":00",
+                                    dtpDateTo.Value.Date.ToString("yyyy-MM-dd") + " " + cboTimeTo.Text + ":00",
+                                    rule.Sid);
+            }
+            else
+            {
+                _exporter.ExportAll(saveFileDialog.FileName,
+                                    dtpDateFrom.Value.Date.ToString("yyyy-MM-dd") + " " + cboTimeFrom.Text + ":00",
+                                    rule.Sid);
             }
         }
         #endregion

@@ -1,0 +1,2 @@
+URL: https://github.com/JoshClose/CsvHelper
+Compiled From: https://github.com/JoshClose/CsvHelper/commit/47313add7df92f241ce4c6eb7ee3e6c78536ca41

@@ -10,6 +10,7 @@ namespace snorbert
     {
         #region Event Delegates
         public delegate void MessageEvent(string message);
+        public delegate void DefaultEvent();
         #endregion
 
         /// <summary>

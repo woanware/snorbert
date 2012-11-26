@@ -42,6 +42,10 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\Dependencies\HexBox\Be.Windows.Forms.HexBox.dll</HintPath>
     </Reference>
+    <Reference Include="CsvHelper, Version=0.14.0.32794, Culture=neutral, PublicKeyToken=8c4959082be5c823, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\Dependencies\CsvHelper\CsvHelper.dll</HintPath>
+    </Reference>
     <Reference Include="Esent.Collections">
       <HintPath>..\Dependencies\ManagedEsent\Esent.Collections.dll</HintPath>
     </Reference>
@@ -100,6 +104,7 @@
     <Compile Include="ControlSensors.Designer.cs">
       <DependentUpon>ControlSensors.cs</DependentUpon>
     </Compile>
+    <Compile Include="Exporter.cs" />
     <Compile Include="FalsePositive.cs" />
     <Compile Include="FalsePositives.cs" />
     <Compile Include="FormFalsePositives.cs">
@@ -239,6 +244,7 @@
   <ItemGroup>
     <Content Include="Sql.xml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <SubType>Designer</SubType>
     </Content>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
