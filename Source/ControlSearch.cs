@@ -40,6 +40,7 @@ namespace snorbert
             Helper.AddListColumn(listEvents, "Src Port", "SrcPort");
             Helper.AddListColumn(listEvents, "Dst IP", "IpDst");
             Helper.AddListColumn(listEvents, "Dst Port", "DstPort");
+            Helper.AddListColumn(listEvents, "Host", "HttpHost");
             Helper.AddListColumn(listEvents, "Protocol", "Protocol");
             Helper.AddListColumn(listEvents, "Timestamp", "Timestamp");
             Helper.AddListColumn(listEvents, "TCP Flags", "TcpFlagsString");

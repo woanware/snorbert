@@ -22,10 +22,11 @@ namespace snorbert
         private Sql _sql;
         private Settings _settings = null;
         private Connections _connections;
-        //private HourGlass _hourGlass;
+        private HourGlass _hourGlass;
         private int _pageLimit = 100;
         private PersistentDictionary<string, string> _rules;
         private RuleImporter _ruleImporter;
+        private Exporter _exporter;
         #endregion
 
         #region Constructor
@@ -75,6 +76,12 @@ namespace snorbert
                 _ruleImporter.Complete += OnRuleImporter_Complete;
                 _ruleImporter.Error += OnRuleImporter_Error;
 
+                _exporter = new Exporter();
+                _exporter.SetSql(_sql);
+                _exporter.Complete += OnExporter_Complete;
+                _exporter.Error += OnExporter_Error;
+                _exporter.Exclamation += OnExporter_Exclamation;
+
                 CheckImportFiles();
             }
             catch (TypeLoadException tlEx)
@@ -123,6 +130,40 @@ namespace snorbert
             controlSearch.SetRules(_rules);
             SetProcessingStatus(true);
             UpdateStatusBar("Rule import complete...");
+        }
+        #endregion
+
+        #region Exporter Event Handlers
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="message"></param>
+        private void OnExporter_Exclamation(string message)
+        {
+            _hourGlass.Dispose();
+            UserInterface.DisplayMessageBox(this, message, MessageBoxIcon.Exclamation);
+            SetProcessingStatus(true);
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="message"></param>
+        private void OnExporter_Error(string message)
+        {
+            _hourGlass.Dispose();
+            UserInterface.DisplayErrorMessageBox(this, message);
+            SetProcessingStatus(true);
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        private void OnExporter_Complete()
+        {
+            _hourGlass.Dispose();
+            UserInterface.DisplayMessageBox(this, "Export complete", MessageBoxIcon.Information);
+            SetProcessingStatus(true);
         }
         #endregion
 
@@ -393,13 +434,33 @@ namespace snorbert
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        private void menuToolsFalsePositives_Click(object sender, EventArgs e)
+        private void menuToolsExcludeConfiguration_Click(object sender, EventArgs e)
         {
-            using (FormFalsePositives formFalsePositives = new FormFalsePositives())
+            using (FormExcludes formExcludes = new FormExcludes(_sql))
             {
-                formFalsePositives.ShowDialog(this);
-                controlRules.LoadFalsePositives();
+                formExcludes.ShowDialog(this);
             }
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void menuToolsExcludesExport_Click(object sender, EventArgs e)
+        {
+            SaveFileDialog saveFileDialog = new SaveFileDialog();
+            saveFileDialog.Title = "Select the export CSV";
+            saveFileDialog.Filter = "TSV Files|*.tsv";
+            if (saveFileDialog.ShowDialog(this) == DialogResult.Cancel)
+            {
+                return;
+            }
+
+            _hourGlass = new HourGlass(this);
+            SetProcessingStatus(false);
+
+            _exporter.ExportExcludes(_rules, saveFileDialog.FileName);
         }
         #endregion
 

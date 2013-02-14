@@ -140,6 +140,54 @@ namespace snorbert
         /// <summary>
         /// 
         /// </summary>
+        /// <param name="dateFrom"></param>
+        /// <param name="priority"></param>
+        public void QueryRulesFromPriority(string dateFrom, 
+                                           string priority)
+        {
+            if (IsRunning == true)
+            {
+                OnExclamation("Already performing query");
+                return;
+            }
+
+            IsRunning = true;
+
+            Task task = Task.Factory.StartNew(() =>
+            {
+                try
+                {
+                    var dbSignature = new DbSignature();
+                    var query = dbSignature.Query(_sql.GetQuery(Sql.Query.SQL_RULES_FROM_PRIORITY), args: new object[] { dateFrom, priority });
+
+                    List<Rule> data = new List<Rule>();
+                    foreach (var rule in query)
+                    {
+                        Rule temp = new Rule(rule.sig_id,
+                                                 rule.sig_name + " (SID: " + rule.sig_sid.ToString() + "): " + rule.count.ToString(),
+                                                 rule.sig_sid.ToString(),
+                                                 string.Empty,
+                                                 int.Parse(rule.count.ToString()));
+
+                        data.Add(temp);
+                    }
+
+                    OnComplete(data);
+                }
+                catch (Exception ex)
+                {
+                    OnError("An error occurred whilst performing the query: " + ex.Message);
+                }
+                finally
+                {
+                    IsRunning = false;
+                }
+            });
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
         /// <param name="offset"></param>
         /// <param name="pageLimit"></param>
         public void QueryRulesToFrom(string dateFrom, 
@@ -183,6 +231,56 @@ namespace snorbert
                         }
                     }
                     
+                    OnComplete(data);
+                }
+                catch (Exception ex)
+                {
+                    OnError("An error occurred whilst performing the query: " + ex.Message);
+                }
+                finally
+                {
+                    IsRunning = false;
+                }
+            });
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="dateFrom"></param>
+        /// <param name="dateTo"></param>
+        /// <param name="priority"></param>
+        public void QueryRulesToFromPriority(string dateFrom,
+                                             string dateTo,
+                                             string priority)
+        {
+            if (IsRunning == true)
+            {
+                OnExclamation("Already performing query");
+                return;
+            }
+
+            IsRunning = true;
+
+            Task task = Task.Factory.StartNew(() =>
+            {
+                try
+                {
+                    var dbSignature = new DbSignature();
+                    var query = dbSignature.Query(_sql.GetQuery(Sql.Query.SQL_RULES_FROM_TO_PRIORITY), args: new object[] { dateFrom, dateTo, priority });
+
+                    List<Rule> data = new List<Rule>();
+                    foreach (var rule in query)
+                    {
+                        Rule temp = new Rule(rule.sig_id,
+                                             rule.sig_name + " (SID: " + rule.sig_sid.ToString() + "): " + rule.count.ToString(),
+                                             rule.sig_sid.ToString(),
+                                             string.Empty,
+                                             int.Parse(rule.count.ToString()));
+
+                        data.Add(temp);
+                    }
+
                     OnComplete(data);
                 }
                 catch (Exception ex)
@@ -410,7 +508,7 @@ namespace snorbert
                         var query = dbSignature.Query(_sql.GetQuery(Sql.Query.SQL_RULES_SRC_IPS_FROM_TO), args: new object[] { id, dateFrom, dateTo });
                         foreach (var rule in query)
                         {
-                            data.Add(rule.ip_src);
+                            data.Add(rule.ip);
                         }
                     }
                     else
@@ -418,9 +516,10 @@ namespace snorbert
                         var query = dbSignature.Query(_sql.GetQuery(Sql.Query.SQL_RULES_DST_IPS_FROM_TO), args: new object[] { id, dateFrom, dateTo });
                         foreach (var rule in query)
                         {
-                            data.Add(rule.ip_src);
+                            data.Add(rule.ip);
                         }
                     }
+
                     OnComplete(data);
                 }
                 catch (Exception ex)
@@ -464,7 +563,7 @@ namespace snorbert
                         var query = dbSignature.Query(_sql.GetQuery(Sql.Query.SQL_RULES_SRC_IPS_FROM), args: new object[] { id, dateFrom });
                         foreach (var rule in query)
                         {
-                            data.Add(rule.ip_src);
+                            data.Add(rule.ip);
                         }
                     }
                     else
@@ -472,7 +571,7 @@ namespace snorbert
                         var query = dbSignature.Query(_sql.GetQuery(Sql.Query.SQL_RULES_DST_IPS_FROM), args: new object[] { id, dateFrom });
                         foreach (var rule in query)
                         {
-                            data.Add(rule.ip_src);
+                            data.Add(rule.ip);
                         }
                     }
                     

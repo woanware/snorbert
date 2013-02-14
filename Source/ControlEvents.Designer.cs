@@ -102,6 +102,7 @@
             // 
             // listEvents
             // 
+            this.listEvents.AlternateRowBackColor = System.Drawing.Color.LightGray;
             this.listEvents.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
@@ -113,6 +114,7 @@
             this.listEvents.ShowGroups = false;
             this.listEvents.Size = new System.Drawing.Size(849, 175);
             this.listEvents.TabIndex = 1;
+            this.listEvents.UseAlternatingBackColors = true;
             this.listEvents.UseCompatibleStateImageBehavior = false;
             this.listEvents.View = System.Windows.Forms.View.Details;
             this.listEvents.VirtualMode = true;

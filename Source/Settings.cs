@@ -61,7 +61,6 @@ namespace snorbert
                     FormLocation = settings.FormLocation;
                     FormSize = settings.FormSize;
                     FormState = settings.FormState;
-                    FormState = settings.FormState;
                     RuleFiles = settings.RuleFiles;
                    
                     return string.Empty;

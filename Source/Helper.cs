@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Net;
 using System.Windows.Forms;
 using woanware;
+using System.Text.RegularExpressions;
 
 namespace snorbert
 {
@@ -126,6 +127,7 @@ namespace snorbert
                     {
                         temp.PayloadHex = Helper.StringToByteArray(item.data_payload.ToString());
                         temp.PayloadAscii = woanware.Text.ReplaceNulls(woanware.Text.ByteArrayToString(temp.PayloadHex, woanware.Text.EncodingType.Ascii));
+                        temp.HttpHost = ParseHost(temp.PayloadAscii);
                     }
 
                     ret.Add(temp);
@@ -139,6 +141,23 @@ namespace snorbert
             }
 
             return ret;
+        }
+        
+        /// <summary>
+        /// Parses out the HTTP Host header
+        /// </summary>
+        /// <param name="data"></param>
+        /// <returns></returns>
+        private static string ParseHost(string data)
+        {
+            Regex regex = new Regex(@"^Host:\s+(.*)", RegexOptions.IgnoreCase | RegexOptions.Multiline);
+            Match match = regex.Match(data);
+            if (match.Success == true)
+            {
+                return match.Groups[1].Value;
+            }
+
+            return string.Empty;
         }
 
         /// <summary>

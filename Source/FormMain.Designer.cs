@@ -37,6 +37,10 @@
             this.menuToolsConnections = new System.Windows.Forms.ToolStripMenuItem();
             this.menuToolsSep1 = new System.Windows.Forms.ToolStripSeparator();
             this.menuToolsImportRules = new System.Windows.Forms.ToolStripMenuItem();
+            this.menuToolsSep2 = new System.Windows.Forms.ToolStripSeparator();
+            this.menuToolsExcludes = new System.Windows.Forms.ToolStripMenuItem();
+            this.menuToolsExcludeConfiguration = new System.Windows.Forms.ToolStripMenuItem();
+            this.menuToolsExcludesExport = new System.Windows.Forms.ToolStripMenuItem();
             this.menuHelp = new System.Windows.Forms.ToolStripMenuItem();
             this.menuHelpHelp = new System.Windows.Forms.ToolStripMenuItem();
             this.menuHelpSep1 = new System.Windows.Forms.ToolStripSeparator();
@@ -69,8 +73,6 @@
             this.controlSearch = new snorbert.ControlSearch();
             this.tabPageSensors = new System.Windows.Forms.TabPage();
             this.controlSensors = new snorbert.ControlSensors();
-            this.menuToolsSep2 = new System.Windows.Forms.ToolStripSeparator();
-            this.menuToolsFalsePositives = new System.Windows.Forms.ToolStripMenuItem();
             this.menuStrip.SuspendLayout();
             this.toolStrip.SuspendLayout();
             this.ctxMenuEvent.SuspendLayout();
@@ -119,7 +121,7 @@
             this.menuToolsSep1,
             this.menuToolsImportRules,
             this.menuToolsSep2,
-            this.menuToolsFalsePositives});
+            this.menuToolsExcludes});
             this.menuTools.Name = "menuTools";
             this.menuTools.Size = new System.Drawing.Size(48, 20);
             this.menuTools.Text = "&Tools";
@@ -142,6 +144,34 @@
             this.menuToolsImportRules.Size = new System.Drawing.Size(152, 22);
             this.menuToolsImportRules.Text = "Import Rules";
             this.menuToolsImportRules.Click += new System.EventHandler(this.menuToolsImportRules_Click);
+            // 
+            // menuToolsSep2
+            // 
+            this.menuToolsSep2.Name = "menuToolsSep2";
+            this.menuToolsSep2.Size = new System.Drawing.Size(149, 6);
+            // 
+            // menuToolsExcludes
+            // 
+            this.menuToolsExcludes.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.menuToolsExcludeConfiguration,
+            this.menuToolsExcludesExport});
+            this.menuToolsExcludes.Name = "menuToolsExcludes";
+            this.menuToolsExcludes.Size = new System.Drawing.Size(152, 22);
+            this.menuToolsExcludes.Text = "&Excludes";
+            // 
+            // menuToolsExcludeConfiguration
+            // 
+            this.menuToolsExcludeConfiguration.Name = "menuToolsExcludeConfiguration";
+            this.menuToolsExcludeConfiguration.Size = new System.Drawing.Size(152, 22);
+            this.menuToolsExcludeConfiguration.Text = "Configuration";
+            this.menuToolsExcludeConfiguration.Click += new System.EventHandler(this.menuToolsExcludeConfiguration_Click);
+            // 
+            // menuToolsExcludesExport
+            // 
+            this.menuToolsExcludesExport.Name = "menuToolsExcludesExport";
+            this.menuToolsExcludesExport.Size = new System.Drawing.Size(152, 22);
+            this.menuToolsExcludesExport.Text = "Export";
+            this.menuToolsExcludesExport.Click += new System.EventHandler(this.menuToolsExcludesExport_Click);
             // 
             // menuHelp
             // 
@@ -367,6 +397,7 @@
             this.controlEvents.Dock = System.Windows.Forms.DockStyle.Fill;
             this.controlEvents.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.controlEvents.Location = new System.Drawing.Point(3, 3);
+            this.controlEvents.Margin = new System.Windows.Forms.Padding(0);
             this.controlEvents.Name = "controlEvents";
             this.controlEvents.Size = new System.Drawing.Size(755, 447);
             this.controlEvents.TabIndex = 0;
@@ -407,6 +438,7 @@
             this.controlSearch.Dock = System.Windows.Forms.DockStyle.Fill;
             this.controlSearch.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.controlSearch.Location = new System.Drawing.Point(3, 3);
+            this.controlSearch.Margin = new System.Windows.Forms.Padding(0);
             this.controlSearch.Name = "controlSearch";
             this.controlSearch.Size = new System.Drawing.Size(755, 447);
             this.controlSearch.TabIndex = 0;
@@ -426,22 +458,11 @@
             // 
             this.controlSensors.Dock = System.Windows.Forms.DockStyle.Fill;
             this.controlSensors.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.controlSensors.Location = new System.Drawing.Point(0, 0);
+            this.controlSensors.Location = new System.Drawing.Point(3, 3);
+            this.controlSensors.Margin = new System.Windows.Forms.Padding(0);
             this.controlSensors.Name = "controlSensors";
-            this.controlSensors.Size = new System.Drawing.Size(761, 453);
+            this.controlSensors.Size = new System.Drawing.Size(755, 447);
             this.controlSensors.TabIndex = 0;
-            // 
-            // menuToolsSep2
-            // 
-            this.menuToolsSep2.Name = "menuToolsSep2";
-            this.menuToolsSep2.Size = new System.Drawing.Size(149, 6);
-            // 
-            // menuToolsFalsePositives
-            // 
-            this.menuToolsFalsePositives.Name = "menuToolsFalsePositives";
-            this.menuToolsFalsePositives.Size = new System.Drawing.Size(152, 22);
-            this.menuToolsFalsePositives.Text = "False Positives";
-            this.menuToolsFalsePositives.Click += new System.EventHandler(this.menuToolsFalsePositives_Click);
             // 
             // FormMain
             // 
@@ -521,7 +542,9 @@
         private System.Windows.Forms.ToolStripMenuItem menuHelpHelp;
         private System.Windows.Forms.ToolStripSeparator menuHelpSep1;
         private System.Windows.Forms.ToolStripSeparator menuToolsSep2;
-        private System.Windows.Forms.ToolStripMenuItem menuToolsFalsePositives;
+        private System.Windows.Forms.ToolStripMenuItem menuToolsExcludes;
+        private System.Windows.Forms.ToolStripMenuItem menuToolsExcludeConfiguration;
+        private System.Windows.Forms.ToolStripMenuItem menuToolsExcludesExport;
     }
 }
 

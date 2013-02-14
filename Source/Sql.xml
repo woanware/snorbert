@@ -3,7 +3,8 @@
   <Queries>
     <SqlQuery>
       <Query>SQL_EVENTS</Query>
-      <Data><![CDATA[SELECT event.*, 
+      <Data>
+        <![CDATA[SELECT event.*, 
 				   IFNULL(cast(inet_ntoa(iphdr.ip_src) as char(15)), 0) as ip_src, 
 				   IFNULL(cast(inet_ntoa(iphdr.ip_dst) as char(15)), 0) as ip_dst,  
 				   IFNULL(iphdr.ip_ver, 0) as ip_ver,
@@ -50,27 +51,14 @@
 		  LEFT JOIN udphdr ON (event.sid = udphdr.sid AND event.cid = udphdr.cid) 
 	      LEFT JOIN signature ON (signature.sig_id = event.signature) 	
 		  LEFT JOIN sig_class on (signature.sig_class_id = sig_class.sig_class_id)  
-			  WHERE ]]></Data>
+		  LEFT JOIN exclude ON ((exclude.ip_src IS NULL OR exclude.ip_src = iphdr.ip_src)                      
+			                 AND (exclude.ip_dst IS NULL OR exclude.ip_dst = iphdr.ip_dst)                      
+			                 AND (exclude.sig_id IS NULL OR exclude.sig_id = event.signature)) 
+			  WHERE exclude.id IS NULL]]></Data>
     </SqlQuery>
     
     <SqlQuery>
       <Query>SQL_RULES_FROM</Query>
-      <Data><![CDATA[SELECT signature.sig_id, 
-           signature.sig_name, 
-				   signature.sig_sid, 
-				   IFNULL(signature.sig_priority, 0) as sig_priority,
-				   count(signature.sig_name) AS count          
-			  FROM signature          
-			  JOIN event ON (signature.sig_id = event.signature)          
-			  JOIN iphdr ON (iphdr.cid = event.cid AND iphdr.sid = event.sid)
-		     WHERE event.timestamp > @0
-		  GROUP BY signature.sig_id 
-		  ORDER BY signature.sig_priority DESC, 
-		           signature.sig_name;]]></Data>
-    </SqlQuery>
-    
-    <SqlQuery>
-      <Query>SQL_RULES_FROM_TO</Query>
       <Data><![CDATA[SELECT signature.sig_id, 
 					signature.sig_name, 
 				   signature.sig_sid, 
@@ -79,11 +67,80 @@
 			  FROM signature          
 			  JOIN event ON (signature.sig_id = event.signature)          
 			  JOIN iphdr ON (iphdr.cid = event.cid AND iphdr.sid = event.sid)
-		     WHERE event.timestamp > @0 
+	     LEFT JOIN exclude ON ((exclude.ip_src IS NULL OR exclude.ip_src = iphdr.ip_src) 
+							AND (exclude.ip_dst IS NULL OR exclude.ip_dst = iphdr.ip_dst)  
+							AND (exclude.sig_id IS NULL OR exclude.sig_id = event.signature)) 
+		     WHERE exclude.id IS NULL 
+			   AND event.timestamp > @0
+		  GROUP BY signature.sig_id 
+		  ORDER BY signature.sig_priority DESC, 
+		           signature.sig_name;]]></Data>
+    </SqlQuery>
+    
+    <SqlQuery>
+      <Query>SQL_RULES_FROM_TO</Query>
+      <Data><![CDATA[SELECT signature.sig_id, 
+						signature.sig_name, 
+				   signature.sig_sid, 
+				   IFNULL(signature.sig_priority, 0) as sig_priority,
+				   count(signature.sig_name) AS count          
+			  FROM signature          
+			  JOIN event ON (signature.sig_id = event.signature)          
+			  JOIN iphdr ON (iphdr.cid = event.cid AND iphdr.sid = event.sid)
+	     LEFT JOIN exclude ON ((exclude.ip_src IS NULL OR exclude.ip_src = iphdr.ip_src) 
+		                    AND (exclude.ip_dst IS NULL OR exclude.ip_dst = iphdr.ip_dst)  
+							AND (exclude.sig_id IS NULL OR exclude.sig_id = event.signature)) 
+		     WHERE exclude.id IS NULL 
+			   AND event.timestamp > @0 
 			   AND event.timestamp < @1
 		  GROUP BY signature.sig_id 
 		  ORDER BY signature.sig_priority DESC, 
 		           signature.sig_name;]]></Data>
+    </SqlQuery>
+
+    <SqlQuery>
+      <Query>SQL_RULES_FROM_PRIORITY</Query>
+      <Data>
+        <![CDATA[SELECT signature.sig_id, 
+					signature.sig_name, 
+				   signature.sig_sid, 
+				   IFNULL(signature.sig_priority, 0) as sig_priority,
+				   count(signature.sig_name) AS count          
+			  FROM signature          
+			  JOIN event ON (signature.sig_id = event.signature)          
+			  JOIN iphdr ON (iphdr.cid = event.cid AND iphdr.sid = event.sid)
+	     LEFT JOIN exclude ON ((exclude.ip_src IS NULL OR exclude.ip_src = iphdr.ip_src) 
+							AND (exclude.ip_dst IS NULL OR exclude.ip_dst = iphdr.ip_dst)  
+							AND (exclude.sig_id IS NULL OR exclude.sig_id = event.signature)) 
+		     WHERE exclude.id IS NULL 
+			     AND event.timestamp > @0
+           AND signature.sig_priority = @1
+		  GROUP BY signature.sig_id 
+		  ORDER BY signature.sig_name;]]>
+      </Data>
+    </SqlQuery>
+
+    <SqlQuery>
+      <Query>SQL_RULES_FROM_TO_PRIORITY</Query>
+      <Data>
+        <![CDATA[SELECT signature.sig_id, 
+						signature.sig_name, 
+				   signature.sig_sid, 
+				   IFNULL(signature.sig_priority, 0) as sig_priority,
+				   count(signature.sig_name) AS count          
+			  FROM signature          
+			  JOIN event ON (signature.sig_id = event.signature)          
+			  JOIN iphdr ON (iphdr.cid = event.cid AND iphdr.sid = event.sid)
+	     LEFT JOIN exclude ON ((exclude.ip_src IS NULL OR exclude.ip_src = iphdr.ip_src) 
+		                    AND (exclude.ip_dst IS NULL OR exclude.ip_dst = iphdr.ip_dst)  
+							AND (exclude.sig_id IS NULL OR exclude.sig_id = event.signature)) 
+		     WHERE exclude.id IS NULL 
+			   AND event.timestamp > @0 
+			   AND event.timestamp < @1
+         AND signature.sig_priority = @2
+		  GROUP BY signature.sig_id 
+		  ORDER BY signature.sig_name;]]>
+      </Data>
     </SqlQuery>
     
     <SqlQuery>
@@ -130,7 +187,11 @@
 		 LEFT JOIN udphdr ON (event.sid = udphdr.sid AND event.cid = udphdr.cid) 
 		 LEFT JOIN signature ON (signature.sig_id = event.signature) 	
 		 LEFT JOIN sig_class on (signature.sig_class_id = sig_class.sig_class_id)  
-			 WHERE event.timestamp > @0
+		 LEFT JOIN exclude ON ((exclude.ip_src IS NULL OR exclude.ip_src = iphdr.ip_src)                      
+			                AND (exclude.ip_dst IS NULL OR exclude.ip_dst = iphdr.ip_dst)                      
+			                AND (exclude.sig_id IS NULL OR exclude.sig_id = event.signature)) 
+			 WHERE exclude.id IS NULL   
+			   AND event.timestamp > @0
 			   AND signature.sig_sid = @1 
 			 LIMIT @2, @3]]></Data>
     </SqlQuery>
@@ -179,7 +240,11 @@
 		 left JOIN udphdr ON (event.sid = udphdr.sid AND event.cid = udphdr.cid) 
 		 left JOIN signature ON (signature.sig_id = event.signature) 	
 		 left JOIN sig_class ON (signature.sig_class_id = sig_class.sig_class_id)  
-			 WHERE event.timestamp > @0 
+		 LEFT JOIN exclude ON ((exclude.ip_src IS NULL OR exclude.ip_src = iphdr.ip_src)                      
+			                AND (exclude.ip_dst IS NULL OR exclude.ip_dst = iphdr.ip_dst)                      
+			                AND (exclude.sig_id IS NULL OR exclude.sig_id = event.signature)) 
+			 WHERE exclude.id IS NULL   
+			   AND event.timestamp > @0 
 			   AND event.timestamp < @1
 			   AND signature.sig_sid = @2 
 			 LIMIT @3, @4]]></Data>
@@ -233,7 +298,10 @@
 		 LEFT JOIN udphdr ON (event.sid = udphdr.sid AND event.cid = udphdr.cid) 
 		 LEFT JOIN signature ON (signature.sig_id = event.signature) 	
 		 LEFT JOIN sig_class on (signature.sig_class_id = sig_class.sig_class_id)  
-		     WHERE ]]></Data>
+		 LEFT JOIN exclude ON ((exclude.ip_src IS NULL OR exclude.ip_src = iphdr.ip_src)                      
+			                AND (exclude.ip_dst IS NULL OR exclude.ip_dst = iphdr.ip_dst)                      
+			                AND (exclude.sig_id IS NULL OR exclude.sig_id = event.signature))
+		     WHERE exclude.id IS NULL AND ]]></Data>
     </SqlQuery>
     
     <SqlQuery>
@@ -281,14 +349,15 @@
 			  FROM sensor
 		 LEFT JOIN event ON event.cid = sensor.last_cid and event.sid = sensor.sid]]></Data>
     </SqlQuery>
+    
 
     <SqlQuery>
       <Query>SQL_RULES_SRC_IPS_FROM</Query>
       <Data>
         <![CDATA[SELECT distinct
-                        IFNULL(cast(inet_ntoa(iphdr.ip_src) as char(15)), 0) as ip_src
+                        IFNULL(cast(inet_ntoa(iphdr.ip_src) as char(15)), 0) as ip
                    FROM event
-              LEFT JOIN iphdr  ON (event.sid = iphdr.sid AND event.cid = iphdr.cid)
+              LEFT JOIN iphdr ON (event.sid = iphdr.sid AND event.cid = iphdr.cid)
                   WHERE event.signature=@0
                     AND event.timestamp > @1]]>
       </Data>
@@ -298,9 +367,9 @@
       <Query>SQL_RULES_SRC_IPS_FROM_TO</Query>
       <Data>
         <![CDATA[SELECT distinct
-                        IFNULL(cast(inet_ntoa(iphdr.ip_src) as char(15)), 0) as ip_src
+                        IFNULL(cast(inet_ntoa(iphdr.ip_src) as char(15)), 0) as ip
                    FROM event
-              LEFT JOIN iphdr  ON (event.sid = iphdr.sid AND event.cid = iphdr.cid)
+              LEFT JOIN iphdr ON (event.sid = iphdr.sid AND event.cid = iphdr.cid)
                   WHERE event.signature=@0 
                     AND event.timestamp > @1
                     AND event.timestamp < @2]]>
@@ -311,7 +380,7 @@
       <Query>SQL_RULES_DST_IPS_FROM</Query>
       <Data>
         <![CDATA[SELECT distinct
-                        IFNULL(cast(inet_ntoa(iphdr.ip_dst) as char(15)), 0) as ip_src
+                        IFNULL(cast(inet_ntoa(iphdr.ip_dst) as char(15)), 0) as ip
                    FROM event
               LEFT JOIN iphdr  ON (event.sid = iphdr.sid AND event.cid = iphdr.cid)
                   WHERE event.signature=@0
@@ -323,7 +392,7 @@
       <Query>SQL_RULES_DST_IPS_FROM_TO</Query>
       <Data>
         <![CDATA[SELECT distinct
-                        IFNULL(cast(inet_ntoa(iphdr.ip_dst) as char(15)), 0) as ip_src
+                        IFNULL(cast(inet_ntoa(iphdr.ip_dst) as char(15)), 0) as ip
                    FROM event
               LEFT JOIN iphdr  ON (event.sid = iphdr.sid AND event.cid = iphdr.cid)
                   WHERE event.signature=@0 
@@ -352,6 +421,9 @@
 		 LEFT JOIN tcphdr ON (event.sid = tcphdr.sid AND event.cid = tcphdr.cid) 
 		 LEFT JOIN udphdr ON (event.sid = udphdr.sid AND event.cid = udphdr.cid) 
 		 LEFT JOIN signature ON (signature.sig_id = event.signature) 
+		 LEFT JOIN exclude ON ((exclude.ip_src IS NULL OR exclude.ip_src = iphdr.ip_src)                      
+			                AND (exclude.ip_dst IS NULL OR exclude.ip_dst = iphdr.ip_dst)                      
+			                AND (exclude.sig_id IS NULL OR exclude.sig_id = event.signature))
 			 WHERE event.timestamp > @0
 			   AND signature.sig_sid = @1]]>
       </Data>
@@ -376,11 +448,49 @@
 		 LEFT JOIN tcphdr ON (event.sid = tcphdr.sid AND event.cid = tcphdr.cid) 
 		 LEFT JOIN udphdr ON (event.sid = udphdr.sid AND event.cid = udphdr.cid) 
 		 LEFT JOIN signature ON (signature.sig_id = event.signature) 
+		 LEFT JOIN exclude ON ((exclude.ip_src IS NULL OR exclude.ip_src = iphdr.ip_src)                      
+			                AND (exclude.ip_dst IS NULL OR exclude.ip_dst = iphdr.ip_dst)                      
+			                AND (exclude.sig_id IS NULL OR exclude.sig_id = event.signature))
 			 WHERE event.timestamp > @0 
 			   AND event.timestamp < @1
 			   AND signature.sig_sid = @2]]>
       </Data>
     </SqlQuery>
 
+    <SqlQuery>
+      <Query>SQL_EXCLUDES</Query>
+      <Data>
+        <![CDATA[SELECT exclude.id as id,
+                        IFNULL(exclude.sig_id,0) as sig_id,
+                        IFNULL(cast(inet_ntoa(ip_src) as char(15)), 0) as ip_src, 
+				                IFNULL(cast(inet_ntoa(ip_dst) as char(15)), 0) as ip_dst,
+				                IFNULL(exclude.fp,0) as fp,
+		                    IFNULL(comment,'') as comment,
+		                    IFNULL(signature.sig_name,'') as sig_name,
+                        IFNULL(signature.sig_sid, 0) as sig_sid, 
+                        exclude.timeadded as timestamp	 
+                   FROM exclude
+              LEFT JOIN signature ON (signature.sig_id = exclude.sig_id) ]]>
+      </Data>
+    </SqlQuery>
+
+    <SqlQuery>
+      <Query>SQL_EXCLUDE</Query>
+      <Data>
+        <![CDATA[SELECT exclude.id as id,
+                        IFNULL(exclude.sig_id,0) as sig_id,
+                        IFNULL(cast(inet_ntoa(ip_src) as char(15)), 0) as ip_src, 
+				                IFNULL(cast(inet_ntoa(ip_dst) as char(15)), 0) as ip_dst,
+				                IFNULL(exclude.fp,0) as fp,
+		                    IFNULL(comment,'') as comment,
+		                    IFNULL(signature.sig_name,'') as sig_name,
+                        IFNULL(signature.sig_sid, 0) as sig_sid, 
+                        exclude.timeadded as timestamp	 
+                   FROM exclude
+              LEFT JOIN signature ON (signature.sig_id = exclude.sig_id) 
+                  WHERE exclude.id = @0]]>
+      </Data>
+    </SqlQuery>
+	
   </Queries>
 </Sql>

@@ -1,6 +1,6 @@
 ﻿namespace snorbert
 {
-    partial class FormFalsePositives
+    partial class FormExcludes
     {
         /// <summary>
         /// Required designer variable.
@@ -28,41 +28,42 @@
         /// </summary>
         private void InitializeComponent()
         {
-            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(FormFalsePositives));
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(FormExcludes));
             this.btnDelete = new System.Windows.Forms.Button();
-            this.listFalsePositives = new BrightIdeasSoftware.ObjectListView();
+            this.listExcludes = new BrightIdeasSoftware.ObjectListView();
             this.btnClose = new System.Windows.Forms.Button();
-            ((System.ComponentModel.ISupportInitialize)(this.listFalsePositives)).BeginInit();
+            this.btnEdit = new System.Windows.Forms.Button();
+            ((System.ComponentModel.ISupportInitialize)(this.listExcludes)).BeginInit();
             this.SuspendLayout();
             // 
             // btnDelete
             // 
             this.btnDelete.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.btnDelete.Image = ((System.Drawing.Image)(resources.GetObject("btnDelete.Image")));
-            this.btnDelete.Location = new System.Drawing.Point(9, 192);
+            this.btnDelete.Location = new System.Drawing.Point(42, 191);
             this.btnDelete.Name = "btnDelete";
             this.btnDelete.Size = new System.Drawing.Size(27, 27);
             this.btnDelete.TabIndex = 10;
             this.btnDelete.UseVisualStyleBackColor = true;
             this.btnDelete.Click += new System.EventHandler(this.btnDelete_Click);
             // 
-            // listFalsePositives
+            // listExcludes
             // 
-            this.listFalsePositives.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            this.listExcludes.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.listFalsePositives.FullRowSelect = true;
-            this.listFalsePositives.HideSelection = false;
-            this.listFalsePositives.Location = new System.Drawing.Point(10, 10);
-            this.listFalsePositives.MultiSelect = false;
-            this.listFalsePositives.Name = "listFalsePositives";
-            this.listFalsePositives.ShowGroups = false;
-            this.listFalsePositives.Size = new System.Drawing.Size(512, 176);
-            this.listFalsePositives.TabIndex = 7;
-            this.listFalsePositives.UseCompatibleStateImageBehavior = false;
-            this.listFalsePositives.View = System.Windows.Forms.View.Details;
-            this.listFalsePositives.SelectedIndexChanged += new System.EventHandler(this.listFalsePositives_SelectedIndexChanged);
-            this.listFalsePositives.KeyDown += new System.Windows.Forms.KeyEventHandler(this.listFalsePositives_KeyDown);
+            this.listExcludes.FullRowSelect = true;
+            this.listExcludes.HideSelection = false;
+            this.listExcludes.Location = new System.Drawing.Point(10, 10);
+            this.listExcludes.MultiSelect = false;
+            this.listExcludes.Name = "listExcludes";
+            this.listExcludes.ShowGroups = false;
+            this.listExcludes.Size = new System.Drawing.Size(512, 176);
+            this.listExcludes.TabIndex = 7;
+            this.listExcludes.UseCompatibleStateImageBehavior = false;
+            this.listExcludes.View = System.Windows.Forms.View.Details;
+            this.listExcludes.SelectedIndexChanged += new System.EventHandler(this.listFalsePositives_SelectedIndexChanged);
+            this.listExcludes.KeyDown += new System.Windows.Forms.KeyEventHandler(this.listFalsePositives_KeyDown);
             // 
             // btnClose
             // 
@@ -75,24 +76,36 @@
             this.btnClose.Text = "Close";
             this.btnClose.UseVisualStyleBackColor = true;
             // 
-            // FormFalsePositives
+            // btnEdit
+            // 
+            this.btnEdit.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.btnEdit.Image = ((System.Drawing.Image)(resources.GetObject("btnEdit.Image")));
+            this.btnEdit.Location = new System.Drawing.Point(10, 191);
+            this.btnEdit.Name = "btnEdit";
+            this.btnEdit.Size = new System.Drawing.Size(27, 27);
+            this.btnEdit.TabIndex = 11;
+            this.btnEdit.UseVisualStyleBackColor = true;
+            this.btnEdit.Click += new System.EventHandler(this.btnEdit_Click);
+            // 
+            // FormExcludes
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.CancelButton = this.btnClose;
             this.ClientSize = new System.Drawing.Size(532, 226);
+            this.Controls.Add(this.btnEdit);
             this.Controls.Add(this.btnDelete);
-            this.Controls.Add(this.listFalsePositives);
+            this.Controls.Add(this.listExcludes);
             this.Controls.Add(this.btnClose);
             this.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.MaximizeBox = false;
             this.MinimizeBox = false;
-            this.Name = "FormFalsePositives";
+            this.Name = "FormExcludes";
             this.ShowInTaskbar = false;
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
-            this.Text = "False Positives";
-            ((System.ComponentModel.ISupportInitialize)(this.listFalsePositives)).EndInit();
+            this.Text = "Excludes";
+            ((System.ComponentModel.ISupportInitialize)(this.listExcludes)).EndInit();
             this.ResumeLayout(false);
 
         }
@@ -100,7 +113,8 @@
         #endregion
 
         private System.Windows.Forms.Button btnDelete;
-        private BrightIdeasSoftware.ObjectListView listFalsePositives;
+        private BrightIdeasSoftware.ObjectListView listExcludes;
         private System.Windows.Forms.Button btnClose;
+        private System.Windows.Forms.Button btnEdit;
     }
 }

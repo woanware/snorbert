@@ -49,6 +49,7 @@ namespace snorbert
         public int UdpCsum { get; set; }
         public byte[] PayloadHex { get; set; }
         public string PayloadAscii { get; set; }
+        public string HttpHost { get; set; }
         #endregion
 
         #region Constructor

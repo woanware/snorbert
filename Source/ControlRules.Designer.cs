@@ -35,6 +35,8 @@
             this.btnPagingLastPage = new System.Windows.Forms.Button();
             this.listEvents = new BrightIdeasSoftware.FastObjectListView();
             this.ctxMenuEvent = new System.Windows.Forms.ContextMenuStrip(this.components);
+            this.ctxMenuPayload = new System.Windows.Forms.ToolStripMenuItem();
+            this.toolStripMenuItem1 = new System.Windows.Forms.ToolStripSeparator();
             this.ctxMenuCopy = new System.Windows.Forms.ToolStripMenuItem();
             this.ctxMenuCopySourceIp = new System.Windows.Forms.ToolStripMenuItem();
             this.ctxMenuCopySourcePort = new System.Windows.Forms.ToolStripMenuItem();
@@ -46,7 +48,7 @@
             this.ctxMenuCopyTimestamp = new System.Windows.Forms.ToolStripMenuItem();
             this.ctxMenuCopyPayloadAscii = new System.Windows.Forms.ToolStripMenuItem();
             this.ctxMenuSep1 = new System.Windows.Forms.ToolStripSeparator();
-            this.ctxMenuHide = new System.Windows.Forms.ToolStripMenuItem();
+            this.ctxMenuExclude = new System.Windows.Forms.ToolStripMenuItem();
             this.ctxMenuSep2 = new System.Windows.Forms.ToolStripSeparator();
             this.ctxMenuExtractIpInfo = new System.Windows.Forms.ToolStripMenuItem();
             this.ctxMenuExtractIpInfoUniqueSource = new System.Windows.Forms.ToolStripMenuItem();
@@ -55,10 +57,14 @@
             this.ctxMenuExport = new System.Windows.Forms.ToolStripMenuItem();
             this.ctxMenuExportAll = new System.Windows.Forms.ToolStripMenuItem();
             this.ctxMenuExportCurrent = new System.Windows.Forms.ToolStripMenuItem();
+            this.toolStripMenuItem2 = new System.Windows.Forms.ToolStripSeparator();
+            this.ctxMenuGrouping = new System.Windows.Forms.ToolStripMenuItem();
             this.btnPagingPreviousPage = new System.Windows.Forms.Button();
             this.btnPagingNextPage = new System.Windows.Forms.Button();
             this.btnPagingFirstPage = new System.Windows.Forms.Button();
             this.panelTop = new System.Windows.Forms.Panel();
+            this.cboPriority = new System.Windows.Forms.ComboBox();
+            this.lblPriority = new System.Windows.Forms.Label();
             this.label31 = new System.Windows.Forms.Label();
             this.cboTimeTo = new System.Windows.Forms.ComboBox();
             this.dtpDateTo = new System.Windows.Forms.DateTimePicker();
@@ -82,9 +88,9 @@
             // 
             this.lblPagingRules.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.lblPagingRules.Location = new System.Drawing.Point(56, 285);
+            this.lblPagingRules.Location = new System.Drawing.Point(56, 175);
             this.lblPagingRules.Name = "lblPagingRules";
-            this.lblPagingRules.Size = new System.Drawing.Size(637, 24);
+            this.lblPagingRules.Size = new System.Drawing.Size(560, 24);
             this.lblPagingRules.TabIndex = 20;
             this.lblPagingRules.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             // 
@@ -108,15 +114,15 @@
             // splitter.Panel2
             // 
             this.splitter.Panel2.Controls.Add(this.controlEventInfo);
-            this.splitter.Size = new System.Drawing.Size(748, 623);
-            this.splitter.SplitterDistance = 310;
+            this.splitter.Size = new System.Drawing.Size(671, 404);
+            this.splitter.SplitterDistance = 200;
             this.splitter.TabIndex = 21;
             // 
             // btnPagingLastPage
             // 
             this.btnPagingLastPage.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.btnPagingLastPage.Image = ((System.Drawing.Image)(resources.GetObject("btnPagingLastPage.Image")));
-            this.btnPagingLastPage.Location = new System.Drawing.Point(723, 285);
+            this.btnPagingLastPage.Location = new System.Drawing.Point(646, 175);
             this.btnPagingLastPage.Name = "btnPagingLastPage";
             this.btnPagingLastPage.Size = new System.Drawing.Size(25, 25);
             this.btnPagingLastPage.TabIndex = 25;
@@ -125,18 +131,26 @@
             // 
             // listEvents
             // 
+            this.listEvents.AlternateRowBackColor = System.Drawing.Color.LightGray;
             this.listEvents.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.listEvents.ContextMenuStrip = this.ctxMenuEvent;
             this.listEvents.FullRowSelect = true;
+            this.listEvents.HeaderUsesThemes = false;
             this.listEvents.HideSelection = false;
             this.listEvents.Location = new System.Drawing.Point(0, 58);
             this.listEvents.Name = "listEvents";
+            this.listEvents.ShowCommandMenuOnRightClick = true;
             this.listEvents.ShowGroups = false;
-            this.listEvents.Size = new System.Drawing.Size(747, 224);
+            this.listEvents.ShowItemCountOnGroups = true;
+            this.listEvents.Size = new System.Drawing.Size(670, 114);
+            this.listEvents.SortGroupItemsByPrimaryColumn = false;
             this.listEvents.TabIndex = 21;
+            this.listEvents.UseAlternatingBackColors = true;
             this.listEvents.UseCompatibleStateImageBehavior = false;
+            this.listEvents.UseFilterIndicator = true;
+            this.listEvents.UseFiltering = true;
             this.listEvents.View = System.Windows.Forms.View.Details;
             this.listEvents.VirtualMode = true;
             this.listEvents.SelectedIndexChanged += new System.EventHandler(this.listEvents_SelectedIndexChanged);
@@ -144,17 +158,33 @@
             // ctxMenuEvent
             // 
             this.ctxMenuEvent.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.ctxMenuPayload,
+            this.toolStripMenuItem1,
             this.ctxMenuCopy,
             this.ctxMenuSep1,
-            this.ctxMenuHide,
+            this.ctxMenuExclude,
             this.ctxMenuSep2,
             this.ctxMenuExtractIpInfo,
             this.ctxMenuSep3,
-            this.ctxMenuExport});
+            this.ctxMenuExport,
+            this.toolStripMenuItem2,
+            this.ctxMenuGrouping});
             this.ctxMenuEvent.Name = "ctxMenuEvent";
             this.ctxMenuEvent.RenderMode = System.Windows.Forms.ToolStripRenderMode.System;
-            this.ctxMenuEvent.Size = new System.Drawing.Size(189, 132);
+            this.ctxMenuEvent.Size = new System.Drawing.Size(189, 166);
             this.ctxMenuEvent.Opening += new System.ComponentModel.CancelEventHandler(this.ctxMenuEvent_Opening);
+            // 
+            // ctxMenuPayload
+            // 
+            this.ctxMenuPayload.Name = "ctxMenuPayload";
+            this.ctxMenuPayload.Size = new System.Drawing.Size(188, 22);
+            this.ctxMenuPayload.Text = "Payload";
+            this.ctxMenuPayload.Click += new System.EventHandler(this.ctxMenuPayload_Click);
+            // 
+            // toolStripMenuItem1
+            // 
+            this.toolStripMenuItem1.Name = "toolStripMenuItem1";
+            this.toolStripMenuItem1.Size = new System.Drawing.Size(185, 6);
             // 
             // ctxMenuCopy
             // 
@@ -240,12 +270,12 @@
             this.ctxMenuSep1.Name = "ctxMenuSep1";
             this.ctxMenuSep1.Size = new System.Drawing.Size(185, 6);
             // 
-            // ctxMenuHide
+            // ctxMenuExclude
             // 
-            this.ctxMenuHide.Name = "ctxMenuHide";
-            this.ctxMenuHide.Size = new System.Drawing.Size(188, 22);
-            this.ctxMenuHide.Text = "Hide";
-            this.ctxMenuHide.Click += new System.EventHandler(this.ctxMenuHide_Click);
+            this.ctxMenuExclude.Name = "ctxMenuExclude";
+            this.ctxMenuExclude.Size = new System.Drawing.Size(188, 22);
+            this.ctxMenuExclude.Text = "Exclude";
+            this.ctxMenuExclude.Click += new System.EventHandler(this.ctxMenuExclude_Click);
             // 
             // ctxMenuSep2
             // 
@@ -292,22 +322,34 @@
             // ctxMenuExportAll
             // 
             this.ctxMenuExportAll.Name = "ctxMenuExportAll";
-            this.ctxMenuExportAll.Size = new System.Drawing.Size(152, 22);
+            this.ctxMenuExportAll.Size = new System.Drawing.Size(114, 22);
             this.ctxMenuExportAll.Text = "All";
             this.ctxMenuExportAll.Click += new System.EventHandler(this.ctxMenuExportAll_Click);
             // 
             // ctxMenuExportCurrent
             // 
             this.ctxMenuExportCurrent.Name = "ctxMenuExportCurrent";
-            this.ctxMenuExportCurrent.Size = new System.Drawing.Size(152, 22);
+            this.ctxMenuExportCurrent.Size = new System.Drawing.Size(114, 22);
             this.ctxMenuExportCurrent.Text = "Current";
             this.ctxMenuExportCurrent.Click += new System.EventHandler(this.ctxMenuExportCurrent_Click);
+            // 
+            // toolStripMenuItem2
+            // 
+            this.toolStripMenuItem2.Name = "toolStripMenuItem2";
+            this.toolStripMenuItem2.Size = new System.Drawing.Size(185, 6);
+            // 
+            // ctxMenuGrouping
+            // 
+            this.ctxMenuGrouping.CheckOnClick = true;
+            this.ctxMenuGrouping.Name = "ctxMenuGrouping";
+            this.ctxMenuGrouping.Size = new System.Drawing.Size(188, 22);
+            this.ctxMenuGrouping.Text = "Grouping";
             // 
             // btnPagingPreviousPage
             // 
             this.btnPagingPreviousPage.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.btnPagingPreviousPage.Image = ((System.Drawing.Image)(resources.GetObject("btnPagingPreviousPage.Image")));
-            this.btnPagingPreviousPage.Location = new System.Drawing.Point(27, 285);
+            this.btnPagingPreviousPage.Location = new System.Drawing.Point(27, 175);
             this.btnPagingPreviousPage.Name = "btnPagingPreviousPage";
             this.btnPagingPreviousPage.Size = new System.Drawing.Size(25, 25);
             this.btnPagingPreviousPage.TabIndex = 23;
@@ -318,7 +360,7 @@
             // 
             this.btnPagingNextPage.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.btnPagingNextPage.Image = ((System.Drawing.Image)(resources.GetObject("btnPagingNextPage.Image")));
-            this.btnPagingNextPage.Location = new System.Drawing.Point(695, 285);
+            this.btnPagingNextPage.Location = new System.Drawing.Point(618, 175);
             this.btnPagingNextPage.Name = "btnPagingNextPage";
             this.btnPagingNextPage.Size = new System.Drawing.Size(25, 25);
             this.btnPagingNextPage.TabIndex = 24;
@@ -329,7 +371,7 @@
             // 
             this.btnPagingFirstPage.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.btnPagingFirstPage.Image = ((System.Drawing.Image)(resources.GetObject("btnPagingFirstPage.Image")));
-            this.btnPagingFirstPage.Location = new System.Drawing.Point(-1, 285);
+            this.btnPagingFirstPage.Location = new System.Drawing.Point(-1, 175);
             this.btnPagingFirstPage.Name = "btnPagingFirstPage";
             this.btnPagingFirstPage.Size = new System.Drawing.Size(25, 25);
             this.btnPagingFirstPage.TabIndex = 22;
@@ -338,6 +380,8 @@
             // 
             // panelTop
             // 
+            this.panelTop.Controls.Add(this.cboPriority);
+            this.panelTop.Controls.Add(this.lblPriority);
             this.panelTop.Controls.Add(this.label31);
             this.panelTop.Controls.Add(this.cboTimeTo);
             this.panelTop.Controls.Add(this.dtpDateTo);
@@ -350,13 +394,31 @@
             this.panelTop.Dock = System.Windows.Forms.DockStyle.Top;
             this.panelTop.Location = new System.Drawing.Point(0, 0);
             this.panelTop.Name = "panelTop";
-            this.panelTop.Size = new System.Drawing.Size(748, 57);
+            this.panelTop.Size = new System.Drawing.Size(671, 57);
             this.panelTop.TabIndex = 20;
+            // 
+            // cboPriority
+            // 
+            this.cboPriority.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.cboPriority.FormattingEnabled = true;
+            this.cboPriority.Location = new System.Drawing.Point(505, 0);
+            this.cboPriority.Name = "cboPriority";
+            this.cboPriority.Size = new System.Drawing.Size(59, 23);
+            this.cboPriority.TabIndex = 30;
+            // 
+            // lblPriority
+            // 
+            this.lblPriority.AutoSize = true;
+            this.lblPriority.Location = new System.Drawing.Point(457, 3);
+            this.lblPriority.Name = "lblPriority";
+            this.lblPriority.Size = new System.Drawing.Size(45, 15);
+            this.lblPriority.TabIndex = 29;
+            this.lblPriority.Text = "Priority";
             // 
             // label31
             // 
             this.label31.AutoSize = true;
-            this.label31.Location = new System.Drawing.Point(250, 3);
+            this.label31.Location = new System.Drawing.Point(231, 3);
             this.label31.Name = "label31";
             this.label31.Size = new System.Drawing.Size(21, 15);
             this.label31.TabIndex = 28;
@@ -391,7 +453,7 @@
             "21:00",
             "22:00",
             "23:00"});
-            this.cboTimeTo.Location = new System.Drawing.Point(407, 0);
+            this.cboTimeTo.Location = new System.Drawing.Point(387, 0);
             this.cboTimeTo.Name = "cboTimeTo";
             this.cboTimeTo.Size = new System.Drawing.Size(66, 23);
             this.cboTimeTo.TabIndex = 27;
@@ -399,7 +461,7 @@
             // dtpDateTo
             // 
             this.dtpDateTo.Format = System.Windows.Forms.DateTimePickerFormat.Short;
-            this.dtpDateTo.Location = new System.Drawing.Point(278, 0);
+            this.dtpDateTo.Location = new System.Drawing.Point(259, 0);
             this.dtpDateTo.Name = "dtpDateTo";
             this.dtpDateTo.ShowCheckBox = true;
             this.dtpDateTo.Size = new System.Drawing.Size(122, 23);
@@ -429,9 +491,9 @@
             | System.Windows.Forms.AnchorStyles.Right)));
             this.cboRule.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.cboRule.FormattingEnabled = true;
-            this.cboRule.Location = new System.Drawing.Point(49, 29);
+            this.cboRule.Location = new System.Drawing.Point(43, 29);
             this.cboRule.Name = "cboRule";
-            this.cboRule.Size = new System.Drawing.Size(698, 23);
+            this.cboRule.Size = new System.Drawing.Size(628, 23);
             this.cboRule.TabIndex = 21;
             this.cboRule.DropDownClosed += new System.EventHandler(this.cboRule_DropDownClosed);
             // 
@@ -464,7 +526,7 @@
             "21:00",
             "22:00",
             "23:00"});
-            this.cboTimeFrom.Location = new System.Drawing.Point(169, 0);
+            this.cboTimeFrom.Location = new System.Drawing.Point(161, 0);
             this.cboTimeFrom.Name = "cboTimeFrom";
             this.cboTimeFrom.Size = new System.Drawing.Size(66, 23);
             this.cboTimeFrom.TabIndex = 20;
@@ -472,7 +534,7 @@
             // dtpDateFrom
             // 
             this.dtpDateFrom.Format = System.Windows.Forms.DateTimePickerFormat.Short;
-            this.dtpDateFrom.Location = new System.Drawing.Point(50, 0);
+            this.dtpDateFrom.Location = new System.Drawing.Point(44, 0);
             this.dtpDateFrom.Name = "dtpDateFrom";
             this.dtpDateFrom.Size = new System.Drawing.Size(111, 23);
             this.dtpDateFrom.TabIndex = 19;
@@ -481,7 +543,7 @@
             // 
             this.btnRefresh.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.btnRefresh.Image = ((System.Drawing.Image)(resources.GetObject("btnRefresh.Image")));
-            this.btnRefresh.Location = new System.Drawing.Point(723, -1);
+            this.btnRefresh.Location = new System.Drawing.Point(646, -1);
             this.btnRefresh.Name = "btnRefresh";
             this.btnRefresh.Size = new System.Drawing.Size(25, 25);
             this.btnRefresh.TabIndex = 12;
@@ -494,7 +556,7 @@
             this.controlEventInfo.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.controlEventInfo.Location = new System.Drawing.Point(0, 0);
             this.controlEventInfo.Name = "controlEventInfo";
-            this.controlEventInfo.Size = new System.Drawing.Size(748, 309);
+            this.controlEventInfo.Size = new System.Drawing.Size(671, 200);
             this.controlEventInfo.TabIndex = 1;
             // 
             // ControlRules
@@ -504,7 +566,7 @@
             this.Controls.Add(this.splitter);
             this.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.Name = "ControlRules";
-            this.Size = new System.Drawing.Size(748, 623);
+            this.Size = new System.Drawing.Size(671, 404);
             this.Load += new System.EventHandler(this.Control_Load);
             this.splitter.Panel1.ResumeLayout(false);
             this.splitter.Panel2.ResumeLayout(false);
@@ -550,7 +612,7 @@
         private System.Windows.Forms.ToolStripMenuItem ctxMenuCopyTimestamp;
         private System.Windows.Forms.ToolStripMenuItem ctxMenuCopyPayloadAscii;
         private System.Windows.Forms.ToolStripSeparator ctxMenuSep1;
-        private System.Windows.Forms.ToolStripMenuItem ctxMenuHide;
+        private System.Windows.Forms.ToolStripMenuItem ctxMenuExclude;
         private System.Windows.Forms.ToolStripSeparator ctxMenuSep2;
         private System.Windows.Forms.ToolStripMenuItem ctxMenuExtractIpInfo;
         private System.Windows.Forms.ToolStripMenuItem ctxMenuExtractIpInfoUniqueSource;
@@ -559,5 +621,11 @@
         private System.Windows.Forms.ToolStripMenuItem ctxMenuExport;
         private System.Windows.Forms.ToolStripMenuItem ctxMenuExportAll;
         private System.Windows.Forms.ToolStripMenuItem ctxMenuExportCurrent;
+        private System.Windows.Forms.ComboBox cboPriority;
+        private System.Windows.Forms.Label lblPriority;
+        private System.Windows.Forms.ToolStripMenuItem ctxMenuPayload;
+        private System.Windows.Forms.ToolStripSeparator toolStripMenuItem1;
+        private System.Windows.Forms.ToolStripSeparator toolStripMenuItem2;
+        private System.Windows.Forms.ToolStripMenuItem ctxMenuGrouping;
     }
 }

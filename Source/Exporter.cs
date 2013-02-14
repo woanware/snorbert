@@ -7,6 +7,7 @@ using System.Text;
 using System.Threading.Tasks;
 using CsvHelper;
 using CsvHelper.Configuration;
+using Microsoft.Isam.Esent.Collections.Generic;
 using woanware;
 
 namespace snorbert
@@ -42,8 +43,8 @@ namespace snorbert
         /// </summary>
         /// <param name="events"></param>
         /// <param name="filePath">The output file name</param>
-        public void ExportCurrent(List<Event> events, 
-                                  string filePath)
+        public void ExportEventCurrent(List<Event> events, 
+                                       string filePath)
         {
             if (IsRunning == true)
             {
@@ -110,9 +111,9 @@ namespace snorbert
         /// <param name="filePath">The output file name</param>
         /// <param name="dateFrom"></param>
         /// <param name="sid"></param>
-        public void ExportAll(string filePath, 
-                              string dateFrom, 
-                              string sid)
+        public void ExportEventsAll(string filePath, 
+                                    string dateFrom, 
+                                    string sid)
         {
             if (IsRunning == true)
             {
@@ -231,10 +232,10 @@ namespace snorbert
         /// <param name="dateFrom"></param>
         /// <param name="dateTo"></param>
         /// <param name="sid"></param>
-        public void ExportAll(string filePath, 
-                              string dateFrom, 
-                              string dateTo, 
-                              string sid)
+        public void ExportEventsAll(string filePath, 
+                                    string dateFrom, 
+                                    string dateTo, 
+                                    string sid)
         {
             if (IsRunning == true)
             {
@@ -283,6 +284,102 @@ namespace snorbert
                             csvWriter.WriteField(temp.Timestamp);
                             csvWriter.WriteField(temp.TcpFlagsString);
                             csvWriter.WriteField(temp.PayloadAscii);
+                            csvWriter.NextRecord();
+                        }
+                    }
+
+                    OnComplete();
+                }
+                catch (Exception ex)
+                {
+                    OnError("An error occurred whilst performing the export: " + ex.Message);
+                }
+                finally
+                {
+                    IsRunning = false;
+                }
+            });
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="filePath">The output file name</param>
+        public void ExportExcludes(PersistentDictionary<string, string> rules, string filePath)
+        {
+            if (IsRunning == true)
+            {
+                OnExclamation("Already performing an export");
+                return;
+            }
+
+            IsRunning = true;
+
+            Task task = Task.Factory.StartNew(() =>
+            {
+                try
+                {
+                    var dbExclude = new DbExclude();
+                    var query = dbExclude.Query(_sql.GetQuery(Sql.Query.SQL_EXCLUDES));
+
+                    CsvConfiguration csvConfiguration = new CsvConfiguration();
+                    csvConfiguration.Delimiter = '\t';
+
+                    using (FileStream fileStream = new FileStream(filePath, FileMode.Append, FileAccess.Write))
+                    using (StreamWriter streamWriter = new StreamWriter(fileStream))
+                    using (CsvHelper.CsvWriter csvWriter = new CsvHelper.CsvWriter(streamWriter, csvConfiguration))
+                    {
+                        // Write out the file headers
+                        csvWriter.WriteField("Sig. ID");
+                        csvWriter.WriteField("Source IP");
+                        csvWriter.WriteField("Destination IP");
+                        csvWriter.WriteField("FP");
+                        csvWriter.WriteField("Comment");
+                        csvWriter.WriteField("Sig. Name");
+                        csvWriter.WriteField("Timestamp");
+                        csvWriter.WriteField("Sig.");
+                        csvWriter.NextRecord();
+
+                        foreach (var temp in query)
+                        {
+                            Exclude exclude = new Exclude();
+                            exclude.Id = temp.id;
+                            exclude.SigId = temp.sig_id;
+                            exclude.SigSid = temp.sig_sid;
+                            exclude.SourceIp = temp.ip_src;
+                            exclude.DestinationIp = temp.ip_dst;
+
+                            if (temp.fp[0] == 48)
+                            {
+                                exclude.FalsePositive = false;
+                            }
+                            else
+                            {
+                                exclude.FalsePositive = true;
+                            }
+
+                            exclude.Comment = temp.comment;
+                            exclude.Rule = temp.sig_name;
+                            exclude.Timestamp = temp.timestamp;
+
+                            csvWriter.WriteField(exclude.SigId);
+                            csvWriter.WriteField(exclude.SourceIp);
+                            csvWriter.WriteField(exclude.DestinationIp);
+                            csvWriter.WriteField(exclude.FalsePositive);
+                            csvWriter.WriteField(exclude.Comment);
+                            csvWriter.WriteField(exclude.Rule);
+                            csvWriter.WriteField(exclude.Timestamp);
+
+                            var rule = from r in rules where r.Key == exclude.SigSid.ToString() select r;
+                            if (rule.Any() == true)
+                            {
+                                csvWriter.WriteField(rule.First().Value);
+                            }
+                            else
+                            {
+                                csvWriter.WriteField(string.Empty);
+                            }
+
                             csvWriter.NextRecord();
                         }
                     }

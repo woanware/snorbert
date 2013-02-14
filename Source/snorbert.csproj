@@ -104,20 +104,21 @@
     <Compile Include="ControlSensors.Designer.cs">
       <DependentUpon>ControlSensors.cs</DependentUpon>
     </Compile>
+    <Compile Include="FormExcludeEdit.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="FormExcludeEdit.Designer.cs">
+      <DependentUpon>FormExcludeEdit.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Exclude.cs" />
     <Compile Include="Exporter.cs" />
     <Compile Include="FalsePositive.cs" />
     <Compile Include="FalsePositives.cs" />
-    <Compile Include="FormFalsePositives.cs">
+    <Compile Include="FormExcludes.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="FormFalsePositives.Designer.cs">
-      <DependentUpon>FormFalsePositives.cs</DependentUpon>
-    </Compile>
-    <Compile Include="FormFalsePositive.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="FormFalsePositive.Designer.cs">
-      <DependentUpon>FormFalsePositive.cs</DependentUpon>
+    <Compile Include="FormExcludes.Designer.cs">
+      <DependentUpon>FormExcludes.cs</DependentUpon>
     </Compile>
     <Compile Include="Event.cs" />
     <Compile Include="Connection.cs" />
@@ -129,6 +130,18 @@
     </Compile>
     <Compile Include="FormFilter.Designer.cs">
       <DependentUpon>FormFilter.cs</DependentUpon>
+    </Compile>
+    <Compile Include="FormExcludeAdd.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="FormExcludeAdd.Designer.cs">
+      <DependentUpon>FormExcludeAdd.cs</DependentUpon>
+    </Compile>
+    <Compile Include="FormPayload.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="FormPayload.Designer.cs">
+      <DependentUpon>FormPayload.cs</DependentUpon>
     </Compile>
     <Compile Include="FormRule.cs">
       <SubType>Form</SubType>
@@ -190,14 +203,20 @@
     <EmbeddedResource Include="ControlSensors.resx">
       <DependentUpon>ControlSensors.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="FormFalsePositive.resx">
-      <DependentUpon>FormFalsePositive.cs</DependentUpon>
+    <EmbeddedResource Include="FormExcludeEdit.resx">
+      <DependentUpon>FormExcludeEdit.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="FormFalsePositives.resx">
-      <DependentUpon>FormFalsePositives.cs</DependentUpon>
+    <EmbeddedResource Include="FormExcludes.resx">
+      <DependentUpon>FormExcludes.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="FormFilter.resx">
       <DependentUpon>FormFilter.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="FormExcludeAdd.resx">
+      <DependentUpon>FormExcludeAdd.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="FormPayload.resx">
+      <DependentUpon>FormPayload.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="FormRule.resx">
       <DependentUpon>FormRule.cs</DependentUpon>
@@ -237,11 +256,11 @@
   <ItemGroup>
     <None Include="App.config" />
   </ItemGroup>
+  <ItemGroup />
   <ItemGroup>
-    <Folder Include="Config\" />
-    <Folder Include="Import\" />
-  </ItemGroup>
-  <ItemGroup>
+    <Content Include="Priorities.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
     <Content Include="Sql.xml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
       <SubType>Designer</SubType>

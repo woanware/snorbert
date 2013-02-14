@@ -13,6 +13,11 @@ namespace snorbert
         public delegate void DefaultEvent();
         #endregion
 
+        #region Constants
+        public const string PRIORITIES_FILE = "Priorities.txt";
+        #endregion
+
+        #region Enums
         /// <summary>
         /// 
         /// </summary>
@@ -108,5 +113,6 @@ namespace snorbert
             Sensor = 10,
             Protocol
         }
+        #endregion
     }
 }

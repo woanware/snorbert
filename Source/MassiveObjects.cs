@@ -33,4 +33,12 @@ namespace snorbert
     {
         public DbSensor() : base("mysql", "sensor", "sid") { }
     }
+
+    /// <summary>
+    /// 
+    /// </summary>
+    public class DbExclude : DynamicModel
+    {
+        public DbExclude() : base("mysql", "exclude", "id") { }
+    }
 }

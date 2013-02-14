@@ -6,6 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Windows.Forms;
 using woanware;
+using System.ComponentModel;
 
 namespace snorbert
 {
@@ -27,7 +28,6 @@ namespace snorbert
         private Exporter _exporter;
         private HourGlass _hourGlass;
         private Sql _sql;
-        private FalsePositives _falsePostives;
         #endregion
 
         #region Constructor
@@ -43,6 +43,7 @@ namespace snorbert
             Helper.AddListColumn(listEvents, "Src Port", "SrcPort");
             Helper.AddListColumn(listEvents, "Dst IP", "IpDst");
             Helper.AddListColumn(listEvents, "Dst Port", "DstPort");
+            Helper.AddListColumn(listEvents, "Host", "HttpHost");
             Helper.AddListColumn(listEvents, "Protocol", "Protocol");
             Helper.AddListColumn(listEvents, "Timestamp", "Timestamp");
             Helper.AddListColumn(listEvents, "TCP Flags", "TcpFlagsString");
@@ -65,7 +66,7 @@ namespace snorbert
             _exporter.Error += OnExporter_Error;
             _exporter.Exclamation += OnExporter_Exclamation;
 
-            LoadFalsePositives();
+            LoadPriorities();
         }
         #endregion
 
@@ -93,7 +94,7 @@ namespace snorbert
 
                     if (data.Count == 0)
                     {
-                        UserInterface.DisplayMessageBox(this, "No rules loaded for defined parameters", MessageBoxIcon.Exclamation);
+                        UserInterface.DisplayMessageBox(this, "No data retrieved for query", MessageBoxIcon.Exclamation);
                     }
                     else
                     {
@@ -141,7 +142,7 @@ namespace snorbert
 
                     Rule rule = (Rule)cboRule.Items[cboRule.SelectedIndex];
 
-                    int preFilterCount = data.Count;
+                    //int preFilterCount = data.Count;
                     _totalRecords = rule.Count;
 
                     // Sometimes there will be more events for a rule, than there originally was 
@@ -149,9 +150,9 @@ namespace snorbert
                     // database to get a more accurate count, then we will just the the count of
                     // the data returned. Though this only works when the amount of data returned 
                     // is less than the Page Size
-                    if (rule.Count < preFilterCount)
+                    if (rule.Count < data.Count)
                     {
-                        _totalRecords = preFilterCount;
+                        _totalRecords = data.Count;
                     }
 
                     _totalPages = _totalRecords / _pageLimit;
@@ -160,7 +161,7 @@ namespace snorbert
                         _totalPages++;
                     }
 
-                    listEvents.SetObjects(FilterData(rule.Sid, data));
+                    listEvents.SetObjects(data);
 
                     if (data.Any() == true)
                     {
@@ -169,7 +170,7 @@ namespace snorbert
                     }
 
                     lblPagingRules.Text = "Page " + _currentPage + " (" + _totalPages + ")";
-                    OnMessage("Loaded " + data.Count + " results (Hidden: " + (preFilterCount - data.Count) + "/Total: " + _totalRecords + ")");
+                    OnMessage("Loaded " + data.Count + " results (Total: " + _totalRecords + ")");
                 }
                 catch (Exception ex)
                 {
@@ -306,82 +307,6 @@ namespace snorbert
         }
         #endregion
 
-        #region False Positive Filter Methods
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="sid"></param>
-        /// <param name="data"></param>
-        /// <returns></returns>
-        private List<Event> FilterData(string sid, List<Event> data)
-        {
-            // Get all of the FP's relating to this particular rule
-            var fps = from f in _falsePostives.Data where f.Sid == sid select f;
-
-            foreach (FalsePositive fp in fps)
-            {
-                switch (fp.Definition.Field.ToLower())
-                {
-                    case "source ip":
-                        data.RemoveAll(d => CompareFalsePositive(d.IpSrc.ToString(), fp.Display, fp.Condition));
-                        break;
-                    case "tcp source port":
-                        data.RemoveAll(d => CompareFalsePositive(d.TcpSrcPort.ToString(), fp.Value, fp.Condition));
-                        break;
-                    case "udp source port":
-                        data.RemoveAll(d => CompareFalsePositive(d.UdpSrcPort.ToString(), fp.Value, fp.Condition));
-                        break;
-                    case "destination ip":
-                        data.RemoveAll(d => CompareFalsePositive(d.IpDst.ToString(), fp.Display, fp.Condition));
-                        break;
-                    case "tcp destination port":
-                        data.RemoveAll(d => CompareFalsePositive(d.TcpDstPort.ToString(), fp.Value, fp.Condition));
-                        break;
-                    case "udp destination port":
-                        data.RemoveAll(d => CompareFalsePositive(d.UdpDstPort.ToString(), fp.Value, fp.Condition));
-                        break;
-                    case "protocol":
-                        data.RemoveAll(d => CompareFalsePositive(d.IpProto.ToString(), fp.Value, fp.Condition));
-                        break;
-                    case "payload (ascii)":
-                        data.RemoveAll(d => CompareFalsePositive(d.PayloadAscii.ToString(), fp.Display, fp.Condition));
-                        break;
-                    case "payload (hex)":
-                        data.RemoveAll(d => CompareFalsePositive(woanware.Text.ConvertByteArrayToHexString(d.PayloadHex), fp.Value, fp.Condition));
-                        break;
-                }
-            }
-
-            return data;
-        }
-
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="eventData"></param>
-        /// <param name="fpData"></param>
-        /// <param name="operation"></param>
-        /// <returns></returns>
-        private bool CompareFalsePositive(string eventData,
-                                          string fpData,
-                                          string operation)
-        {
-            switch (operation)
-            {
-                case "=":
-                    return eventData == fpData;
-                case "!":
-                    return eventData != fpData;
-                case "LIKE":
-                    return eventData.IndexOf(fpData, StringComparison.InvariantCultureIgnoreCase) > -1;
-                case "NOT LIKE":
-                    return eventData.IndexOf(fpData, StringComparison.InvariantCultureIgnoreCase) == -1;
-                default:
-                    return false;
-            }
-        }
-        #endregion
-
         #region Query Methods
         /// <summary>
         /// 
@@ -392,14 +317,33 @@ namespace snorbert
             SetProcessingStatus(false);
             Clear();
 
+            NameValue nameValue = (NameValue)cboPriority.Items[cboPriority.SelectedIndex];
+
             if (dtpDateTo.Checked == true)
             {
-                _querier.QueryRulesToFrom(dtpDateFrom.Value.Date.ToString("yyyy-MM-dd") + " " + cboTimeFrom.Text + ":00", 
-                                          dtpDateTo.Value.Date.ToString("yyyy-MM-dd") + " " + cboTimeTo.Text + ":00");
+                if (nameValue.Name.ToLower() == "all")
+                {
+                    _querier.QueryRulesToFrom(dtpDateFrom.Value.Date.ToString("yyyy-MM-dd") + " " + cboTimeFrom.Text + ":00",
+                                              dtpDateTo.Value.Date.ToString("yyyy-MM-dd") + " " + cboTimeTo.Text + ":00");
+                }
+                else
+                {
+                    _querier.QueryRulesToFromPriority(dtpDateFrom.Value.Date.ToString("yyyy-MM-dd") + " " + cboTimeFrom.Text + ":00",
+                                                      dtpDateTo.Value.Date.ToString("yyyy-MM-dd") + " " + cboTimeTo.Text + ":00",
+                                                      nameValue.Value);
+                }
             }
             else
             {
-                _querier.QueryRulesFrom(dtpDateFrom.Value.Date.ToString("yyyy-MM-dd") + " " + cboTimeFrom.Text + ":00");
+                if (nameValue.Name.ToLower() == "all")
+                {
+                    _querier.QueryRulesFrom(dtpDateFrom.Value.Date.ToString("yyyy-MM-dd") + " " + cboTimeFrom.Text + ":00");
+                }
+                else
+                {
+                    _querier.QueryRulesFromPriority(dtpDateFrom.Value.Date.ToString("yyyy-MM-dd") + " " + cboTimeFrom.Text + ":00",
+                                                    nameValue.Value);
+                }
             }
         }
 
@@ -605,7 +549,6 @@ namespace snorbert
             }
 
             Event temp = (Event)listEvents.SelectedObjects[0];
-
             controlEventInfo.DisplaySelectedEventDetails(temp);
         }
         #endregion
@@ -673,14 +616,35 @@ namespace snorbert
         /// <summary>
         /// 
         /// </summary>
-        public void LoadFalsePositives()
+        public void LoadPriorities()
         {
-            _falsePostives = new FalsePositives();
-            string ret = _falsePostives.Load();
-            if (ret.Length > 0)
+            if (LicenseManager.UsageMode == LicenseUsageMode.Runtime)
             {
-                UserInterface.DisplayErrorMessageBox(this, "An error occurred whilst loading the false positive data: " + ret);
-                Misc.WriteToEventLog(Application.ProductName, "An error occurred whilst loading the false positive data: " + ret, System.Diagnostics.EventLogEntryType.Error);
+                string[] priorities = System.IO.File.ReadAllLines(System.IO.Path.Combine(Misc.GetApplicationDirectory(), Global.PRIORITIES_FILE));
+
+                List<NameValue> temp = new List<NameValue>();
+
+                NameValue nameValue = new NameValue();
+                nameValue.Name = "All";
+                nameValue.Value = "All";
+                temp.Add(nameValue);
+
+                foreach (string priority in priorities)
+                {
+                    nameValue = new NameValue();
+                    nameValue.Name = priority;
+                    nameValue.Value = priority;
+                    temp.Add(nameValue);
+                }
+
+                cboPriority.Items.Clear();
+                cboPriority.DisplayMember = "Name";
+                cboPriority.ValueMember = "Value";
+                cboPriority.Items.AddRange(temp.ToArray());
+                UserInterface.SetDropDownWidth(cboPriority);
+
+                cboPriority.SelectedIndex = 0;
+
             }
         }
         #endregion
@@ -705,15 +669,20 @@ namespace snorbert
         /// <param name="e"></param>
         private void ctxMenuEvent_Opening(object sender, System.ComponentModel.CancelEventArgs e)
         {
-            if (listEvents.SelectedObjects.Count == 0)
+            ctxMenuExport.Enabled = true;
+            ctxMenuExtractIpInfo.Enabled = true;
+
+            if (listEvents.SelectedObjects.Count == 1)
             {
-                ctxMenuCopy.Enabled = false;
-                ctxMenuExtractIpInfo.Enabled = false;
+                ctxMenuCopy.Enabled = true;
+                ctxMenuPayload.Enabled = true;
+                ctxMenuExclude.Enabled = true;
             }
             else
             {
-                ctxMenuCopy.Enabled = true;
-                ctxMenuExtractIpInfo.Enabled = true;
+                ctxMenuCopy.Enabled = false;
+                ctxMenuPayload.Enabled = false;
+                ctxMenuExclude.Enabled = false;
             }
         }
 
@@ -812,7 +781,7 @@ namespace snorbert
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        private void ctxMenuHide_Click(object sender, EventArgs e)
+        private void ctxMenuExclude_Click(object sender, EventArgs e)
         {
             if (listEvents.SelectedObjects.Count != 1)
             {
@@ -826,16 +795,32 @@ namespace snorbert
                 return;
             }
 
-            using (FormFalsePositive formFalsePositive = new FormFalsePositive(_falsePostives, temp))
+            Rule rule = (Rule)cboRule.Items[cboRule.SelectedIndex];
+
+            using (FormExcludeAdd formExclude = new FormExcludeAdd(temp.IpSrc, 
+                                                             temp.IpDst, 
+                                                             rule.Text, 
+                                                             rule.Id))
             {
-                if (formFalsePositive.ShowDialog(this) == DialogResult.Cancel)
+                if (formExclude.ShowDialog(this) == DialogResult.Cancel)
                 {
                     return;
                 }
 
-                LoadFalsePositives();
+                //LoadFalsePositives();
                 LoadRuleEvents(_currentPage);
             }
+
+            //using (FormFalsePositive formFalsePositive = new FormFalsePositive(_falsePostives, temp))
+            //{
+            //    if (formFalsePositive.ShowDialog(this) == DialogResult.Cancel)
+            //    {
+            //        return;
+            //    }
+
+            //    //LoadFalsePositives();
+            //    LoadRuleEvents(_currentPage);
+            //}
         }
 
         /// <summary>
@@ -935,7 +920,7 @@ namespace snorbert
             SetProcessingStatus(false);
 
             List<Event> events = (List<Event>)listEvents.Objects.Cast<Event>().ToList();
-            _exporter.ExportCurrent(events, saveFileDialog.FileName);
+            _exporter.ExportEventCurrent(events, saveFileDialog.FileName);
         }
 
         /// <summary>
@@ -960,16 +945,41 @@ namespace snorbert
 
             if (dtpDateTo.Checked == true)
             {
-                _exporter.ExportAll(saveFileDialog.FileName,
-                                    dtpDateFrom.Value.Date.ToString("yyyy-MM-dd") + " " + cboTimeFrom.Text + ":00",
-                                    dtpDateTo.Value.Date.ToString("yyyy-MM-dd") + " " + cboTimeTo.Text + ":00",
-                                    rule.Sid);
+                _exporter.ExportEventsAll(saveFileDialog.FileName,
+                                          dtpDateFrom.Value.Date.ToString("yyyy-MM-dd") + " " + cboTimeFrom.Text + ":00",
+                                          dtpDateTo.Value.Date.ToString("yyyy-MM-dd") + " " + cboTimeTo.Text + ":00",
+                                          rule.Sid);
             }
             else
             {
-                _exporter.ExportAll(saveFileDialog.FileName,
-                                    dtpDateFrom.Value.Date.ToString("yyyy-MM-dd") + " " + cboTimeFrom.Text + ":00",
-                                    rule.Sid);
+                _exporter.ExportEventsAll(saveFileDialog.FileName,
+                                          dtpDateFrom.Value.Date.ToString("yyyy-MM-dd") + " " + cboTimeFrom.Text + ":00",
+                                          rule.Sid);
+            }
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void ctxMenuPayload_Click(object sender, EventArgs e)
+        {
+            if (listEvents.SelectedObjects.Count != 1)
+            {
+                return;
+            }
+
+            Event temp = (Event)listEvents.SelectedObjects[0];
+            if (temp == null)
+            {
+                UserInterface.DisplayErrorMessageBox(this, "Unable to locate event");
+                return;
+            }
+
+            using (FormPayload formPayload = new FormPayload(temp))
+            {
+                formPayload.ShowDialog(this);
             }
         }
         #endregion
