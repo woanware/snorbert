@@ -306,8 +306,8 @@
     
     <SqlQuery>
       <Query>SQL_REFERENCES</Query>
-      <Data><![CDATA[SELECT reference.ref_tag,
-				   reference_system.ref_system_name
+      <Data><![CDATA[SELECT reference.ref_tag as ref_tag,
+				   reference_system.ref_system_name as ref_system_name
 			  FROM reference 
 		 LEFT JOIN sig_reference on reference.ref_id = sig_reference.ref_id
 		 LEFT JOIN signature on sig_reference.sig_id = signature.sig_id

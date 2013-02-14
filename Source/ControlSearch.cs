@@ -76,7 +76,6 @@ namespace snorbert
                 {
                     formFilter.LoadClassifications();
                     formFilter.LoadPriorities();
-                    formFilter.LoadSignatures();
                 }
 
                 if (formFilter.ShowDialog(this) == System.Windows.Forms.DialogResult.Cancel)

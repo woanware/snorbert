@@ -52,34 +52,40 @@ namespace snorbert
         {
             try
             {
-                var dbExclude = new DbExclude();
+                NPoco.Database db = new NPoco.Database(Db.GetOpenMySqlConnection());
+                Exclude exclude = new Exclude();
 
-                dynamic exclude = new ExpandoObject();
+                //List<Event> data = db.Fetch<Event>(_sql.GetQuery(Sql.Query.SQL_EVENTS), new object[] { offset, pageLimit });
+
+                //var dbExclude = new DbExclude();
+
+               // dynamic exclude = new ExpandoObject();
 
                 if (chkRule.Checked == true)
                 {
-                    exclude.sig_id = _ruleId;
+                    exclude.SigId = _ruleId;
                 }
 
                 if (chkSourceIp.Checked == true)
                 {
                     byte[] ip = _sourceIp.GetAddressBytes();
                     Array.Reverse(ip);
-                    exclude.ip_src = BitConverter.ToUInt32(ip, 0);
+                    exclude.SourceIp = BitConverter.ToUInt32(ip, 0);
                 }
 
                 if (chkDestinationIp.Checked == true)
                 {
                     byte[] ip = _destinationIp.GetAddressBytes();
                     Array.Reverse(ip);
-                    exclude.ip_dst = BitConverter.ToUInt32(ip, 0); 
+                    exclude.DestinationIp = BitConverter.ToUInt32(ip, 0); 
                 }
                 
-                exclude.comment = txtComment.Text;
-                exclude.fp = chkFalsePositive.Checked;
-                exclude.timeadded = DateTime.Now;
+                exclude.Comment = txtComment.Text;
+                exclude.FalsePositive = chkFalsePositive.Checked;
+                exclude.Timestamp = DateTime.Now;
 
-                dbExclude.Insert(exclude);
+                db.Insert(exclude);
+                //dbExclude.Insert(exclude);
             }
             catch (Exception ex)
             {

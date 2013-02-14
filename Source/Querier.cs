@@ -14,7 +14,7 @@ namespace snorbert
         #region Events
         public delegate void CompleteEvent<T>(List<T> data);
         public event CompleteEvent<Event> EventQueryComplete;
-        public event CompleteEvent<Rule> RuleQueryComplete;
+        public event CompleteEvent<Signature> RuleQueryComplete;
         public event CompleteEvent<Sensor> SensorQueryComplete;
         public event CompleteEvent<string> RuleIpQueryComplete;
         public event Global.MessageEvent Exclamation;
@@ -99,7 +99,7 @@ namespace snorbert
                 try
                 {
                     NPoco.Database db = new NPoco.Database(Db.GetOpenMySqlConnection());
-                    List<Rule> temp = db.Fetch<Rule>(_sql.GetQuery(Sql.Query.SQL_RULES_FROM), new object[] { dateFrom });
+                    List<Signature> temp = db.Fetch<Signature>(_sql.GetQuery(Sql.Query.SQL_RULES_FROM), new object[] { dateFrom });
 
                     foreach (var rule in temp)
                     {
@@ -147,7 +147,7 @@ namespace snorbert
                 try
                 {
                     NPoco.Database db = new NPoco.Database(Db.GetOpenMySqlConnection());
-                    List<Rule> temp = db.Fetch<Rule>(_sql.GetQuery(Sql.Query.SQL_RULES_FROM_PRIORITY), new object[] { dateFrom, priority });
+                    List<Signature> temp = db.Fetch<Signature>(_sql.GetQuery(Sql.Query.SQL_RULES_FROM_PRIORITY), new object[] { dateFrom, priority });
 
                     foreach (var rule in temp)
                     {
@@ -188,7 +188,7 @@ namespace snorbert
                 try
                 {
                     NPoco.Database db = new NPoco.Database(Db.GetOpenMySqlConnection());
-                    List<Rule> temp = db.Fetch<Rule>(_sql.GetQuery(Sql.Query.SQL_RULES_FROM_TO), new object[] { dateFrom, dateTo });
+                    List<Signature> temp = db.Fetch<Signature>(_sql.GetQuery(Sql.Query.SQL_RULES_FROM_TO), new object[] { dateFrom, dateTo });
 
                     foreach (var rule in temp)
                     {
@@ -238,7 +238,7 @@ namespace snorbert
                 try
                 {
                     NPoco.Database db = new NPoco.Database(Db.GetOpenMySqlConnection());
-                    List<Rule> temp = db.Fetch<Rule>(_sql.GetQuery(Sql.Query.SQL_RULES_FROM_TO_PRIORITY), new object[] { dateFrom, dateTo, priority });
+                    List<Signature> temp = db.Fetch<Signature>(_sql.GetQuery(Sql.Query.SQL_RULES_FROM_TO_PRIORITY), new object[] { dateFrom, dateTo, priority });
 
                     foreach (var rule in temp)
                     {
@@ -557,7 +557,7 @@ namespace snorbert
         /// <summary>
         /// 
         /// </summary>
-        private void OnComplete(List<Rule> data)
+        private void OnComplete(List<Signature> data)
         {
             var handler = RuleQueryComplete;
             if (handler != null)

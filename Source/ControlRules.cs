@@ -75,7 +75,7 @@ namespace snorbert
         /// 
         /// </summary>
         /// <param name="data"></param>
-        private void OnQuerier_RuleQueryComplete(List<Rule> data)
+        private void OnQuerier_RuleQueryComplete(List<Signature> data)
         {
             MethodInvoker methodInvoker = delegate
             {
@@ -140,7 +140,7 @@ namespace snorbert
                         return;
                     }
 
-                    Rule rule = (Rule)cboRule.Items[cboRule.SelectedIndex];
+                    Signature rule = (Signature)cboRule.Items[cboRule.SelectedIndex];
 
                     //int preFilterCount = data.Count;
                     _totalRecords = rule.Count;
@@ -358,7 +358,7 @@ namespace snorbert
             SetProcessingStatus(false);
             Clear();
 
-            Rule rule = (Rule)cboRule.Items[cboRule.SelectedIndex];
+            Signature rule = (Signature)cboRule.Items[cboRule.SelectedIndex];
 
             if (dtpDateTo.Checked == true)
             {
@@ -795,7 +795,7 @@ namespace snorbert
                 return;
             }
 
-            Rule rule = (Rule)cboRule.Items[cboRule.SelectedIndex];
+            Signature rule = (Signature)cboRule.Items[cboRule.SelectedIndex];
 
             using (FormExcludeAdd formExclude = new FormExcludeAdd(temp.IpSrc, 
                                                              temp.IpDst, 
@@ -845,7 +845,7 @@ namespace snorbert
             _hourGlass = new HourGlass(this);
             SetProcessingStatus(false);
 
-            Rule rule = (Rule)cboRule.Items[cboRule.SelectedIndex];
+            Signature rule = (Signature)cboRule.Items[cboRule.SelectedIndex];
 
             if (dtpDateTo.Checked == true)
             {
@@ -884,7 +884,7 @@ namespace snorbert
             _hourGlass = new HourGlass(this);
             SetProcessingStatus(false);
 
-            Rule rule = (Rule)cboRule.Items[cboRule.SelectedIndex];
+            Signature rule = (Signature)cboRule.Items[cboRule.SelectedIndex];
 
             if (dtpDateTo.Checked == true)
             {
@@ -941,7 +941,7 @@ namespace snorbert
             _hourGlass = new HourGlass(this);
             SetProcessingStatus(false);
 
-            Rule rule = (Rule)cboRule.Items[cboRule.SelectedIndex];
+            Signature rule = (Signature)cboRule.Items[cboRule.SelectedIndex];
 
             if (dtpDateTo.Checked == true)
             {

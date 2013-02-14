@@ -44,35 +44,9 @@ namespace snorbert
                 {
                     listExcludes.ClearObjects();
 
-                    var dbExcludes = new DbExclude();
-                    var query = dbExcludes.Query(_sql.GetQuery(Sql.Query.SQL_EXCLUDES));
-
-                    List<Exclude> excludes = new List<Exclude>();
-                    foreach (var temp in query)
-                    {
-                        Exclude exclude = new Exclude();
-                        exclude.Id = temp.id;
-                        exclude.SigId = temp.sig_id;
-                        exclude.SourceIp = temp.ip_src;
-                        exclude.DestinationIp = temp.ip_dst;
-
-                        if (temp.fp[0] == 48)
-                        {
-                            exclude.FalsePositive = false;
-                        }
-                        else
-                        {
-                            exclude.FalsePositive = true;
-                        }
-
-                        exclude.Comment = temp.comment;
-                        exclude.Rule = temp.sig_name;
-                        exclude.Timestamp = temp.timestamp;
-
-                        excludes.Add(exclude);
-                    }
-
-                    listExcludes.SetObjects(excludes.ToArray());
+                    NPoco.Database db = new NPoco.Database(Db.GetOpenMySqlConnection());
+                    List<Exclude> excludes = db.Fetch<Exclude>(_sql.GetQuery(Sql.Query.SQL_EXCLUDES));
+                    listExcludes.SetObjects(excludes);
 
                     if (excludes.Count > 0)
                     {
@@ -142,15 +116,15 @@ namespace snorbert
 
             try
             {
-                var dbExcludes = new DbExclude();
-                var temp = dbExcludes.Single(exclude.Id);
+                NPoco.Database db = new NPoco.Database(Db.GetOpenMySqlConnection());
+                Exclude temp = db.SingleOrDefaultById<Exclude>(exclude.Id);
                 if (temp == null)
                 {
                     UserInterface.DisplayMessageBox(this, "Unable to locate exclude", MessageBoxIcon.Exclamation);
                     return;
                 }
 
-                int ret = dbExcludes.Delete(temp);
+                int ret = db.Delete(temp);
                 if (ret != 1)
                 {
                     UserInterface.DisplayErrorMessageBox(this, "The exclude could not be deleted");

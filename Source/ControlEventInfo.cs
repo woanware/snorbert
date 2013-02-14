@@ -141,15 +141,8 @@ namespace snorbert
                 txtUdpCsum.Text = temp.UdpCsum.ToString();
 
                 // References Tab
-                var dbReference = new DbReference();
-                var data = dbReference.Query(_sql.GetQuery(Sql.Query.SQL_REFERENCES), temp.Sid);
-                List<Reference> references = new List<Reference>();
-                foreach (var tempRef in data)
-                {
-                    Reference reference = new Reference(tempRef.ref_system_name, tempRef.ref_tag);
-                    references.Add(reference);
-                }
-
+                NPoco.Database db = new NPoco.Database(Db.GetOpenMySqlConnection());
+                List<Reference> references = db.Fetch<Reference>(_sql.GetQuery(Sql.Query.SQL_REFERENCES), new object[] { temp.Sid });
                 listReferences.SetObjects(references);
                 ResizeReferenceListColumns();
 

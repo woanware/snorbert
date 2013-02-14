@@ -105,13 +105,13 @@ namespace snorbert
             Ip = 2,
             Timestamp = 3,
             Severity = 4,
-            SignatureName = 5,
-            SignatureId = 6,
-            Classification = 7,
-            PayloadAscii = 8,
-            PayloadHex = 9,
-            Sensor = 10,
-            Protocol
+            //SignatureName = 5,
+            //SignatureId = 6,
+            Classification = 5,
+            PayloadAscii = 6,
+            PayloadHex = 7,
+            Sensor = 8,
+            Protocol = 9
         }
         #endregion
     }

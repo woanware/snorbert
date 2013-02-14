@@ -1,10 +1,11 @@
 ﻿using NPoco;
+
 namespace snorbert
 {
     /// <summary>
     /// 
     /// </summary>
-    internal class Rule
+    internal class Signature
     {
         #region Member Variables
         [Column("sig_id")]
@@ -25,7 +26,7 @@ namespace snorbert
         /// <summary>
         /// 
         /// </summary>
-        public Rule()
+        public Signature()
         {
             Sid = string.Empty;
             Name = string.Empty;
@@ -41,7 +42,7 @@ namespace snorbert
         /// <param name="sid"></param>
         /// <param name="priority"></param>
         /// <param name="count"></param>
-        public Rule(long id, 
+        public Signature(long id, 
                     string text, 
                     string sid, 
                     string priority, 

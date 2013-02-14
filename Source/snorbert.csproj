@@ -179,13 +179,12 @@
     </Compile>
     <Compile Include="Global.cs" />
     <Compile Include="Helper.cs" />
-    <Compile Include="Massive.MySql.cs" />
-    <Compile Include="MassiveObjects.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Querier.cs" />
     <Compile Include="Reference.cs" />
-    <Compile Include="Rule.cs" />
+    <Compile Include="SigClass.cs" />
+    <Compile Include="Signature.cs" />
     <Compile Include="RuleFile.cs" />
     <Compile Include="RuleImporter.cs" />
     <Compile Include="Sensor.cs" />

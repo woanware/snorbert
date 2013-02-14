@@ -4,6 +4,7 @@ using System.Net;
 using System.Windows.Forms;
 using System.Linq;
 using woanware;
+using System.Collections.Generic;
 
 namespace snorbert
 {
@@ -32,26 +33,20 @@ namespace snorbert
 
             try
             {
-                var dbExcludes = new DbExclude();
-                var temp = dbExcludes.Query(_sql.GetQuery(Sql.Query.SQL_EXCLUDE), args: new object[] { _id });
-                if (temp.Count() == 0)
+                NPoco.Database db = new NPoco.Database(Db.GetOpenMySqlConnection());
+                List<Exclude> excludes = db.Fetch<Exclude>(_sql.GetQuery(Sql.Query.SQL_EXCLUDE), new object[] { _id });
+
+                if (excludes.Count == 0)
                 {
                     UserInterface.DisplayMessageBox(this, "Unable to locate exclude", MessageBoxIcon.Exclamation);
                     return;
                 }
 
-                ipSource.Text = temp.First().ip_src;
-                ipDestination.Text = temp.First().ip_dst;
-                txtRule.Text = temp.First().sig_name;
-                txtComment.Text = temp.First().comment;
-                if (temp.First().fp[0] == 48)
-                {
-                    chkFalsePositive.Checked = false;
-                }
-                else
-                {
-                    chkFalsePositive.Checked = true;
-                }
+                ipSource.Text = excludes[0].SourceIpText;
+                ipDestination.Text = excludes[0].DestinationIpText;
+                txtRule.Text = excludes[0].Rule;
+                txtComment.Text = excludes[0].Comment;
+                chkFalsePositive.Checked = excludes[0].FalsePositive;
             }
             catch (Exception ex)
             {
@@ -70,26 +65,25 @@ namespace snorbert
         {
             try
             {
-                var dbExcludes = new DbExclude();
-                var temp = dbExcludes.Single(_id);
-                if (temp == null)
+                NPoco.Database db = new NPoco.Database(Db.GetOpenMySqlConnection());
+                Exclude exclude = db.SingleOrDefaultById<Exclude>(_id);
+                if (exclude == null)
                 {
                     UserInterface.DisplayMessageBox(this, "Unable to locate exclude", MessageBoxIcon.Exclamation);
                     return;
                 }
 
                 if (chkFalsePositive.Checked == true)
-                {
-                    temp.fp = 1;
+                {   
+                    exclude.FalsePositive = true;
                 }
                 else
                 {
-                    temp.fp = 0;
+                    exclude.FalsePositive = false;
                 }
 
-                temp.comment = txtComment.Text;
-
-                dbExcludes.Update(temp, temp.id);
+                exclude.Comment = txtComment.Text;
+                db.Update(exclude);
 
                 this.DialogResult = System.Windows.Forms.DialogResult.OK;
             }

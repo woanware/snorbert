@@ -127,9 +127,10 @@ namespace snorbert
             {
                 try
                 {
-                    var dbSignature = new DbSignature();
-                    var query = dbSignature.Query(_sql.GetQuery(Sql.Query.SQL_EVENTS_RULES_FROM_EXPORT), args: new object[] { dateFrom, 
-                                                                                                                              sid});
+                    NPoco.Database db = new NPoco.Database(Db.GetOpenMySqlConnection());
+                    List<Event> events = db.Fetch<Event>(_sql.GetQuery(Sql.Query.SQL_EVENTS_RULES_FROM_EXPORT), new object[] { dateFrom, sid });
+                    events = Helper.ProcessEventDataSet(events);
+
                     CsvConfiguration csvConfiguration = new CsvConfiguration();
                     csvConfiguration.Delimiter = '\t';
 
@@ -149,65 +150,17 @@ namespace snorbert
                         csvWriter.WriteField("Payload (ASCII)");
                         csvWriter.NextRecord();
 
-                        foreach (var item in query)
+                        foreach (var item in events)
                         {
-                            Event e = new Event();
-                            e.Cid = item.cid;
-                            e.IpSrc = IPAddress.Parse(item.ip_src.ToString());
-                            e.IpDst = IPAddress.Parse(item.ip_dst.ToString());
-                            e.IpProto = int.Parse(item.ip_proto.ToString());
-                            e.TcpSrcPort = int.Parse(item.tcp_sport.ToString());
-                            e.TcpDstPort = int.Parse(item.tcp_dport.ToString());
-                            e.UdpSrcPort = int.Parse(item.udp_sport.ToString());
-                            e.UdpDstPort = int.Parse(item.udp_dport.ToString());
-                            e.Timestamp = item.timestamp;
-                            e.TcpFlags = int.Parse(item.tcp_flags.ToString());
-
-                            List<string> flags = new List<string>();
-                            foreach (Global.TcpFlags tcpFlag in Misc.EnumToList<Global.TcpFlags>())
-                            {
-                                if ((e.TcpFlags & (int)tcpFlag) == (int)tcpFlag)
-                                {
-                                    flags.Add(tcpFlag.GetEnumDescription());
-                                }
-                            }
-
-                            e.TcpFlagsString = string.Join("+", flags.ToArray());
-
-                            if (e.IpProto == (int)Global.Protocols.Tcp)
-                            {
-                                e.Protocol = Global.Protocols.Tcp.GetEnumDescription();
-                                e.SrcPort = int.Parse(item.tcp_sport.ToString());
-                                e.DstPort = int.Parse(item.tcp_dport.ToString());
-
-                            }
-                            else if (e.IpProto == (int)Global.Protocols.Udp)
-                            {
-                                e.Protocol = Global.Protocols.Udp.GetEnumDescription();
-                                e.SrcPort = int.Parse(item.udp_sport.ToString());
-                                e.DstPort = int.Parse(item.udp_dport.ToString());
-                            }
-                            else
-                            {
-                                e.SrcPort = 0;
-                                e.DstPort = 0;
-                            }
-
-                            if (item.data_payload != null)
-                            {
-                                e.PayloadHex = Helper.StringToByteArray(item.data_payload.ToString());
-                                e.PayloadAscii = woanware.Text.ReplaceNulls(woanware.Text.ByteArrayToString(e.PayloadHex, woanware.Text.EncodingType.Ascii));
-                            }
-
-                            csvWriter.WriteField(e.Cid);
-                            csvWriter.WriteField(e.IpSrc);
-                            csvWriter.WriteField(e.SrcPort);
-                            csvWriter.WriteField(e.IpDst);
-                            csvWriter.WriteField(e.DstPort);
-                            csvWriter.WriteField(e.Protocol);
-                            csvWriter.WriteField(e.Timestamp);
-                            csvWriter.WriteField(e.TcpFlagsString);
-                            csvWriter.WriteField(e.PayloadAscii);
+                            csvWriter.WriteField(item.Cid);
+                            csvWriter.WriteField(item.IpSrcTxt);
+                            csvWriter.WriteField(item.SrcPort);
+                            csvWriter.WriteField(item.IpDst);
+                            csvWriter.WriteField(item.DstPort);
+                            csvWriter.WriteField(item.Protocol);
+                            csvWriter.WriteField(item.Timestamp);
+                            csvWriter.WriteField(item.TcpFlagsString);
+                            csvWriter.WriteField(item.PayloadAscii);
                             csvWriter.NextRecord();
                         }
                     }
@@ -249,10 +202,9 @@ namespace snorbert
             {
                 try
                 {
-                    var dbSignature = new DbSignature();
-                    var query = dbSignature.Query(_sql.GetQuery(Sql.Query.SQL_EVENTS_RULES_FROM_EXPORT), args: new object[] { dateFrom, 
-                                                                                                                              dateTo,
-                                                                                                                              sid});
+                    NPoco.Database db = new NPoco.Database(Db.GetOpenMySqlConnection());
+                    List<Event> events = db.Fetch<Event>(_sql.GetQuery(Sql.Query.SQL_EVENTS_RULES_FROM_TO_EXPORT), new object[] { dateFrom, dateTo, sid });
+                    events = Helper.ProcessEventDataSet(events);
 
                     CsvConfiguration csvConfiguration = new CsvConfiguration();
                     csvConfiguration.Delimiter = '\t';
@@ -273,17 +225,17 @@ namespace snorbert
                         csvWriter.WriteField("Payload (ASCII)");
                         csvWriter.NextRecord();
 
-                        foreach (Event temp in query)
+                        foreach (var item in events)
                         {
-                            csvWriter.WriteField(temp.Cid);
-                            csvWriter.WriteField(temp.IpSrc);
-                            csvWriter.WriteField(temp.SrcPort);
-                            csvWriter.WriteField(temp.IpDst);
-                            csvWriter.WriteField(temp.DstPort);
-                            csvWriter.WriteField(temp.Protocol);
-                            csvWriter.WriteField(temp.Timestamp);
-                            csvWriter.WriteField(temp.TcpFlagsString);
-                            csvWriter.WriteField(temp.PayloadAscii);
+                            csvWriter.WriteField(item.Cid);
+                            csvWriter.WriteField(item.IpSrcTxt);
+                            csvWriter.WriteField(item.SrcPort);
+                            csvWriter.WriteField(item.IpDst);
+                            csvWriter.WriteField(item.DstPort);
+                            csvWriter.WriteField(item.Protocol);
+                            csvWriter.WriteField(item.Timestamp);
+                            csvWriter.WriteField(item.TcpFlagsString);
+                            csvWriter.WriteField(item.PayloadAscii);
                             csvWriter.NextRecord();
                         }
                     }
@@ -319,8 +271,8 @@ namespace snorbert
             {
                 try
                 {
-                    var dbExclude = new DbExclude();
-                    var query = dbExclude.Query(_sql.GetQuery(Sql.Query.SQL_EXCLUDES));
+                    NPoco.Database db = new NPoco.Database(Db.GetOpenMySqlConnection());
+                    List<Exclude> excludes = db.Fetch<Exclude>(_sql.GetQuery(Sql.Query.SQL_EXCLUDES));
 
                     CsvConfiguration csvConfiguration = new CsvConfiguration();
                     csvConfiguration.Delimiter = '\t';
@@ -340,37 +292,37 @@ namespace snorbert
                         csvWriter.WriteField("Sig.");
                         csvWriter.NextRecord();
 
-                        foreach (var temp in query)
+                        foreach (var temp in excludes)
                         {
-                            Exclude exclude = new Exclude();
-                            exclude.Id = temp.id;
-                            exclude.SigId = temp.sig_id;
-                            exclude.SigSid = temp.sig_sid;
-                            exclude.SourceIp = temp.ip_src;
-                            exclude.DestinationIp = temp.ip_dst;
+                            //Exclude exclude = new Exclude();
+                            //exclude.Id = temp.id;
+                            //exclude.SigId = temp.sig_id;
+                            //exclude.SigSid = temp.sig_sid;
+                            //exclude.SourceIp = temp.ip_src;
+                            //exclude.DestinationIp = temp.ip_dst;
 
-                            if (temp.fp[0] == 48)
-                            {
-                                exclude.FalsePositive = false;
-                            }
-                            else
-                            {
-                                exclude.FalsePositive = true;
-                            }
+                            //if (temp.fp[0] == 48)
+                            //{
+                            //    exclude.FalsePositive = false;
+                            //}
+                            //else
+                            //{
+                            //    exclude.FalsePositive = true;
+                            //}
 
-                            exclude.Comment = temp.comment;
-                            exclude.Rule = temp.sig_name;
-                            exclude.Timestamp = temp.timestamp;
+                            //exclude.Comment = temp.comment;
+                            //exclude.Rule = temp.sig_name;
+                            //exclude.Timestamp = temp.timestamp;
 
-                            csvWriter.WriteField(exclude.SigId);
-                            csvWriter.WriteField(exclude.SourceIp);
-                            csvWriter.WriteField(exclude.DestinationIp);
-                            csvWriter.WriteField(exclude.FalsePositive);
-                            csvWriter.WriteField(exclude.Comment);
-                            csvWriter.WriteField(exclude.Rule);
-                            csvWriter.WriteField(exclude.Timestamp);
+                            csvWriter.WriteField(temp.SigId);
+                            csvWriter.WriteField(temp.SourceIp);
+                            csvWriter.WriteField(temp.DestinationIp);
+                            csvWriter.WriteField(temp.FalsePositive);
+                            csvWriter.WriteField(temp.Comment);
+                            csvWriter.WriteField(temp.Rule);
+                            csvWriter.WriteField(temp.Timestamp);
 
-                            var rule = from r in rules where r.Key == exclude.SigSid.ToString() select r;
+                            var rule = from r in rules where r.Key == temp.SigSid.ToString() select r;
                             if (rule.Any() == true)
                             {
                                 csvWriter.WriteField(rule.First().Value);

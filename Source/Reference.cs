@@ -1,4 +1,5 @@
-﻿namespace snorbert
+﻿using NPoco;
+namespace snorbert
 {
     /// <summary>
     /// 
@@ -6,7 +7,9 @@
     internal class Reference
     {
         #region Member Variables
+        [Column("ref_system_name")]
         public string Type { get; set; }
+        [Column("ref_tag")]
         public string Data { get; set; }
         #endregion
 
