@@ -1,4 +1,5 @@
-﻿namespace snorbert
+﻿using NPoco;
+namespace snorbert
 {
     /// <summary>
     /// 
@@ -8,7 +9,9 @@
         #region Member Variables
         public uint Sid { get; set; }
         public string HostName { get; set; }
+        [Column("inter")]
         public string Interface { get; set; }
+        [Column("timestamp")]
         public string LastEvent { get; set; }
         public long EventCount { get; set; }
         public int EventPercentage { get; set; }

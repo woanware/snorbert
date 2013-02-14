@@ -55,6 +55,9 @@
     <Reference Include="MySql.Data">
       <HintPath>..\Dependencies\MySql\MySql.Data.dll</HintPath>
     </Reference>
+    <Reference Include="NPoco">
+      <HintPath>..\Dependencies\NPoco\NPoco.dll</HintPath>
+    </Reference>
     <Reference Include="ObjectListView">
       <HintPath>..\Dependencies\ObjectListView\ObjectListView.dll</HintPath>
     </Reference>
@@ -104,6 +107,7 @@
     <Compile Include="ControlSensors.Designer.cs">
       <DependentUpon>ControlSensors.cs</DependentUpon>
     </Compile>
+    <Compile Include="Db.cs" />
     <Compile Include="FormExcludeEdit.cs">
       <SubType>Form</SubType>
     </Compile>

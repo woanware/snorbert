@@ -93,8 +93,8 @@ namespace snorbert
                 }
 
                 // IP Tab
-                ipSource.Text = temp.IpSrc.ToString();
-                ipDest.Text = temp.IpDst.ToString();
+                ipSource.Text = temp.IpSrcTxt.ToString();
+                ipDest.Text = temp.IpDstTxt.ToString();
                 txtIpCsum.Text = temp.IpCsum.ToString();
                 txtIpFlags.Text = temp.IpFlags.ToString();
                 txtIpHlen.Text = temp.IpHlen.ToString();

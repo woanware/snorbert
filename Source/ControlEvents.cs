@@ -34,9 +34,9 @@ namespace snorbert
             InitializeComponent();
 
             Helper.AddListColumn(listEvents, "CID", "Cid");
-            Helper.AddListColumn(listEvents, "Src IP", "IpSrc");
+            Helper.AddListColumn(listEvents, "Src IP", "IpSrcTxt");
             Helper.AddListColumn(listEvents, "Src Port", "SrcPort");
-            Helper.AddListColumn(listEvents, "Dst IP", "IpDst");
+            Helper.AddListColumn(listEvents, "Dst IP", "IpDstTxt");
             Helper.AddListColumn(listEvents, "Dst Port", "DstPort");
             Helper.AddListColumn(listEvents, "Host", "HttpHost");
             Helper.AddListColumn(listEvents, "Protocol", "Protocol");

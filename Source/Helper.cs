@@ -142,6 +142,103 @@ namespace snorbert
 
             return ret;
         }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="events"></param>
+        /// <returns></returns>
+        public static List<Event> ProcessEventDataSet(List<Event> events)
+        {
+            int count = 0;
+            foreach (Event temp in events)
+            {
+                try
+                {
+                    //Event temp = new Event();
+                    //temp.Cid = item.cid;
+                    //temp.Sid = long.Parse(item.sig_sid.ToString());
+                    //temp.IpSrc = IPAddress.Parse(item.ip_src.ToString());
+                    //temp.IpDst = IPAddress.Parse(item.ip_dst.ToString());
+                    //temp.TcpSrcPort = int.Parse(item.tcp_sport.ToString());
+                    //temp.TcpDstPort = int.Parse(item.tcp_dport.ToString());
+                    //temp.UdpSrcPort = int.Parse(item.udp_sport.ToString());
+                    //temp.UdpDstPort = int.Parse(item.udp_dport.ToString());
+                    //temp.IpVer = int.Parse(item.ip_ver.ToString());
+                    //temp.IpHlen = int.Parse(item.ip_hlen.ToString());
+                    //temp.IpTos = int.Parse(item.ip_tos.ToString());
+                    //temp.IpLen = int.Parse(item.ip_len.ToString());
+                    //temp.IpId = int.Parse(item.ip_id.ToString());
+                    //temp.IpFlags = int.Parse(item.ip_flags.ToString());
+                    //temp.IpOff = int.Parse(item.ip_off.ToString());
+                    //temp.IpTtl = int.Parse(item.ip_ttl.ToString());
+                    //temp.IpProto = int.Parse(item.ip_proto.ToString());
+                    //temp.IpCsum = int.Parse(item.ip_csum.ToString());
+                    //temp.Timestamp = item.timestamp;
+                    //temp.SigName = item.sig_name;
+                    //temp.SigGid = item.sig_gid;
+                    //temp.SigPriority = item.sig_priority;
+                    //temp.SigRev = item.sig_rev;
+                    //temp.SigClassName = item.sig_class_name;
+                    //temp.TcpSeq = long.Parse(item.tcp_seq.ToString());
+                    //temp.TcpAck = long.Parse(item.tcp_ack.ToString());
+                    //temp.TcpOff = int.Parse(item.tcp_off.ToString());
+                    //temp.TcpRes = int.Parse(item.tcp_res.ToString());
+                    //temp.TcpFlags = int.Parse(item.tcp_flags.ToString());
+
+                    List<string> flags = new List<string>();
+                    foreach (Global.TcpFlags tcpFlag in Misc.EnumToList<Global.TcpFlags>())
+                    {
+                        if ((temp.TcpFlags & (int)tcpFlag) == (int)tcpFlag)
+                        {
+                            flags.Add(tcpFlag.GetEnumDescription());
+                        }
+                    }
+
+                    temp.TcpFlagsString = string.Join("+", flags.ToArray());
+
+                    //temp.TcpWin = int.Parse(item.tcp_win.ToString());
+                    //temp.TcpCsum = int.Parse(item.tcp_csum.ToString());
+                    //temp.TcpUrp = int.Parse(item.tcp_urp.ToString());
+                    //temp.UdpLen = int.Parse(item.udp_len.ToString());
+                    //temp.UdpCsum = int.Parse(item.udp_csum.ToString());
+
+                    if (temp.IpProto == (int)Global.Protocols.Tcp)
+                    {
+                        temp.Protocol = Global.Protocols.Tcp.GetEnumDescription();
+                        temp.SrcPort = int.Parse(temp.TcpSrcPort.ToString());
+                        temp.DstPort = int.Parse(temp.TcpDstPort.ToString());
+
+                    }
+                    else if (temp.IpProto == (int)Global.Protocols.Udp)
+                    {
+                        temp.Protocol = Global.Protocols.Udp.GetEnumDescription();
+                        temp.SrcPort = int.Parse(temp.UdpSrcPort.ToString());
+                        temp.DstPort = int.Parse(temp.UdpDstPort.ToString());
+                    }
+                    else
+                    {
+                        temp.SrcPort = 0;
+                        temp.DstPort = 0;
+                    }
+
+                    if (temp.PayloadAscii != null)
+                    {
+                        temp.PayloadHex = Helper.StringToByteArray(temp.PayloadAscii);
+                        temp.PayloadAscii = woanware.Text.ReplaceNulls(woanware.Text.ByteArrayToString(temp.PayloadHex, woanware.Text.EncodingType.Ascii));
+                        temp.HttpHost = ParseHost(temp.PayloadAscii);
+                    }
+
+                    count++;
+                }
+                catch (Exception ex)
+                {
+                    Misc.WriteToEventLog(Application.ProductName, "An error occurred whilst parsing the event data: " + ex.Message, System.Diagnostics.EventLogEntryType.Error);
+                }
+            }
+
+            return events;
+        }
         
         /// <summary>
         /// Parses out the HTTP Host header

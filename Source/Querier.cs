@@ -62,10 +62,10 @@ namespace snorbert
             {
                 try
                 {
-                    var dbSignature = new DbSignature();
-                    var query = dbSignature.Query(_sql.GetQuery(Sql.Query.SQL_EVENTS), args: new object[] { offset, pageLimit });
+                    NPoco.Database db = new NPoco.Database(Db.GetOpenMySqlConnection());
+                    List<Event> data = db.Fetch<Event>(_sql.GetQuery(Sql.Query.SQL_EVENTS), new object[] { offset, pageLimit });
 
-                    List<Event> data = Helper.LoadEventDataSet(query);
+                    data = Helper.ProcessEventDataSet(data);
                     OnComplete(data);
                 }
                 catch (Exception ex)
@@ -98,33 +98,22 @@ namespace snorbert
             {
                 try
                 {
-                    var dbSignature = new DbSignature();
-                    var query = dbSignature.Query(_sql.GetQuery(Sql.Query.SQL_RULES_FROM), args: new object[] { dateFrom });
+                    NPoco.Database db = new NPoco.Database(Db.GetOpenMySqlConnection());
+                    List<Rule> temp = db.Fetch<Rule>(_sql.GetQuery(Sql.Query.SQL_RULES_FROM), new object[] { dateFrom });
 
-                    List<Rule> data = new List<Rule>();
-                    foreach (var rule in query)
+                    foreach (var rule in temp)
                     {
-                        if (rule.sig_priority.ToString().Length > 0)
+                        if (rule.Priority.ToString().Length > 0)
                         {
-                            Rule temp = new Rule(rule.sig_id,
-                                                 rule.sig_name + " (SID: " + rule.sig_sid.ToString() + "/Priority: " + rule.sig_priority.ToString() + "): " + rule.count.ToString(),
-                                                 rule.sig_sid.ToString(),
-                                                 rule.sig_priority.ToString(),
-                                                 int.Parse(rule.count.ToString()));
-                            data.Add(temp);
+                            rule.Text = rule.Name + " (SID: " + rule.Sid.ToString() + "/Priority: " + rule.Priority.ToString() + "): " + rule.Count.ToString();
                         }
                         else
                         {
-                            Rule temp = new Rule(rule.sig_id, 
-                                                 rule.sig_name + " (SID: " + rule.sig_sid.ToString() + "): " + rule.count.ToString(),
-                                                 rule.sig_sid.ToString(),
-                                                 string.Empty,
-                                                 int.Parse(rule.count.ToString()));
-                            data.Add(temp);
+                            rule.Text = rule.Name + " (SID: " + rule.Sid.ToString() + "): " + rule.Count.ToString();
                         }
                     }
 
-                    OnComplete(data);
+                    OnComplete(temp);
                 }
                 catch (Exception ex)
                 {
@@ -157,22 +146,15 @@ namespace snorbert
             {
                 try
                 {
-                    var dbSignature = new DbSignature();
-                    var query = dbSignature.Query(_sql.GetQuery(Sql.Query.SQL_RULES_FROM_PRIORITY), args: new object[] { dateFrom, priority });
+                    NPoco.Database db = new NPoco.Database(Db.GetOpenMySqlConnection());
+                    List<Rule> temp = db.Fetch<Rule>(_sql.GetQuery(Sql.Query.SQL_RULES_FROM_PRIORITY), new object[] { dateFrom, priority });
 
-                    List<Rule> data = new List<Rule>();
-                    foreach (var rule in query)
+                    foreach (var rule in temp)
                     {
-                        Rule temp = new Rule(rule.sig_id,
-                                                 rule.sig_name + " (SID: " + rule.sig_sid.ToString() + "): " + rule.count.ToString(),
-                                                 rule.sig_sid.ToString(),
-                                                 string.Empty,
-                                                 int.Parse(rule.count.ToString()));
-
-                        data.Add(temp);
+                        rule.Text = rule.Name + " (SID: " + rule.Sid.ToString() + "): " + rule.Count.ToString();
                     }
 
-                    OnComplete(data);
+                    OnComplete(temp);
                 }
                 catch (Exception ex)
                 {
@@ -205,33 +187,22 @@ namespace snorbert
             {
                 try
                 {
-                    var dbSignature = new DbSignature();
-                    var query = dbSignature.Query(_sql.GetQuery(Sql.Query.SQL_RULES_FROM_TO), args: new object[] { dateFrom, dateTo});
+                    NPoco.Database db = new NPoco.Database(Db.GetOpenMySqlConnection());
+                    List<Rule> temp = db.Fetch<Rule>(_sql.GetQuery(Sql.Query.SQL_RULES_FROM_TO), new object[] { dateFrom, dateTo });
 
-                    List<Rule> data = new List<Rule>();
-                    foreach (var rule in query)
+                    foreach (var rule in temp)
                     {
-                        if (rule.sig_priority.ToString().Length > 0)
+                        if (rule.Priority.ToString().Length > 0)
                         {
-                            Rule temp = new Rule(rule.sig_id, 
-                                                 rule.sig_name + " (SID: " + rule.sig_sid.ToString() + "/Priority: " + rule.sig_priority.ToString() + "): " + rule.count.ToString(),
-                                                 rule.sig_sid.ToString(),
-                                                 rule.sig_priority.ToString(),
-                                                 int.Parse(rule.count.ToString()));
-                            data.Add(temp);
+                            rule.Text = rule.Name + " (SID: " + rule.Sid.ToString() + "/Priority: " + rule.Priority.ToString() + "): " + rule.Count.ToString();
                         }
                         else
                         {
-                            Rule temp = new Rule(rule.sig_id, 
-                                                 rule.sig_name + " (SID: " + rule.sig_sid.ToString() + "): " + rule.count.ToString(),
-                                                 rule.sig_sid.ToString(),
-                                                 string.Empty,
-                                                 int.Parse(rule.count.ToString()));
-                            data.Add(temp);
+                            rule.Text = rule.Name + " (SID: " + rule.Sid.ToString() + "): " + rule.Count.ToString();
                         }
                     }
-                    
-                    OnComplete(data);
+
+                    OnComplete(temp);
                 }
                 catch (Exception ex)
                 {
@@ -266,22 +237,15 @@ namespace snorbert
             {
                 try
                 {
-                    var dbSignature = new DbSignature();
-                    var query = dbSignature.Query(_sql.GetQuery(Sql.Query.SQL_RULES_FROM_TO_PRIORITY), args: new object[] { dateFrom, dateTo, priority });
+                    NPoco.Database db = new NPoco.Database(Db.GetOpenMySqlConnection());
+                    List<Rule> temp = db.Fetch<Rule>(_sql.GetQuery(Sql.Query.SQL_RULES_FROM_TO_PRIORITY), new object[] { dateFrom, dateTo, priority });
 
-                    List<Rule> data = new List<Rule>();
-                    foreach (var rule in query)
+                    foreach (var rule in temp)
                     {
-                        Rule temp = new Rule(rule.sig_id,
-                                             rule.sig_name + " (SID: " + rule.sig_sid.ToString() + "): " + rule.count.ToString(),
-                                             rule.sig_sid.ToString(),
-                                             string.Empty,
-                                             int.Parse(rule.count.ToString()));
-
-                        data.Add(temp);
+                        rule.Text = rule.Name + " (SID: " + rule.Sid.ToString() + "): " + rule.Count.ToString();
                     }
 
-                    OnComplete(data);
+                    OnComplete(temp);
                 }
                 catch (Exception ex)
                 {
@@ -317,13 +281,14 @@ namespace snorbert
             {
                 try
                 {
-                    var dbSignature = new DbSignature();
-                    var query = dbSignature.Query(_sql.GetQuery(Sql.Query.SQL_EVENTS_RULES_FROM_TO), args: new object[] { dateFrom, 
-                                                                                                     dateTo,
-                                                                                                     sid, 
-                                                                                                     offset, 
-                                                                                                     pageLimit });
-                    List<Event> data = Helper.LoadEventDataSet(query);
+                    NPoco.Database db = new NPoco.Database(Db.GetOpenMySqlConnection());
+                    List<Event> data = db.Fetch<Event>(_sql.GetQuery(Sql.Query.SQL_EVENTS_RULES_FROM_TO), new object[] { dateFrom, 
+                                                                                                                         dateTo,
+                                                                                                                         sid, 
+                                                                                                                         offset, 
+                                                                                                                         pageLimit });
+
+                    data = Helper.ProcessEventDataSet(data);
                     OnComplete(data);
                 }
                 catch (Exception ex)
@@ -359,12 +324,13 @@ namespace snorbert
             {
                 try
                 {
-                    var dbSignature = new DbSignature();
-                    var query = dbSignature.Query(_sql.GetQuery(Sql.Query.SQL_EVENTS_RULES_FROM), args: new object[] { dateFrom, 
-                                                                                                     sid, 
-                                                                                                     offset, 
-                                                                                                     pageLimit });
-                    List<Event> data = Helper.LoadEventDataSet(query);
+                    NPoco.Database db = new NPoco.Database(Db.GetOpenMySqlConnection());
+                    List<Event> data = db.Fetch<Event>(_sql.GetQuery(Sql.Query.SQL_EVENTS_RULES_FROM), new object[] { dateFrom, 
+                                                                                                                      sid, 
+                                                                                                                      offset, 
+                                                                                                                      pageLimit});
+
+                    data = Helper.ProcessEventDataSet(data);
                     OnComplete(data);
                 }
                 catch (Exception ex)
@@ -398,10 +364,10 @@ namespace snorbert
             {
                 try
                 {
-                    var entries = new DbSignature();
-                    var query = entries.Query(_sql.GetQuery(Sql.Query.SQL_EVENTS_SEARCH) + where, args: args);
+                    NPoco.Database db = new NPoco.Database(Db.GetOpenMySqlConnection());
+                    List<Event> data = db.Fetch<Event>(_sql.GetQuery(Sql.Query.SQL_EVENTS_SEARCH) + where, args);
 
-                    List<Event> data = Helper.LoadEventDataSet(query);
+                    data = Helper.ProcessEventDataSet(data);
                     OnComplete(data);
                 }
                 catch (Exception ex)
@@ -432,30 +398,16 @@ namespace snorbert
             {
                 try
                 {
-                    var dbSensor = new DbSensor();
-                    var query = dbSensor.Query(_sql.GetQuery(Sql.Query.SQL_SENSORS));
+                    NPoco.Database db = new NPoco.Database(Db.GetOpenMySqlConnection());
+                    List<Sensor> sensors = db.Fetch<Sensor>(_sql.GetQuery(Sql.Query.SQL_SENSORS));
 
-                    List<Sensor> data = new List<Sensor>();
                     long count = 0;
-                    foreach (var result in query)
+                    foreach (Sensor sensor in sensors)
                     {
-                        Sensor sensor = new Sensor();
-                        sensor.Sid = result.sid;
-                        sensor.HostName = result.hostname;
-                        sensor.Interface = result.inter;
-
-                        if (result.timestamp != null)
-                        {
-                            sensor.LastEvent = result.timestamp.ToString(); 
-                        }
-
-                        sensor.EventCount = result.eventcount;
                         count += sensor.EventCount;
-
-                        data.Add(sensor);
                     }
 
-                    foreach (Sensor sensor in data)
+                    foreach (Sensor sensor in sensors)
                     {
                         if (sensor.EventCount > 0)
                         {
@@ -463,7 +415,7 @@ namespace snorbert
                         }
                     }
 
-                    OnComplete(data);
+                    OnComplete(sensors);
                 }
                 catch (Exception ex)
                 {
@@ -500,23 +452,23 @@ namespace snorbert
             {
                 try
                 {
-                    List<string> data = new List<string>();
+                    NPoco.Database db = new NPoco.Database(Db.GetOpenMySqlConnection());
 
-                    var dbSignature = new DbSignature();
+                    List<string> data = new List<string>();
                     if (sourceIps == true)
                     {
-                        var query = dbSignature.Query(_sql.GetQuery(Sql.Query.SQL_RULES_SRC_IPS_FROM_TO), args: new object[] { id, dateFrom, dateTo });
-                        foreach (var rule in query)
+                        List<Event> temp = db.Fetch<Event>(_sql.GetQuery(Sql.Query.SQL_RULES_SRC_IPS_FROM_TO), new object[] { id, dateFrom, dateTo });
+                        foreach (var rule in temp)
                         {
-                            data.Add(rule.ip);
+                            data.Add(rule.IpSrcTxt);
                         }
                     }
                     else
                     {
-                        var query = dbSignature.Query(_sql.GetQuery(Sql.Query.SQL_RULES_DST_IPS_FROM_TO), args: new object[] { id, dateFrom, dateTo });
-                        foreach (var rule in query)
+                        List<Event> temp = db.Fetch<Event>(_sql.GetQuery(Sql.Query.SQL_RULES_DST_IPS_FROM_TO), new object[] { id, dateFrom, dateTo });
+                        foreach (var rule in temp)
                         {
-                            data.Add(rule.ip);
+                            data.Add(rule.IpDstTxt);
                         }
                     }
 
@@ -555,26 +507,26 @@ namespace snorbert
             {
                 try
                 {
-                    List<string> data = new List<string>();
+                    NPoco.Database db = new NPoco.Database(Db.GetOpenMySqlConnection());
 
-                    var dbSignature = new DbSignature();
+                    List<string> data = new List<string>();
                     if (sourceIps == true)
                     {
-                        var query = dbSignature.Query(_sql.GetQuery(Sql.Query.SQL_RULES_SRC_IPS_FROM), args: new object[] { id, dateFrom });
-                        foreach (var rule in query)
+                        List<Event> temp = db.Fetch<Event>(_sql.GetQuery(Sql.Query.SQL_RULES_SRC_IPS_FROM), new object[] { id, dateFrom });
+                        foreach (var rule in temp)
                         {
-                            data.Add(rule.ip);
+                            data.Add(rule.IpSrcTxt);
                         }
                     }
                     else
                     {
-                        var query = dbSignature.Query(_sql.GetQuery(Sql.Query.SQL_RULES_DST_IPS_FROM), args: new object[] { id, dateFrom });
-                        foreach (var rule in query)
+                        List<Event> temp = db.Fetch<Event>(_sql.GetQuery(Sql.Query.SQL_RULES_DST_IPS_FROM), new object[] { id, dateFrom });
+                        foreach (var rule in temp)
                         {
-                            data.Add(rule.ip);
+                            data.Add(rule.IpDstTxt);
                         }
                     }
-                    
+
                     OnComplete(data);
                 }
                 catch (Exception ex)
