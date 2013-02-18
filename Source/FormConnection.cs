@@ -121,6 +121,8 @@ namespace snorbert
                 Connection connection = new Connection();
                 connection.Name = txtName.Text;
                 connection.ConnectionString = txtConnectionString.Text;
+                connection.ConcentratorIp = txtNetwitnessIp.Text;
+                connection.CollectionName = txtCollectionName.Text;
                 _connections.Data.Add(connection);
             }
             else
@@ -134,6 +136,8 @@ namespace snorbert
 
                 temp.Name = txtName.Text;
                 temp.ConnectionString = txtConnectionString.Text;
+                temp.ConcentratorIp = txtNetwitnessIp.Text;
+                temp.CollectionName = txtCollectionName.Text;
             }
             
             string ret = _connections.Save();

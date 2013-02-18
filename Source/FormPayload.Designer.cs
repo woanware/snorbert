@@ -28,6 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(FormPayload));
             this.tabEvent = new System.Windows.Forms.TabControl();
             this.tabPageHex = new System.Windows.Forms.TabPage();
             this.hexEvent = new Be.Windows.Forms.HexBox();
@@ -46,7 +47,7 @@
             this.tabEvent.Location = new System.Drawing.Point(0, 0);
             this.tabEvent.Name = "tabEvent";
             this.tabEvent.SelectedIndex = 0;
-            this.tabEvent.Size = new System.Drawing.Size(584, 383);
+            this.tabEvent.Size = new System.Drawing.Size(480, 460);
             this.tabEvent.TabIndex = 1;
             // 
             // tabPageHex
@@ -54,7 +55,7 @@
             this.tabPageHex.Controls.Add(this.hexEvent);
             this.tabPageHex.Location = new System.Drawing.Point(4, 24);
             this.tabPageHex.Name = "tabPageHex";
-            this.tabPageHex.Size = new System.Drawing.Size(576, 355);
+            this.tabPageHex.Size = new System.Drawing.Size(472, 432);
             this.tabPageHex.TabIndex = 0;
             this.tabPageHex.Text = "Payload (Hex)";
             this.tabPageHex.UseVisualStyleBackColor = true;
@@ -69,7 +70,7 @@
             this.hexEvent.Name = "hexEvent";
             this.hexEvent.ReadOnly = true;
             this.hexEvent.ShadowSelectionColor = System.Drawing.Color.FromArgb(((int)(((byte)(100)))), ((int)(((byte)(60)))), ((int)(((byte)(188)))), ((int)(((byte)(255)))));
-            this.hexEvent.Size = new System.Drawing.Size(576, 355);
+            this.hexEvent.Size = new System.Drawing.Size(472, 432);
             this.hexEvent.StringViewVisible = true;
             this.hexEvent.TabIndex = 0;
             this.hexEvent.UseFixedBytesPerLine = true;
@@ -101,9 +102,11 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(584, 383);
+            this.ClientSize = new System.Drawing.Size(480, 460);
             this.Controls.Add(this.tabEvent);
             this.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
+            this.MinimumSize = new System.Drawing.Size(334, 325);
             this.Name = "FormPayload";
             this.ShowInTaskbar = false;
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;

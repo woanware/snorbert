@@ -1,5 +1,4 @@
 ﻿using BrightIdeasSoftware;
-using Microsoft.Isam.Esent.Collections.Generic;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -25,6 +24,7 @@ namespace snorbert
         private HourGlass _hourGlass;
         private Querier _querier;
         private Sql _sql;
+        private Connection _connection;
         #endregion
 
         #region Constructor
@@ -36,9 +36,9 @@ namespace snorbert
             InitializeComponent();
 
             Helper.AddListColumn(listEvents, "CID", "Cid");
-            Helper.AddListColumn(listEvents, "Src IP", "IpSrc");
+            Helper.AddListColumn(listEvents, "Src IP", "IpSrcTxt");
             Helper.AddListColumn(listEvents, "Src Port", "SrcPort");
-            Helper.AddListColumn(listEvents, "Dst IP", "IpDst");
+            Helper.AddListColumn(listEvents, "Dst IP", "IpDstTxt");
             Helper.AddListColumn(listEvents, "Dst Port", "DstPort");
             Helper.AddListColumn(listEvents, "Host", "HttpHost");
             Helper.AddListColumn(listEvents, "Protocol", "Protocol");
@@ -74,8 +74,9 @@ namespace snorbert
             {
                 using (new HourGlass(this))
                 {
-                    formFilter.LoadClassifications();
-                    formFilter.LoadPriorities();
+                    NPoco.Database db = new NPoco.Database(Db.GetOpenMySqlConnection());
+                    formFilter.LoadClassifications(db);
+                    formFilter.LoadPriorities(db);
                 }
 
                 if (formFilter.ShowDialog(this) == System.Windows.Forms.DialogResult.Cancel)
@@ -478,6 +479,31 @@ namespace snorbert
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
+        private void listEvents_MouseDoubleClick(object sender, MouseEventArgs e)
+        {
+            if (listEvents.SelectedObjects.Count != 1)
+            {
+                return;
+            }
+
+            Event temp = (Event)listEvents.SelectedObjects[0];
+            if (temp == null)
+            {
+                UserInterface.DisplayErrorMessageBox(this, "Unable to locate event");
+                return;
+            }
+
+            using (FormPayload formPayload = new FormPayload(temp))
+            {
+                formPayload.ShowDialog(this);
+            }
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void listFilters_SelectedIndexChanged(object sender, EventArgs e)
         {
             SetFilterButtonStatus(true);
@@ -515,15 +541,6 @@ namespace snorbert
         /// <summary>
         /// 
         /// </summary>
-        /// <param name="rules"></param>
-        public void SetRules(PersistentDictionary<string, string> rules)
-        {
-            controlEventInfo.SetRules(rules);
-        }
-
-        /// <summary>
-        /// 
-        /// </summary>
         /// <param name="pageLimit"></param>
         public void SetPageLimit(int pageLimit)
         {
@@ -532,15 +549,6 @@ namespace snorbert
             _currentPage = 1;
             Clear();
         }
-
-        ///// <summary>
-        ///// 
-        ///// </summary>
-        ///// <param name="enabled"></param>
-        //public void SetState(bool enabled)
-        //{
-        //    this.Enabled = enabled;
-        //}
 
         /// <summary>
         /// 
@@ -551,6 +559,15 @@ namespace snorbert
             _sql = sql;
             _querier.SetSql(_sql);
             controlEventInfo.SetSql(_sql);
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="connection"></param>
+        public void SetConnection(Connection connection)
+        {
+            _connection = connection;
         }
         #endregion
 

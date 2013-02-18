@@ -57,6 +57,8 @@
             this.ctxMenuExport = new System.Windows.Forms.ToolStripMenuItem();
             this.ctxMenuExportAll = new System.Windows.Forms.ToolStripMenuItem();
             this.ctxMenuExportCurrent = new System.Windows.Forms.ToolStripMenuItem();
+            this.ctxMenuSep4 = new System.Windows.Forms.ToolStripSeparator();
+            this.ctxMenuNetwitnessQuery = new System.Windows.Forms.ToolStripMenuItem();
             this.btnPagingPreviousPage = new System.Windows.Forms.Button();
             this.btnPagingNextPage = new System.Windows.Forms.Button();
             this.btnPagingFirstPage = new System.Windows.Forms.Button();
@@ -152,6 +154,7 @@
             this.listEvents.View = System.Windows.Forms.View.Details;
             this.listEvents.VirtualMode = true;
             this.listEvents.SelectedIndexChanged += new System.EventHandler(this.listEvents_SelectedIndexChanged);
+            this.listEvents.MouseDoubleClick += new System.Windows.Forms.MouseEventHandler(this.listEvents_MouseDoubleClick);
             // 
             // ctxMenuEvent
             // 
@@ -164,10 +167,12 @@
             this.ctxMenuSep2,
             this.ctxMenuExtractIpInfo,
             this.ctxMenuSep3,
-            this.ctxMenuExport});
+            this.ctxMenuExport,
+            this.ctxMenuSep4,
+            this.ctxMenuNetwitnessQuery});
             this.ctxMenuEvent.Name = "ctxMenuEvent";
             this.ctxMenuEvent.RenderMode = System.Windows.Forms.ToolStripRenderMode.System;
-            this.ctxMenuEvent.Size = new System.Drawing.Size(189, 138);
+            this.ctxMenuEvent.Size = new System.Drawing.Size(189, 188);
             this.ctxMenuEvent.Opening += new System.ComponentModel.CancelEventHandler(this.ctxMenuEvent_Opening);
             // 
             // ctxMenuPayload
@@ -318,16 +323,28 @@
             // ctxMenuExportAll
             // 
             this.ctxMenuExportAll.Name = "ctxMenuExportAll";
-            this.ctxMenuExportAll.Size = new System.Drawing.Size(152, 22);
+            this.ctxMenuExportAll.Size = new System.Drawing.Size(114, 22);
             this.ctxMenuExportAll.Text = "All";
             this.ctxMenuExportAll.Click += new System.EventHandler(this.ctxMenuExportAll_Click);
             // 
             // ctxMenuExportCurrent
             // 
             this.ctxMenuExportCurrent.Name = "ctxMenuExportCurrent";
-            this.ctxMenuExportCurrent.Size = new System.Drawing.Size(152, 22);
+            this.ctxMenuExportCurrent.Size = new System.Drawing.Size(114, 22);
             this.ctxMenuExportCurrent.Text = "Current";
             this.ctxMenuExportCurrent.Click += new System.EventHandler(this.ctxMenuExportCurrent_Click);
+            // 
+            // ctxMenuSep4
+            // 
+            this.ctxMenuSep4.Name = "ctxMenuSep4";
+            this.ctxMenuSep4.Size = new System.Drawing.Size(185, 6);
+            // 
+            // ctxMenuNetwitnessQuery
+            // 
+            this.ctxMenuNetwitnessQuery.Name = "ctxMenuNetwitnessQuery";
+            this.ctxMenuNetwitnessQuery.Size = new System.Drawing.Size(188, 22);
+            this.ctxMenuNetwitnessQuery.Text = "NetWitness Query";
+            this.ctxMenuNetwitnessQuery.Click += new System.EventHandler(this.ctxMenuNetwitnessQuery_Click);
             // 
             // btnPagingPreviousPage
             // 
@@ -609,5 +626,7 @@
         private System.Windows.Forms.Label lblPriority;
         private System.Windows.Forms.ToolStripMenuItem ctxMenuPayload;
         private System.Windows.Forms.ToolStripSeparator toolStripMenuItem1;
+        private System.Windows.Forms.ToolStripSeparator ctxMenuSep4;
+        private System.Windows.Forms.ToolStripMenuItem ctxMenuNetwitnessQuery;
     }
 }

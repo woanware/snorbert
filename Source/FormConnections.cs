@@ -151,19 +151,6 @@ namespace snorbert
                 }
             }
         }
-        #endregion
-
-        #region Listview Event Handlers
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void listConnections_SelectedIndexChanged(object sender, EventArgs e)
-        {
-            SetButtonState();
-        }
-        #endregion
 
         /// <summary>
         /// 
@@ -191,5 +178,45 @@ namespace snorbert
                 return;
             }
         }
+        #endregion
+
+        #region Listview Event Handlers
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void listConnections_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            SetButtonState();
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void listConnections_MouseDoubleClick(object sender, MouseEventArgs e)
+        {
+            btnEdit_Click(this, new EventArgs());
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void listConnections_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.KeyCode == Keys.Enter)
+            {
+                btnEdit_Click(this, new EventArgs());
+            }
+            else if (e.KeyCode == Keys.Delete)
+            {
+                btnDelete_Click(this, new EventArgs());
+            }
+        }
+        #endregion
     }
 }

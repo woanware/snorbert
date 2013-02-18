@@ -1,5 +1,4 @@
 ﻿using BrightIdeasSoftware;
-using Microsoft.Isam.Esent.Collections.Generic;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -28,6 +27,7 @@ namespace snorbert
         private Exporter _exporter;
         private HourGlass _hourGlass;
         private Sql _sql;
+        private Connection _connection;
         #endregion
 
         #region Constructor
@@ -39,9 +39,9 @@ namespace snorbert
             InitializeComponent();
 
             Helper.AddListColumn(listEvents, "CID", "Cid");
-            Helper.AddListColumn(listEvents, "Src IP", "IpSrc");
+            Helper.AddListColumn(listEvents, "Src IP", "IpSrcTxt");
             Helper.AddListColumn(listEvents, "Src Port", "SrcPort");
-            Helper.AddListColumn(listEvents, "Dst IP", "IpDst");
+            Helper.AddListColumn(listEvents, "Dst IP", "IpDstTxt");
             Helper.AddListColumn(listEvents, "Dst Port", "DstPort");
             Helper.AddListColumn(listEvents, "Host", "HttpHost");
             Helper.AddListColumn(listEvents, "Protocol", "Protocol");
@@ -551,18 +551,34 @@ namespace snorbert
             Event temp = (Event)listEvents.SelectedObjects[0];
             controlEventInfo.DisplaySelectedEventDetails(temp);
         }
-        #endregion
 
-        #region Public Methods
         /// <summary>
         /// 
         /// </summary>
-        /// <param name="rules"></param>
-        public void SetRules(PersistentDictionary<string, string> rules)
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void listEvents_MouseDoubleClick(object sender, MouseEventArgs e)
         {
-            controlEventInfo.SetRules(rules);
-        }
+            if (listEvents.SelectedObjects.Count != 1)
+            {
+                return;
+            }
 
+            Event temp = (Event)listEvents.SelectedObjects[0];
+            if (temp == null)
+            {
+                UserInterface.DisplayErrorMessageBox(this, "Unable to locate event");
+                return;
+            }
+
+            using (FormPayload formPayload = new FormPayload(temp))
+            {
+                formPayload.ShowDialog(this);
+            }
+        }
+        #endregion
+
+        #region Public Methods
         /// <summary>
         /// 
         /// </summary>
@@ -575,15 +591,6 @@ namespace snorbert
             Clear();
         }
 
-        ///// <summary>
-        ///// 
-        ///// </summary>
-        ///// <param name="enabled"></param>
-        //public void SetState(bool enabled)
-        //{
-        //    this.Enabled = enabled;
-        //}
-
         /// <summary>
         /// 
         /// </summary>
@@ -594,6 +601,15 @@ namespace snorbert
             _querier.SetSql(_sql);
             _exporter.SetSql(_sql);
             controlEventInfo.SetSql(_sql);
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="connection"></param>
+        public void SetConnection(Connection connection)
+        {
+            _connection = connection;
         }
         #endregion
 
@@ -677,12 +693,14 @@ namespace snorbert
                 ctxMenuCopy.Enabled = true;
                 ctxMenuPayload.Enabled = true;
                 ctxMenuExclude.Enabled = true;
+                ctxMenuNetwitnessQuery.Enabled = true;
             }
             else
             {
                 ctxMenuCopy.Enabled = false;
                 ctxMenuPayload.Enabled = false;
                 ctxMenuExclude.Enabled = false;
+                ctxMenuNetwitnessQuery.Enabled = false;
             }
         }
 
@@ -807,20 +825,8 @@ namespace snorbert
                     return;
                 }
 
-                //LoadFalsePositives();
                 LoadRuleEvents(_currentPage);
             }
-
-            //using (FormFalsePositive formFalsePositive = new FormFalsePositive(_falsePostives, temp))
-            //{
-            //    if (formFalsePositive.ShowDialog(this) == DialogResult.Cancel)
-            //    {
-            //        return;
-            //    }
-
-            //    //LoadFalsePositives();
-            //    LoadRuleEvents(_currentPage);
-            //}
         }
 
         /// <summary>
@@ -981,6 +987,38 @@ namespace snorbert
             {
                 formPayload.ShowDialog(this);
             }
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void ctxMenuNetwitnessQuery_Click(object sender, EventArgs e)
+        {
+            if (listEvents.SelectedObjects.Count != 1)
+            {
+                return;
+            }
+
+            Event temp = (Event)listEvents.SelectedObjects[0];
+            if (temp == null)
+            {
+                UserInterface.DisplayErrorMessageBox(this, "Unable to locate event");
+                return;
+            }
+
+            string query = Helper.ConstructNetWitnessUrl(_connection.ConcentratorIp, 
+                                                         _connection.CollectionName, 
+                                                         temp.IpSrcTxt, 
+                                                         temp.SrcPort.ToString(), 
+                                                         temp.IpDstTxt,
+                                                         temp.DstPort.ToString(), 
+                                                         temp.Protocol);
+
+            Clipboard.SetText(query);
+
+            OnMessage("NetWitness query copied to the clipboard");
         }
         #endregion
     }

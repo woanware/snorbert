@@ -36,18 +36,24 @@
             this.btnEdit = new System.Windows.Forms.Button();
             this.btnDelete = new System.Windows.Forms.Button();
             this.btnClose = new System.Windows.Forms.Button();
+            this.olvcConcentratorIp = ((BrightIdeasSoftware.OLVColumn)(new BrightIdeasSoftware.OLVColumn()));
+            this.olvcCollectionName = ((BrightIdeasSoftware.OLVColumn)(new BrightIdeasSoftware.OLVColumn()));
             ((System.ComponentModel.ISupportInitialize)(this.listConnections)).BeginInit();
             this.SuspendLayout();
             // 
             // listConnections
             // 
             this.listConnections.AllColumns.Add(this.olvcName);
+            this.listConnections.AllColumns.Add(this.olvcConcentratorIp);
+            this.listConnections.AllColumns.Add(this.olvcCollectionName);
             this.listConnections.AllColumns.Add(this.olvcConnectionString);
             this.listConnections.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.listConnections.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
             this.olvcName,
+            this.olvcConcentratorIp,
+            this.olvcCollectionName,
             this.olvcConnectionString});
             this.listConnections.FullRowSelect = true;
             this.listConnections.HideSelection = false;
@@ -60,15 +66,19 @@
             this.listConnections.UseCompatibleStateImageBehavior = false;
             this.listConnections.View = System.Windows.Forms.View.Details;
             this.listConnections.SelectedIndexChanged += new System.EventHandler(this.listConnections_SelectedIndexChanged);
+            this.listConnections.KeyDown += new System.Windows.Forms.KeyEventHandler(this.listConnections_KeyDown);
+            this.listConnections.MouseDoubleClick += new System.Windows.Forms.MouseEventHandler(this.listConnections_MouseDoubleClick);
             // 
             // olvcName
             // 
             this.olvcName.AspectName = "Name";
+            this.olvcName.CellPadding = null;
             this.olvcName.Text = "Name";
             // 
             // olvcConnectionString
             // 
             this.olvcConnectionString.AspectName = "ConnectionString";
+            this.olvcConnectionString.CellPadding = null;
             this.olvcConnectionString.Text = "Connection String";
             this.olvcConnectionString.Width = 133;
             // 
@@ -117,6 +127,20 @@
             this.btnClose.UseVisualStyleBackColor = true;
             this.btnClose.Click += new System.EventHandler(this.btnClose_Click);
             // 
+            // olvcConcentratorIp
+            // 
+            this.olvcConcentratorIp.AspectName = "ConcentratorIp";
+            this.olvcConcentratorIp.CellPadding = null;
+            this.olvcConcentratorIp.Text = "Concentrator IP";
+            this.olvcConcentratorIp.Width = 110;
+            // 
+            // olvcCollectionName
+            // 
+            this.olvcCollectionName.AspectName = "CollectionName";
+            this.olvcCollectionName.CellPadding = null;
+            this.olvcCollectionName.Text = "Collection Name";
+            this.olvcCollectionName.Width = 128;
+            // 
             // FormConnections
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
@@ -150,5 +174,7 @@
         private BrightIdeasSoftware.OLVColumn olvcName;
         private BrightIdeasSoftware.OLVColumn olvcConnectionString;
         private System.Windows.Forms.Button btnClose;
+        private BrightIdeasSoftware.OLVColumn olvcConcentratorIp;
+        private BrightIdeasSoftware.OLVColumn olvcCollectionName;
     }
 }

@@ -55,12 +55,6 @@ namespace snorbert
                 NPoco.Database db = new NPoco.Database(Db.GetOpenMySqlConnection());
                 Exclude exclude = new Exclude();
 
-                //List<Event> data = db.Fetch<Event>(_sql.GetQuery(Sql.Query.SQL_EVENTS), new object[] { offset, pageLimit });
-
-                //var dbExclude = new DbExclude();
-
-               // dynamic exclude = new ExpandoObject();
-
                 if (chkRule.Checked == true)
                 {
                     exclude.SigId = _ruleId;
@@ -85,7 +79,6 @@ namespace snorbert
                 exclude.Timestamp = DateTime.Now;
 
                 db.Insert(exclude);
-                //dbExclude.Insert(exclude);
             }
             catch (Exception ex)
             {

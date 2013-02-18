@@ -7,7 +7,7 @@ using System.Text;
 using System.Threading.Tasks;
 using CsvHelper;
 using CsvHelper.Configuration;
-using Microsoft.Isam.Esent.Collections.Generic;
+using NPoco;
 using woanware;
 
 namespace snorbert
@@ -257,7 +257,7 @@ namespace snorbert
         /// 
         /// </summary>
         /// <param name="filePath">The output file name</param>
-        public void ExportExcludes(PersistentDictionary<string, string> rules, string filePath)
+        public void ExportExcludes(string filePath)
         {
             if (IsRunning == true)
             {
@@ -271,8 +271,10 @@ namespace snorbert
             {
                 try
                 {
-                    NPoco.Database db = new NPoco.Database(Db.GetOpenMySqlConnection());
-                    List<Exclude> excludes = db.Fetch<Exclude>(_sql.GetQuery(Sql.Query.SQL_EXCLUDES));
+                    NPoco.Database dbMySql = new NPoco.Database(Db.GetOpenMySqlConnection());
+                    List<Exclude> excludes = dbMySql.Fetch<Exclude>(_sql.GetQuery(Sql.Query.SQL_EXCLUDES));
+
+                    NPoco.Database dbSqlCe = new NPoco.Database(Db.GetOpenSqlCeConnection(), DatabaseType.SQLCe);
 
                     CsvConfiguration csvConfiguration = new CsvConfiguration();
                     csvConfiguration.Delimiter = '\t';
@@ -294,26 +296,6 @@ namespace snorbert
 
                         foreach (var temp in excludes)
                         {
-                            //Exclude exclude = new Exclude();
-                            //exclude.Id = temp.id;
-                            //exclude.SigId = temp.sig_id;
-                            //exclude.SigSid = temp.sig_sid;
-                            //exclude.SourceIp = temp.ip_src;
-                            //exclude.DestinationIp = temp.ip_dst;
-
-                            //if (temp.fp[0] == 48)
-                            //{
-                            //    exclude.FalsePositive = false;
-                            //}
-                            //else
-                            //{
-                            //    exclude.FalsePositive = true;
-                            //}
-
-                            //exclude.Comment = temp.comment;
-                            //exclude.Rule = temp.sig_name;
-                            //exclude.Timestamp = temp.timestamp;
-
                             csvWriter.WriteField(temp.SigId);
                             csvWriter.WriteField(temp.SourceIp);
                             csvWriter.WriteField(temp.DestinationIp);
@@ -322,10 +304,10 @@ namespace snorbert
                             csvWriter.WriteField(temp.Rule);
                             csvWriter.WriteField(temp.Timestamp);
 
-                            var rule = from r in rules where r.Key == temp.SigSid.ToString() select r;
-                            if (rule.Any() == true)
+                            Rule rule = dbSqlCe.SingleOrDefault<Rule>("SELECT * FROM Rules WHERE Sid = @0", new object[] { temp.SigSid.ToString() });
+                            if (rule != null)
                             {
-                                csvWriter.WriteField(rule.First().Value);
+                                csvWriter.WriteField(rule.Data);
                             }
                             else
                             {

@@ -15,6 +15,7 @@ namespace snorbert
 
         #region Constants
         public const string PRIORITIES_FILE = "Priorities.txt";
+        public const string RULES_DB = "Rules.db";
         #endregion
 
         #region Enums

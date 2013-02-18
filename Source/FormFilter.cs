@@ -16,7 +16,7 @@ namespace snorbert
         private List<Filter> _filters;
         private Filter _filter;
         private List<FilterDefinition> _filterDefinitions;
-        private List<NameValue> _signatures;
+        //private List<NameValue> _signatures;
         private List<NameValue> _priorities;
         private List<NameValue> _classifications;
         private List<NameValue> _sensors;
@@ -45,40 +45,17 @@ namespace snorbert
         }
         #endregion
 
-        ///// <summary>
-        ///// 
-        ///// </summary>
-        //public void LoadSignatures()
-        //{
-        //    using (new HourGlass(this))
-        //    {
-        //        NPoco.Database db = new NPoco.Database(Db.GetOpenMySqlConnection());
-        //        List<Event> data = db.Fetch<Event>(_sql.GetQuery(Sql.Query.SQL_SIG_NAMES));
-
-        //        _signatures = new List<NameValue>();
-        //        var dbSignatures = new DbSignature();
-        //        var results = dbSignatures.Query(_sql.GetQuery(Sql.Query.SQL_SIG_NAMES));
-        //        foreach (var result in results)
-        //        {
-        //            NameValue nameValue = new NameValue();
-        //            nameValue.Name = result.sig_name;
-        //            nameValue.Value = result.sig_sid.ToString();
-        //            _signatures.Add(nameValue);
-        //        }
-        //    }
-        //}
-
         /// <summary>
         /// 
         /// </summary>
-        public void LoadPriorities()
+        /// <param name="db"></param>
+        public void LoadPriorities(NPoco.Database db)
         {
             using (new HourGlass(this))
             {
-                NPoco.Database db = new NPoco.Database(Db.GetOpenMySqlConnection());
                 List<Signature> data = db.Fetch<Signature>(_sql.GetQuery(Sql.Query.SQL_SIG_PRIORITIES));
-                _priorities = new List<NameValue>();
 
+                _priorities = new List<NameValue>();
                 foreach (var result in data)
                 {
                     NameValue nameValue = new NameValue();
@@ -101,11 +78,11 @@ namespace snorbert
         /// <summary>
         /// 
         /// </summary>
-        public void LoadClassifications()
+        /// <param name="db"></param>
+        public void LoadClassifications(NPoco.Database db)
         {
             using (new HourGlass(this))
             {
-                NPoco.Database db = new NPoco.Database(Db.GetOpenMySqlConnection());
                 List<SigClass> data = db.Fetch<SigClass>(_sql.GetQuery(Sql.Query.SQL_SIG_CLASS));
 
                 _classifications = new List<NameValue>();
@@ -122,11 +99,11 @@ namespace snorbert
         /// <summary>
         /// 
         /// </summary>
-        public void LoadSensors()
+        /// <param name="db"></param>
+        public void LoadSensors(NPoco.Database db)
         {
             using (new HourGlass(this))
             {
-                NPoco.Database db = new NPoco.Database(Db.GetOpenMySqlConnection());
                 List<Sensor> data = db.Fetch<Sensor>(_sql.GetQuery(Sql.Query.SQL_SENSORS));
 
                 _sensors = new List<NameValue>();
@@ -682,10 +659,11 @@ namespace snorbert
         private void FormFilter_Load(object sender, EventArgs e)
         {
             this.Show();
-            //LoadSignatures();
-            LoadPriorities();
-            LoadClassifications();
-            LoadSensors();
+
+            NPoco.Database db = new NPoco.Database(Db.GetOpenMySqlConnection());
+            LoadPriorities(db);
+            LoadClassifications(db);
+            LoadSensors(db);
             LoadProtocols();
         }
         #endregion

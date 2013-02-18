@@ -16,10 +16,10 @@ namespace snorbert
         public string Name { get; set; }
         [Column("sig_priority")]
         public string Priority { get; set; }
+        [Column("count")]
+        public long Count { get; set; }
         [Ignore]
         public string Text { get; set; }
-        [Ignore]
-        public long Count { get; set; }
         #endregion
 
         #region Constructors

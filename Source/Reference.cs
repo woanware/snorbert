@@ -17,6 +17,15 @@ namespace snorbert
         /// <summary>
         /// 
         /// </summary>
+        public Reference()
+        {
+            Type = string.Empty;
+            Data = string.Empty;
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
         /// <param name="type"></param>
         /// <param name="data"></param>
         public Reference(string type,

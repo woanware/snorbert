@@ -1,6 +1,5 @@
 ﻿using Be.Windows.Forms;
 using BrightIdeasSoftware;
-using Microsoft.Isam.Esent.Collections.Generic;
 using System;
 using System.Collections.Generic;
 using System.Configuration;
@@ -24,7 +23,6 @@ namespace snorbert
         private Connections _connections;
         private HourGlass _hourGlass;
         private int _pageLimit = 100;
-        private PersistentDictionary<string, string> _rules;
         private RuleImporter _ruleImporter;
         private Exporter _exporter;
         #endregion
@@ -41,8 +39,6 @@ namespace snorbert
 
                 this.Show();
 
-                _rules = new PersistentDictionary<string, string>(System.IO.Path.Combine(Misc.GetUserDataDirectory(), "Rules"));
-
                 cboPageLimit.SelectedIndex = 6; // 100
 
                 _sql = new Sql();
@@ -55,15 +51,12 @@ namespace snorbert
                     Application.Exit();
                 }
 
-                controlEvents.SetRules(_rules);
                 controlEvents.SetSql(_sql);
                 controlEvents.Message += Control_OnMessage;
 
-                controlRules.SetRules(_rules);
                 controlRules.SetSql(_sql);
                 controlRules.Message += Control_OnMessage;
 
-                controlSearch.SetRules(_rules);
                 controlSearch.SetSql(_sql);
                 controlSearch.Message += Control_OnMessage;
 
@@ -72,27 +65,21 @@ namespace snorbert
 
                 LoadConnections();
 
-                _ruleImporter = new RuleImporter();
+                _ruleImporter = new RuleImporter(_settings);
                 _ruleImporter.Complete += OnRuleImporter_Complete;
                 _ruleImporter.Error += OnRuleImporter_Error;
+                _ruleImporter.Message += OnRuleImporter_Message;
+                _ruleImporter.Check();
 
                 _exporter = new Exporter();
                 _exporter.SetSql(_sql);
                 _exporter.Complete += OnExporter_Complete;
                 _exporter.Error += OnExporter_Error;
                 _exporter.Exclamation += OnExporter_Exclamation;
-
-                CheckImportFiles();
-            }
-            catch (TypeLoadException tlEx)
-            {
-                IO.WriteTextToFile(tlEx.ToString(), "C:\\Error.txt", true);
-                //Misc.WriteToEventLog(Application.ProductName, tlEx.ToString(), System.Diagnostics.EventLogEntryType.Error);
             }
             catch (Exception ex)
             {
-                IO.WriteTextToFile(ex.ToString(), "C:\\Error.txt", true);
-                //Misc.WriteToEventLog(Application.ProductName, ex.ToString(), System.Diagnostics.EventLogEntryType.Error);
+                Misc.WriteToEventLog(Application.ProductName, ex.ToString(), System.Diagnostics.EventLogEntryType.Error);
             }
         }
         #endregion
@@ -122,12 +109,17 @@ namespace snorbert
         /// <summary>
         /// 
         /// </summary>
-        private void OnRuleImporter_Complete(PersistentDictionary<string, string> rules)
+        /// <param name="message"></param>
+        private void OnRuleImporter_Message(string message)
         {
-            _rules = rules;
-            controlEvents.SetRules(_rules);
-            controlRules.SetRules(_rules);
-            controlSearch.SetRules(_rules);
+            UpdateStatusBar(message);
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        private void OnRuleImporter_Complete()
+        {
             SetProcessingStatus(true);
             UpdateStatusBar("Rule import complete...");
         }
@@ -168,49 +160,6 @@ namespace snorbert
         #endregion
 
         #region Misc Methods
-        /// <summary>
-        /// 
-        /// </summary>
-        private void CheckImportFiles()
-        {
-            if (Directory.Exists(System.IO.Path.Combine(Misc.GetUserDataDirectory(), "Import")) == false)
-            {
-                return;
-            }
-
-            List<string> newFiles = new List<string>();
-            DirectoryInfo directoryInfo = new DirectoryInfo(System.IO.Path.Combine(Misc.GetUserDataDirectory(), "Import"));
-            FileInfo[] fileInfos = directoryInfo.GetFiles("*.rules");
-            foreach (FileInfo fileInfo in fileInfos)
-            {
-                var file = from f in _settings.RuleFiles where f.FileName == fileInfo.Name & f.ModifiedTimestamp >= fileInfo.LastWriteTime select f;
-                if (file.Any() == true)
-                {
-                    continue;
-                }
-
-                newFiles.Add(fileInfo.FullName);
-
-                // Remove any existing RuleFiles from Settings, so we don't end up with multiple entries of the same file name
-                _settings.RuleFiles.RemoveAll(rf => rf.FileName == fileInfo.Name);
-
-                // Now add a new RuleFile that contains the appropriate info
-                RuleFile ruleFile = new RuleFile();
-                ruleFile.FileName = fileInfo.Name;
-                ruleFile.ModifiedTimestamp = fileInfo.LastWriteTime;
-                _settings.RuleFiles.Add(ruleFile);
-            }
-
-            if (newFiles.Any() == true)
-            {
-                _settings.Save();
-                UpdateStatusBar("New import files identified, performing import...");
-
-                _ruleImporter.Import(newFiles.ToArray(), _rules);
-                SetProcessingStatus(false);
-            }
-        }
-
         /// <summary>
         /// 
         /// </summary>
@@ -274,6 +223,10 @@ namespace snorbert
             fi.SetValue(settings, false);
 
             settings.ConnectionString = connection.ConnectionString;
+
+            controlEvents.SetConnection(connection);
+            controlRules.SetConnection(connection);
+            controlSearch.SetConnection(connection);
         }
         #endregion
 
@@ -426,7 +379,7 @@ namespace snorbert
                                                      string.Join(Environment.NewLine, problemFiles.ToArray()));
             }
 
-            CheckImportFiles();
+            _ruleImporter.Check();
         }
 
         /// <summary>
@@ -460,7 +413,7 @@ namespace snorbert
             _hourGlass = new HourGlass(this);
             SetProcessingStatus(false);
 
-            _exporter.ExportExcludes(_rules, saveFileDialog.FileName);
+            _exporter.ExportExcludes(saveFileDialog.FileName);
         }
         #endregion
 

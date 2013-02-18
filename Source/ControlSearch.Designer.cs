@@ -144,6 +144,7 @@
             this.listEvents.HideSelection = false;
             this.listEvents.Location = new System.Drawing.Point(0, 5);
             this.listEvents.Name = "listEvents";
+            this.listEvents.ShowCommandMenuOnRightClick = true;
             this.listEvents.ShowGroups = false;
             this.listEvents.Size = new System.Drawing.Size(791, 83);
             this.listEvents.TabIndex = 30;
@@ -152,6 +153,7 @@
             this.listEvents.View = System.Windows.Forms.View.Details;
             this.listEvents.VirtualMode = true;
             this.listEvents.SelectedIndexChanged += new System.EventHandler(this.listEvents_SelectedIndexChanged);
+            this.listEvents.MouseDoubleClick += new System.Windows.Forms.MouseEventHandler(this.listEvents_MouseDoubleClick);
             // 
             // ctxMenuEvent
             // 

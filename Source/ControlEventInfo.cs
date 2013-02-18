@@ -1,10 +1,10 @@
 ﻿using Be.Windows.Forms;
-using Microsoft.Isam.Esent.Collections.Generic;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Windows.Forms;
 using woanware;
+using NPoco;
 
 namespace snorbert
 {
@@ -14,7 +14,6 @@ namespace snorbert
     public partial class ControlEventInfo : UserControl
     {
         #region Member Variables
-        private PersistentDictionary<string, string> _rules;
         private Sql _sql;
         #endregion
 
@@ -36,15 +35,6 @@ namespace snorbert
         #endregion
 
         #region Public Methods
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="rules"></param>
-        public void SetRules(PersistentDictionary<string, string> rules)
-        {
-            _rules = rules;
-        }
-
         /// <summary>
         /// 
         /// </summary> 
@@ -112,10 +102,12 @@ namespace snorbert
                 txtSigSigRev.Text = temp.SigRev.ToString();
                 txtSigSigId.Text = temp.Sid.ToString();
 
-                var rule = from r in _rules where r.Key == temp.Sid.ToString() select r;
-                if (rule.Any() == true)
+                NPoco.Database dbSqlCe = new NPoco.Database(Db.GetOpenSqlCeConnection(), DatabaseType.SQLCe);
+
+                Rule rule = dbSqlCe.SingleOrDefault<Rule>("SELECT * FROM Rules WHERE Sid = @0", new object[] { temp.Sid.ToString() });
+                if (rule != null)
                 {
-                    txtRule.Text = rule.First().Value;
+                    txtRule.Text = rule.Data;
                 }
                 else
                 {
@@ -141,8 +133,8 @@ namespace snorbert
                 txtUdpCsum.Text = temp.UdpCsum.ToString();
 
                 // References Tab
-                NPoco.Database db = new NPoco.Database(Db.GetOpenMySqlConnection());
-                List<Reference> references = db.Fetch<Reference>(_sql.GetQuery(Sql.Query.SQL_REFERENCES), new object[] { temp.Sid });
+                NPoco.Database dbMySql = new NPoco.Database(Db.GetOpenMySqlConnection());
+                List<Reference> references = dbMySql.Fetch<Reference>(_sql.GetQuery(Sql.Query.SQL_REFERENCES), new object[] { temp.Sid });
                 listReferences.SetObjects(references);
                 ResizeReferenceListColumns();
 

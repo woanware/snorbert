@@ -1,5 +1,4 @@
-﻿using Microsoft.Isam.Esent.Collections.Generic;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Windows.Forms;
@@ -23,6 +22,7 @@ namespace snorbert
         private int _pageLimit = 100;
         private Querier _querier;
         private Sql _sql;
+        private Connection _connection;
         #endregion
 
         #region Constructor
@@ -226,6 +226,31 @@ namespace snorbert
 
             controlEventInfo.DisplaySelectedEventDetails(temp);
         }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void listEvents_MouseDoubleClick(object sender, MouseEventArgs e)
+        {
+            if (listEvents.SelectedObjects.Count != 1)
+            {
+                return;
+            }
+
+            Event temp = (Event)listEvents.SelectedObjects[0];
+            if (temp == null)
+            {
+                UserInterface.DisplayErrorMessageBox(this, "Unable to locate event");
+                return;
+            }
+
+            using (FormPayload formPayload = new FormPayload(temp))
+            {
+                formPayload.ShowDialog(this);
+            }
+        }
         #endregion
 
         #region Button Event Handlers
@@ -264,15 +289,6 @@ namespace snorbert
         /// <summary>
         /// 
         /// </summary>
-        /// <param name="rules"></param>
-        public void SetRules(PersistentDictionary<string, string> rules)
-        {
-            controlEventInfo.SetRules(rules);
-        }
-
-        /// <summary>
-        /// 
-        /// </summary>
         /// <param name="pageLimit"></param>
         public void SetPageLimit(int pageLimit)
         {
@@ -281,15 +297,6 @@ namespace snorbert
             _currentPage = 1;
             Clear();
         }
-
-        ///// <summary>
-        ///// 
-        ///// </summary>
-        ///// <param name="enabled"></param>
-        //public void SetState(bool enabled)
-        //{
-        //    this.Enabled = enabled;
-        //}
 
         /// <summary>
         /// 
@@ -300,6 +307,15 @@ namespace snorbert
             _sql = sql;
             _querier.SetSql(_sql);
             controlEventInfo.SetSql(_sql);
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="connection"></param>
+        public void SetConnection(Connection connection)
+        {
+            _connection = connection;
         }
         #endregion
 
