@@ -306,8 +306,8 @@
     
     <SqlQuery>
       <Query>SQL_REFERENCES</Query>
-      <Data><![CDATA[SELECT reference.ref_tag,
-				   reference_system.ref_system_name
+      <Data><![CDATA[SELECT reference.ref_tag as ref_tag,
+				   reference_system.ref_system_name as ref_system_name
 			  FROM reference 
 		 LEFT JOIN sig_reference on reference.ref_id = sig_reference.ref_id
 		 LEFT JOIN signature on sig_reference.sig_id = signature.sig_id
@@ -357,7 +357,7 @@
         <![CDATA[SELECT distinct
                         IFNULL(cast(inet_ntoa(iphdr.ip_src) as char(15)), 0) as ip_src
                    FROM event
-              LEFT JOIN iphdr  ON (event.sid = iphdr.sid AND event.cid = iphdr.cid)
+              LEFT JOIN iphdr ON (event.sid = iphdr.sid AND event.cid = iphdr.cid)
                   WHERE event.signature=@0
                     AND event.timestamp > @1]]>
       </Data>
@@ -369,7 +369,7 @@
         <![CDATA[SELECT distinct
                         IFNULL(cast(inet_ntoa(iphdr.ip_src) as char(15)), 0) as ip_src
                    FROM event
-              LEFT JOIN iphdr  ON (event.sid = iphdr.sid AND event.cid = iphdr.cid)
+              LEFT JOIN iphdr ON (event.sid = iphdr.sid AND event.cid = iphdr.cid)
                   WHERE event.signature=@0 
                     AND event.timestamp > @1
                     AND event.timestamp < @2]]>
@@ -380,7 +380,7 @@
       <Query>SQL_RULES_DST_IPS_FROM</Query>
       <Data>
         <![CDATA[SELECT distinct
-                        IFNULL(cast(inet_ntoa(iphdr.ip_dst) as char(15)), 0) as ip_src
+                        IFNULL(cast(inet_ntoa(iphdr.ip_dst) as char(15)), 0) as ip_dst
                    FROM event
               LEFT JOIN iphdr  ON (event.sid = iphdr.sid AND event.cid = iphdr.cid)
                   WHERE event.signature=@0
@@ -392,7 +392,7 @@
       <Query>SQL_RULES_DST_IPS_FROM_TO</Query>
       <Data>
         <![CDATA[SELECT distinct
-                        IFNULL(cast(inet_ntoa(iphdr.ip_dst) as char(15)), 0) as ip_src
+                        IFNULL(cast(inet_ntoa(iphdr.ip_dst) as char(15)), 0) as ip_dst
                    FROM event
               LEFT JOIN iphdr  ON (event.sid = iphdr.sid AND event.cid = iphdr.cid)
                   WHERE event.signature=@0 
