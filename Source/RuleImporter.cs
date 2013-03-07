@@ -98,7 +98,6 @@ namespace snorbert
                 {
                     if (!mutex.WaitOne(0, false))
                     {
-                        UserInterface.DisplayMessageBox("MUTEX", System.Windows.Forms.MessageBoxIcon.Information);
                         return;
                     }
 

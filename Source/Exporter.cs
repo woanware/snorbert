@@ -80,9 +80,9 @@ namespace snorbert
                         foreach (Event temp in events)
                         {
                             csvWriter.WriteField(temp.Cid);
-                            csvWriter.WriteField(temp.IpSrc);
+                            csvWriter.WriteField(temp.IpSrcTxt);
                             csvWriter.WriteField(temp.SrcPort);
-                            csvWriter.WriteField(temp.IpDst);
+                            csvWriter.WriteField(temp.IpDstTxt);
                             csvWriter.WriteField(temp.DstPort);
                             csvWriter.WriteField(temp.Protocol);
                             csvWriter.WriteField(temp.Timestamp);
@@ -272,7 +272,29 @@ namespace snorbert
                 try
                 {
                     NPoco.Database dbMySql = new NPoco.Database(Db.GetOpenMySqlConnection());
-                    List<Exclude> excludes = dbMySql.Fetch<Exclude>(_sql.GetQuery(Sql.Query.SQL_EXCLUDES));
+                    var data = dbMySql.Fetch<Dictionary<string, object>>(_sql.GetQuery(Sql.Query.SQL_EXCLUDES));
+                    List<Exclude> excludes = new List<Exclude>();
+                    foreach (Dictionary<string, object> temp in data)
+                    {
+                        Exclude exclude = new Exclude();
+                        exclude.Id = long.Parse(temp["id"].ToString());
+                        exclude.SigId = long.Parse(temp["sig_id"].ToString());
+                        exclude.SigSid = long.Parse(temp["sig_sid"].ToString());
+                        exclude.Rule = temp["sig_name"].ToString();
+                        exclude.SourceIpText = temp["ip_src"].ToString();
+                        exclude.DestinationIpText = temp["ip_dst"].ToString();
+                        if (((byte[])temp["fp"])[0] == 48)
+                        {
+                            exclude.FalsePositive = false;
+                        }
+                        else
+                        {
+                            exclude.FalsePositive = true;
+                        }
+
+                        exclude.Timestamp = DateTime.Parse(temp["timestamp"].ToString());
+                        excludes.Add(exclude);
+                    }
 
                     NPoco.Database dbSqlCe = new NPoco.Database(Db.GetOpenSqlCeConnection(), DatabaseType.SQLCe);
 
@@ -297,8 +319,8 @@ namespace snorbert
                         foreach (var temp in excludes)
                         {
                             csvWriter.WriteField(temp.SigId);
-                            csvWriter.WriteField(temp.SourceIp);
-                            csvWriter.WriteField(temp.DestinationIp);
+                            csvWriter.WriteField(temp.SourceIpText);
+                            csvWriter.WriteField(temp.DestinationIpText);
                             csvWriter.WriteField(temp.FalsePositive);
                             csvWriter.WriteField(temp.Comment);
                             csvWriter.WriteField(temp.Rule);

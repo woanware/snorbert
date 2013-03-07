@@ -99,6 +99,7 @@ namespace snorbert
                     SetPagingControlState();
                     SetProcessingStatus(true);
                     _hourGlass.Dispose();
+                    listEvents.Select();
                 }
             };
 

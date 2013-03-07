@@ -22,8 +22,8 @@ The aim of the application is to provide a fast, usable interface for accessing 
 - [MySql](http://dev.mysql.com/downloads/connector/net/) : Access to snort MySQL databases
 - [Utility](http://www.woanware.co.uk) (woanware) : My helper library
 - [NPoco](https://github.com/schotime/NPoco): Data access
-- [SQL Server](http://www.microsoft.com/en-gb/download/details.aspx?id=30709) CE: SQL Server CE used for rule storage
-
+- [SQL Server](http://www.microsoft.com/en-gb/download/details.aspx?id=30709): SQL Server CE used for rule storage
+- [CsvHelper](https://github.com/JoshClose/CsvHelper): CSV output
 
 ## Requirements ##
 

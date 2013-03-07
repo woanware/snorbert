@@ -6,6 +6,7 @@ namespace snorbert
     /// <summary>
     /// 
     /// </summary>
+    [TableName("exclude")] 
     public class Exclude
     {
         #region Member Variables
@@ -15,17 +16,17 @@ namespace snorbert
         public UInt32 SourceIp { get; set; }
         [Column("ip_dst")]
         public UInt32 DestinationIp { get; set; }
-        [Column("sig_name")]
+        [Ignore]
         public string Rule { get; set; }
-        [Column("sig_sid")]
+        [Column("sig_id")]
         public long SigId { get; set; }
-        [Column("emailAddress")]
+        [Ignore]
         public long SigSid { get; set; }
         [Column("comment")]
         public string Comment { get; set; }
         [Column("fp")]
         public bool FalsePositive { get; set; }
-        [Column("timestamp")]
+        [Column("timeadded")]
         public DateTime Timestamp { get; set; }
         [Ignore]
         public string SourceIpText { get; set; }
@@ -37,6 +38,7 @@ namespace snorbert
         /// <summary>
         /// 
         /// </summary>
+        
         public Exclude()
         {
             SourceIpText = string.Empty;

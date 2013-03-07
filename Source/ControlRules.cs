@@ -43,8 +43,8 @@ namespace snorbert
             Helper.AddListColumn(listEvents, "Src Port", "SrcPort");
             Helper.AddListColumn(listEvents, "Dst IP", "IpDstTxt");
             Helper.AddListColumn(listEvents, "Dst Port", "DstPort");
-            Helper.AddListColumn(listEvents, "Host", "HttpHost");
             Helper.AddListColumn(listEvents, "Protocol", "Protocol");
+            Helper.AddListColumn(listEvents, "Host", "HttpHost");
             Helper.AddListColumn(listEvents, "Timestamp", "Timestamp");
             Helper.AddListColumn(listEvents, "TCP Flags", "TcpFlagsString");
             Helper.AddListColumn(listEvents, "Payload (ASCII)", "PayloadAscii");
@@ -182,6 +182,7 @@ namespace snorbert
                     SetPagingControlState();
                     SetProcessingStatus(true);
                     _hourGlass.Dispose();
+                    listEvents.Select();
                 }
             };
 
@@ -576,6 +577,19 @@ namespace snorbert
                 formPayload.ShowDialog(this);
             }
         }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void listEvents_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.KeyCode == Keys.Enter)
+            {
+                ctxMenuPayload_Click(this, new EventArgs());
+            }
+        }
         #endregion
 
         #region Public Methods
@@ -693,14 +707,14 @@ namespace snorbert
                 ctxMenuCopy.Enabled = true;
                 ctxMenuPayload.Enabled = true;
                 ctxMenuExclude.Enabled = true;
-                ctxMenuNetwitnessQuery.Enabled = true;
+                ctxMenuNwQuery.Enabled = true;
             }
             else
             {
                 ctxMenuCopy.Enabled = false;
                 ctxMenuPayload.Enabled = false;
                 ctxMenuExclude.Enabled = false;
-                ctxMenuNetwitnessQuery.Enabled = false;
+                ctxMenuNwQuery.Enabled = false;
             }
         }
 
@@ -772,6 +786,16 @@ namespace snorbert
         private void ctxMenuCopySigName_Click(object sender, EventArgs e)
         {
             Helper.CopyDataToClipboard(this, listEvents, Global.FieldsEventCopy.SigName);
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void ctxMenuCopyHost_Click(object sender, EventArgs e)
+        {
+            Helper.CopyDataToClipboard(this, listEvents, Global.FieldsEventCopy.HttpHost);
         }
 
         /// <summary>
@@ -994,7 +1018,7 @@ namespace snorbert
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        private void ctxMenuNetwitnessQuery_Click(object sender, EventArgs e)
+        private void ctxMenuNwQuery_Click(object sender, EventArgs e)
         {
             if (listEvents.SelectedObjects.Count != 1)
             {
@@ -1008,12 +1032,12 @@ namespace snorbert
                 return;
             }
 
-            string query = Helper.ConstructNetWitnessUrl(_connection.ConcentratorIp, 
-                                                         _connection.CollectionName, 
-                                                         temp.IpSrcTxt, 
-                                                         temp.SrcPort.ToString(), 
+            string query = Helper.ConstructNetWitnessUrl(_connection.ConcentratorIp,
+                                                         _connection.CollectionName,
+                                                         temp.IpSrcTxt,
+                                                         temp.SrcPort.ToString(),
                                                          temp.IpDstTxt,
-                                                         temp.DstPort.ToString(), 
+                                                         temp.DstPort.ToString(),
                                                          temp.Protocol);
 
             Clipboard.SetText(query);

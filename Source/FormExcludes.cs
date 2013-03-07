@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Net;
 using System.Windows.Forms;
 using woanware;
 
@@ -23,8 +24,8 @@ namespace snorbert
 
             _sql = sql;
 
-            Helper.AddListColumn(listExcludes, "Source IP", "SourceIp");
-            Helper.AddListColumn(listExcludes, "Destination IP", "DestinationIp");
+            Helper.AddListColumn(listExcludes, "Source IP", "SourceIpText");
+            Helper.AddListColumn(listExcludes, "Destination IP", "DestinationIpText");
             Helper.AddListColumn(listExcludes, "FP", "FalsePositive");
             Helper.AddListColumn(listExcludes, "Timestamp", "Timestamp");
             Helper.AddListColumn(listExcludes, "Rule", "Rule");
@@ -45,7 +46,32 @@ namespace snorbert
                     listExcludes.ClearObjects();
 
                     NPoco.Database db = new NPoco.Database(Db.GetOpenMySqlConnection());
-                    List<Exclude> excludes = db.Fetch<Exclude>(_sql.GetQuery(Sql.Query.SQL_EXCLUDES));
+                    var data = db.Fetch<Dictionary<string, object>>(_sql.GetQuery(Sql.Query.SQL_EXCLUDES));
+
+                    List<Exclude> excludes = new List<Exclude>();
+                    foreach (Dictionary<string, object> temp in data)
+                    {
+                        Exclude exclude = new Exclude();
+                        exclude.Id = long.Parse(temp["id"].ToString());
+                        exclude.SigId = long.Parse(temp["sig_id"].ToString());
+                        exclude.SigSid = long.Parse(temp["sig_sid"].ToString());
+                        exclude.Rule = temp["sig_name"].ToString();
+                        exclude.Comment = temp["comment"].ToString();
+                        exclude.SourceIpText = temp["ip_src"].ToString();
+                        exclude.DestinationIpText = temp["ip_dst"].ToString();
+                        if (((byte[])temp["fp"])[0] == 48)
+                        {
+                           exclude.FalsePositive = false;
+                        }
+                        else
+                        {
+                            exclude.FalsePositive = true;
+                        }
+
+                        exclude.Timestamp = DateTime.Parse(temp["timestamp"].ToString());
+                        excludes.Add(exclude);
+                    }
+
                     listExcludes.SetObjects(excludes);
 
                     if (excludes.Count > 0)
@@ -146,7 +172,7 @@ namespace snorbert
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        private void listFalsePositives_SelectedIndexChanged(object sender, System.EventArgs e)
+        private void listExcludes_SelectedIndexChanged(object sender, System.EventArgs e)
         {
             SetButtonState();
         }
@@ -156,12 +182,26 @@ namespace snorbert
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        private void listFalsePositives_KeyDown(object sender, KeyEventArgs e)
+        private void listExcludes_KeyDown(object sender, KeyEventArgs e)
         {
             if (e.KeyCode == Keys.Delete)
             {
                 btnDelete_Click(this, new EventArgs());
             }
+            else if (e.KeyCode == Keys.Enter)
+            {
+                btnEdit_Click(this, new EventArgs());
+            }
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void listExcludes_MouseDoubleClick(object sender, MouseEventArgs e)
+        {
+            btnEdit_Click(this, new EventArgs());
         }
         #endregion
 
@@ -211,5 +251,7 @@ namespace snorbert
             }
         }
         #endregion
+
+        
     }
 }

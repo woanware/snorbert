@@ -81,7 +81,7 @@
             this.tabPageAscii.Controls.Add(this.txtPayloadAscii);
             this.tabPageAscii.Location = new System.Drawing.Point(4, 24);
             this.tabPageAscii.Name = "tabPageAscii";
-            this.tabPageAscii.Size = new System.Drawing.Size(576, 355);
+            this.tabPageAscii.Size = new System.Drawing.Size(472, 432);
             this.tabPageAscii.TabIndex = 1;
             this.tabPageAscii.Text = "Payload (ASCII)";
             this.tabPageAscii.UseVisualStyleBackColor = true;
@@ -94,7 +94,7 @@
             this.txtPayloadAscii.Name = "txtPayloadAscii";
             this.txtPayloadAscii.ReadOnly = true;
             this.txtPayloadAscii.ScrollBars = System.Windows.Forms.RichTextBoxScrollBars.ForcedBoth;
-            this.txtPayloadAscii.Size = new System.Drawing.Size(576, 355);
+            this.txtPayloadAscii.Size = new System.Drawing.Size(472, 432);
             this.txtPayloadAscii.TabIndex = 0;
             this.txtPayloadAscii.Text = "";
             // 
@@ -106,11 +106,14 @@
             this.Controls.Add(this.tabEvent);
             this.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
+            this.KeyPreview = true;
             this.MinimumSize = new System.Drawing.Size(334, 325);
             this.Name = "FormPayload";
             this.ShowInTaskbar = false;
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
             this.Text = "Payload";
+            this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.FormPayload_FormClosing);
+            this.KeyDown += new System.Windows.Forms.KeyEventHandler(this.FormPayload_KeyDown);
             this.tabEvent.ResumeLayout(false);
             this.tabPageHex.ResumeLayout(false);
             this.tabPageAscii.ResumeLayout(false);

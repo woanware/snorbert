@@ -66,9 +66,10 @@ namespace snorbert
             DstIp = 3,
             DstPort = 4,
             Protocol = 5,
-            Timestamp = 6,
-            TcpFlags = 7,
-            Payload = 8
+            Host = 6,
+            Timestamp = 7,
+            TcpFlags = 8,
+            Payload = 9
         }
 
         /// <summary>
@@ -84,7 +85,8 @@ namespace snorbert
             DstPort = 5,
             SigName = 6,
             Timestamp = 7,
-            PayloadAscii = 8
+            PayloadAscii = 8,
+            HttpHost = 9
         }
 
         /// <summary>

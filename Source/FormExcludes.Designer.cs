@@ -62,8 +62,9 @@
             this.listExcludes.TabIndex = 7;
             this.listExcludes.UseCompatibleStateImageBehavior = false;
             this.listExcludes.View = System.Windows.Forms.View.Details;
-            this.listExcludes.SelectedIndexChanged += new System.EventHandler(this.listFalsePositives_SelectedIndexChanged);
-            this.listExcludes.KeyDown += new System.Windows.Forms.KeyEventHandler(this.listFalsePositives_KeyDown);
+            this.listExcludes.SelectedIndexChanged += new System.EventHandler(this.listExcludes_SelectedIndexChanged);
+            this.listExcludes.KeyDown += new System.Windows.Forms.KeyEventHandler(this.listExcludes_KeyDown);
+            this.listExcludes.MouseDoubleClick += new System.Windows.Forms.MouseEventHandler(this.listExcludes_MouseDoubleClick);
             // 
             // btnClose
             // 

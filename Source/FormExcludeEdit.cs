@@ -34,19 +34,30 @@ namespace snorbert
             try
             {
                 NPoco.Database db = new NPoco.Database(Db.GetOpenMySqlConnection());
-                List<Exclude> excludes = db.Fetch<Exclude>(_sql.GetQuery(Sql.Query.SQL_EXCLUDE), new object[] { _id });
+                var data = db.Fetch<Dictionary<string, object>>(_sql.GetQuery(Sql.Query.SQL_EXCLUDES));
 
-                if (excludes.Count == 0)
+                if (data.Count == 0)
                 {
                     UserInterface.DisplayMessageBox(this, "Unable to locate exclude", MessageBoxIcon.Exclamation);
                     return;
                 }
 
-                ipSource.Text = excludes[0].SourceIpText;
-                ipDestination.Text = excludes[0].DestinationIpText;
-                txtRule.Text = excludes[0].Rule;
-                txtComment.Text = excludes[0].Comment;
-                chkFalsePositive.Checked = excludes[0].FalsePositive;
+                ipSource.Text = data[0]["ip_src"].ToString();
+                if (data[0]["ip_dst"].ToString() != "0")
+                {
+                    ipDestination.Text = data[0]["ip_dst"].ToString();
+                }
+                txtRule.Text = data[0]["sig_name"].ToString();
+                txtComment.Text = data[0]["comment"].ToString();
+
+                if (((byte[])data[0]["fp"])[0] == 48)
+                {
+                    chkFalsePositive.Checked = false;
+                }
+                else
+                {
+                    chkFalsePositive.Checked = true;
+                }
             }
             catch (Exception ex)
             {

@@ -6,6 +6,7 @@ using System.Windows.Forms;
 using woanware;
 using System.Text.RegularExpressions;
 using System.Web;
+using System.Threading.Tasks;
 
 namespace snorbert
 {
@@ -44,30 +45,61 @@ namespace snorbert
             objectListView.Columns.Add(columnHeader);
         }
 
+        ///// <summary>
+        ///// 
+        ///// </summary>
+        ///// <param name="ip"></param>
+        ///// <param name="collection"></param>
+        ///// <param name="srcIp"></param>
+        ///// <param name="dstIp"></param>
+        ///// <param name="srcPort"></param>
+        ///// <param name="dstPort"></param>
+        ///// <param name="protocol"></param>
+        ///// <returns></returns>
+        //public static string ConstructNetWitnessUrl(string ip, 
+        //                                            string collection, 
+        //                                            string srcIp, 
+        //                                            string srcPort, 
+        //                                            string dstIp, 
+        //                                            string dstPort,
+        //                                            string protocol)
+        //{
+        //    string nw = string.Format("nw://{0}/?collection={1}&time=Last+24+Hours+of+Collection+Time&where=", ip, collection);
+        //    string query = string.Format("%28ip.src={0}&{4}.srcport={1}&ip.dst={2}&{4}.dstport={3}%29", srcIp, srcPort, dstIp, dstPort, protocol.ToLower());
+        //    query += "||";
+        //    query += string.Format("%28ip.src={0}&{4}.srcport={1}&ip.dst={2}&{4}.dstport={3}%29", dstIp, dstPort, srcIp, srcPort, protocol.ToLower());
+
+        //    return nw + HttpUtility.UrlEncode(query);
+        //}
+
         /// <summary>
+        /// Generates the following query:
         /// 
+        /// (ip.src={0}||ip.dst={2})&&(ip.src={2}||ip.dst={0})&&({4}.srcport={1}||{4}.dstport={3})&&({4}.srcport={3}||{4}.dstport={1})
         /// </summary>
         /// <param name="ip"></param>
         /// <param name="collection"></param>
         /// <param name="srcIp"></param>
-        /// <param name="dstIp"></param>
         /// <param name="srcPort"></param>
+        /// <param name="dstIp"></param>
         /// <param name="dstPort"></param>
         /// <param name="protocol"></param>
+        /// <param name="srcToDst"></param>
         /// <returns></returns>
-        public static string ConstructNetWitnessUrl(string ip, 
-                                                    string collection, 
-                                                    string srcIp, 
-                                                    string srcPort, 
-                                                    string dstIp, 
+        public static string ConstructNetWitnessUrl(string ip,
+                                                    string collection,
+                                                    string srcIp,
+                                                    string srcPort,
+                                                    string dstIp,
                                                     string dstPort,
                                                     string protocol)
         {
+
+            //const string query = "%28ip.src%3d{0}%26%26{4}.srcport%3d{1}%26%26ip.dst%3d{2}%26%26{4}.dstport%3d{3}%29";
+            const string query = "%28ip.src={0}||ip.dst={2}%29%26%26%28ip.src={2}||ip.dst={0}%29%26%26%28{4}.srcport={1}||{4}.dstport={3}%29%26%26%28{4}.srcport={3}||{4}.dstport={1}%29";
             string nw = string.Format("nw://{0}/?collection={1}&time=Last+24+Hours+of+Collection+Time&where=", ip, collection);
-            string query = string.Format("(ip.src={0}&&{4}.srcport={1}&&ip.dst={2}&&{4}.dstport={3})", srcIp, srcPort, dstIp, dstPort, protocol.ToLower());
-            query += "||";
-            query += string.Format("(ip.src={0}&&{4}.srcport={1}&&ip.dst={2}&&{4}.dstport={3})", dstIp, dstPort, srcIp, srcPort, protocol.ToLower());
-            return nw + HttpUtility.UrlEncode(query);
+            string temp = string.Format(query, srcIp, srcPort, dstIp, dstPort, protocol.ToLower());
+            return nw + temp;
         }
 
         /// <summary>
@@ -77,10 +109,14 @@ namespace snorbert
         /// <returns></returns>
         public static List<Event> ProcessEventDataSet(List<Event> events)
         {
+            Regex regex = new Regex(@"^Host:\s+(.*)", RegexOptions.IgnoreCase | RegexOptions.Multiline);
             foreach (Event temp in events)
             {
                 try
                 {
+                    temp.IpSrc = IPAddress.Parse(temp.IpSrcTxt);
+                    temp.IpDst = IPAddress.Parse(temp.IpDstTxt);
+
                     List<string> flags = new List<string>();
                     foreach (Global.TcpFlags tcpFlag in Misc.EnumToList<Global.TcpFlags>())
                     {
@@ -115,7 +151,12 @@ namespace snorbert
                     {
                         temp.PayloadHex = Helper.StringToByteArray(temp.PayloadAscii);
                         temp.PayloadAscii = woanware.Text.ReplaceNulls(woanware.Text.ByteArrayToString(temp.PayloadHex, woanware.Text.EncodingType.Ascii));
-                        temp.HttpHost = ParseHost(temp.PayloadAscii);
+
+                        Match match = regex.Match(temp.PayloadAscii);
+                        if (match.Success == true)
+                        {
+                            temp.HttpHost = match.Groups[1].Value;
+                        }
                     }
                 }
                 catch (Exception ex)
@@ -125,23 +166,6 @@ namespace snorbert
             }
 
             return events;
-        }
-        
-        /// <summary>
-        /// Parses out the HTTP Host header
-        /// </summary>
-        /// <param name="data"></param>
-        /// <returns></returns>
-        private static string ParseHost(string data)
-        {
-            Regex regex = new Regex(@"^Host:\s+(.*)", RegexOptions.IgnoreCase | RegexOptions.Multiline);
-            Match match = regex.Match(data);
-            if (match.Success == true)
-            {
-                return match.Groups[1].Value;
-            }
-
-            return string.Empty;
         }
 
         /// <summary>
@@ -169,10 +193,13 @@ namespace snorbert
                     value = temp.Cid.ToString();
                     break;
                 case Global.FieldsEventCopy.DstIp:
-                    value = temp.IpDst.ToString();
+                    value = temp.IpDstTxt.ToString();
                     break;
                 case Global.FieldsEventCopy.DstPort:
                     value = temp.DstPort.ToString();
+                    break;
+                case Global.FieldsEventCopy.HttpHost:
+                    value = temp.HttpHost.ToString();
                     break;
                 case Global.FieldsEventCopy.PayloadAscii:
                     value = temp.PayloadAscii.ToString();
@@ -184,7 +211,7 @@ namespace snorbert
                     value = temp.SigName.ToString();
                     break;
                 case Global.FieldsEventCopy.SrcIp:
-                    value = temp.IpSrc.ToString();
+                    value = temp.IpSrcTxt.ToString();
                     break;
                 case Global.FieldsEventCopy.SrcPort:
                     value = temp.SrcPort.ToString();
@@ -225,6 +252,8 @@ namespace snorbert
                 list.Columns[(int)Global.FieldsEvent.Cid].AutoResize(ColumnHeaderAutoResizeStyle.ColumnContent);
                 list.Columns[(int)Global.FieldsEvent.SrcIp].AutoResize(ColumnHeaderAutoResizeStyle.ColumnContent);
                 list.Columns[(int)Global.FieldsEvent.DstIp].AutoResize(ColumnHeaderAutoResizeStyle.ColumnContent);
+                list.Columns[(int)Global.FieldsEvent.Host].AutoResize(ColumnHeaderAutoResizeStyle.ColumnContent);
+                list.Columns[(int)Global.FieldsEvent.Protocol].AutoResize(ColumnHeaderAutoResizeStyle.ColumnContent);
                 list.Columns[(int)Global.FieldsEvent.Timestamp].AutoResize(ColumnHeaderAutoResizeStyle.ColumnContent);
             }
         }

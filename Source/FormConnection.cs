@@ -45,6 +45,8 @@ namespace snorbert
             _connection = connection;
             txtName.Text = connection.Name;
             txtConnectionString.Text = connection.ConnectionString;
+            txtCollectionName.Text = connection.CollectionName;
+            txtNetwitnessIp.Text = connection.ConcentratorIp;
         }
         #endregion
 
