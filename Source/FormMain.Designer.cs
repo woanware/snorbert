@@ -95,7 +95,7 @@
             this.menuStrip.Name = "menuStrip";
             this.menuStrip.Padding = new System.Windows.Forms.Padding(7, 2, 0, 2);
             this.menuStrip.RenderMode = System.Windows.Forms.ToolStripRenderMode.System;
-            this.menuStrip.Size = new System.Drawing.Size(769, 24);
+            this.menuStrip.Size = new System.Drawing.Size(806, 24);
             this.menuStrip.TabIndex = 0;
             this.menuStrip.Text = "menuStrip1";
             // 
@@ -129,26 +129,26 @@
             // menuToolsConnections
             // 
             this.menuToolsConnections.Name = "menuToolsConnections";
-            this.menuToolsConnections.Size = new System.Drawing.Size(152, 22);
+            this.menuToolsConnections.Size = new System.Drawing.Size(141, 22);
             this.menuToolsConnections.Text = "Connections";
             this.menuToolsConnections.Click += new System.EventHandler(this.menuToolsConnections_Click);
             // 
             // menuToolsSep1
             // 
             this.menuToolsSep1.Name = "menuToolsSep1";
-            this.menuToolsSep1.Size = new System.Drawing.Size(149, 6);
+            this.menuToolsSep1.Size = new System.Drawing.Size(138, 6);
             // 
             // menuToolsImportRules
             // 
             this.menuToolsImportRules.Name = "menuToolsImportRules";
-            this.menuToolsImportRules.Size = new System.Drawing.Size(152, 22);
+            this.menuToolsImportRules.Size = new System.Drawing.Size(141, 22);
             this.menuToolsImportRules.Text = "Import Rules";
             this.menuToolsImportRules.Click += new System.EventHandler(this.menuToolsImportRules_Click);
             // 
             // menuToolsSep2
             // 
             this.menuToolsSep2.Name = "menuToolsSep2";
-            this.menuToolsSep2.Size = new System.Drawing.Size(149, 6);
+            this.menuToolsSep2.Size = new System.Drawing.Size(138, 6);
             // 
             // menuToolsExcludes
             // 
@@ -156,20 +156,20 @@
             this.menuToolsExcludeConfiguration,
             this.menuToolsExcludesExport});
             this.menuToolsExcludes.Name = "menuToolsExcludes";
-            this.menuToolsExcludes.Size = new System.Drawing.Size(152, 22);
+            this.menuToolsExcludes.Size = new System.Drawing.Size(141, 22);
             this.menuToolsExcludes.Text = "&Excludes";
             // 
             // menuToolsExcludeConfiguration
             // 
             this.menuToolsExcludeConfiguration.Name = "menuToolsExcludeConfiguration";
-            this.menuToolsExcludeConfiguration.Size = new System.Drawing.Size(152, 22);
+            this.menuToolsExcludeConfiguration.Size = new System.Drawing.Size(148, 22);
             this.menuToolsExcludeConfiguration.Text = "Configuration";
             this.menuToolsExcludeConfiguration.Click += new System.EventHandler(this.menuToolsExcludeConfiguration_Click);
             // 
             // menuToolsExcludesExport
             // 
             this.menuToolsExcludesExport.Name = "menuToolsExcludesExport";
-            this.menuToolsExcludesExport.Size = new System.Drawing.Size(152, 22);
+            this.menuToolsExcludesExport.Size = new System.Drawing.Size(148, 22);
             this.menuToolsExcludesExport.Text = "Export";
             this.menuToolsExcludesExport.Click += new System.EventHandler(this.menuToolsExcludesExport_Click);
             // 
@@ -212,7 +212,7 @@
             this.toolStrip.Location = new System.Drawing.Point(0, 24);
             this.toolStrip.Name = "toolStrip";
             this.toolStrip.RenderMode = System.Windows.Forms.ToolStripRenderMode.System;
-            this.toolStrip.Size = new System.Drawing.Size(769, 25);
+            this.toolStrip.Size = new System.Drawing.Size(806, 25);
             this.toolStrip.TabIndex = 1;
             this.toolStrip.Text = "toolStrip1";
             // 
@@ -349,7 +349,7 @@
             this.statusStrip.Location = new System.Drawing.Point(0, 530);
             this.statusStrip.Name = "statusStrip";
             this.statusStrip.Padding = new System.Windows.Forms.Padding(1, 0, 16, 0);
-            this.statusStrip.Size = new System.Drawing.Size(769, 22);
+            this.statusStrip.Size = new System.Drawing.Size(806, 22);
             this.statusStrip.TabIndex = 3;
             this.statusStrip.Text = "statusStrip1";
             // 
@@ -364,7 +364,7 @@
             this.panelControl.Dock = System.Windows.Forms.DockStyle.Fill;
             this.panelControl.Location = new System.Drawing.Point(0, 49);
             this.panelControl.Name = "panelControl";
-            this.panelControl.Size = new System.Drawing.Size(769, 481);
+            this.panelControl.Size = new System.Drawing.Size(806, 481);
             this.panelControl.TabIndex = 4;
             // 
             // tabMain
@@ -377,7 +377,7 @@
             this.tabMain.Location = new System.Drawing.Point(0, 0);
             this.tabMain.Name = "tabMain";
             this.tabMain.SelectedIndex = 0;
-            this.tabMain.Size = new System.Drawing.Size(769, 481);
+            this.tabMain.Size = new System.Drawing.Size(806, 481);
             this.tabMain.TabIndex = 0;
             // 
             // tabPageEvents
@@ -386,7 +386,7 @@
             this.tabPageEvents.Location = new System.Drawing.Point(4, 24);
             this.tabPageEvents.Name = "tabPageEvents";
             this.tabPageEvents.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPageEvents.Size = new System.Drawing.Size(761, 453);
+            this.tabPageEvents.Size = new System.Drawing.Size(798, 453);
             this.tabPageEvents.TabIndex = 0;
             this.tabPageEvents.Text = "Events";
             this.tabPageEvents.UseVisualStyleBackColor = true;
@@ -399,7 +399,7 @@
             this.controlEvents.Location = new System.Drawing.Point(3, 3);
             this.controlEvents.Margin = new System.Windows.Forms.Padding(0);
             this.controlEvents.Name = "controlEvents";
-            this.controlEvents.Size = new System.Drawing.Size(755, 447);
+            this.controlEvents.Size = new System.Drawing.Size(792, 447);
             this.controlEvents.TabIndex = 0;
             // 
             // tabPageRules
@@ -408,7 +408,7 @@
             this.tabPageRules.Location = new System.Drawing.Point(4, 24);
             this.tabPageRules.Name = "tabPageRules";
             this.tabPageRules.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPageRules.Size = new System.Drawing.Size(761, 453);
+            this.tabPageRules.Size = new System.Drawing.Size(798, 453);
             this.tabPageRules.TabIndex = 1;
             this.tabPageRules.Text = "Rules";
             this.tabPageRules.UseVisualStyleBackColor = true;
@@ -419,7 +419,7 @@
             this.controlRules.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.controlRules.Location = new System.Drawing.Point(3, 3);
             this.controlRules.Name = "controlRules";
-            this.controlRules.Size = new System.Drawing.Size(755, 447);
+            this.controlRules.Size = new System.Drawing.Size(792, 447);
             this.controlRules.TabIndex = 0;
             // 
             // tabPageSearch
@@ -428,7 +428,7 @@
             this.tabPageSearch.Location = new System.Drawing.Point(4, 24);
             this.tabPageSearch.Name = "tabPageSearch";
             this.tabPageSearch.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPageSearch.Size = new System.Drawing.Size(761, 453);
+            this.tabPageSearch.Size = new System.Drawing.Size(798, 453);
             this.tabPageSearch.TabIndex = 2;
             this.tabPageSearch.Text = "Search";
             this.tabPageSearch.UseVisualStyleBackColor = true;
@@ -440,7 +440,7 @@
             this.controlSearch.Location = new System.Drawing.Point(3, 3);
             this.controlSearch.Margin = new System.Windows.Forms.Padding(0);
             this.controlSearch.Name = "controlSearch";
-            this.controlSearch.Size = new System.Drawing.Size(755, 447);
+            this.controlSearch.Size = new System.Drawing.Size(792, 447);
             this.controlSearch.TabIndex = 0;
             // 
             // tabPageSensors
@@ -449,7 +449,7 @@
             this.tabPageSensors.Location = new System.Drawing.Point(4, 24);
             this.tabPageSensors.Name = "tabPageSensors";
             this.tabPageSensors.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPageSensors.Size = new System.Drawing.Size(761, 453);
+            this.tabPageSensors.Size = new System.Drawing.Size(798, 453);
             this.tabPageSensors.TabIndex = 3;
             this.tabPageSensors.Text = "Sensors";
             this.tabPageSensors.UseVisualStyleBackColor = true;
@@ -461,22 +461,23 @@
             this.controlSensors.Location = new System.Drawing.Point(3, 3);
             this.controlSensors.Margin = new System.Windows.Forms.Padding(0);
             this.controlSensors.Name = "controlSensors";
-            this.controlSensors.Size = new System.Drawing.Size(755, 447);
+            this.controlSensors.Size = new System.Drawing.Size(792, 447);
             this.controlSensors.TabIndex = 0;
             // 
             // FormMain
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(769, 552);
+            this.ClientSize = new System.Drawing.Size(806, 552);
             this.Controls.Add(this.panelControl);
             this.Controls.Add(this.toolStrip);
             this.Controls.Add(this.menuStrip);
             this.Controls.Add(this.statusStrip);
             this.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
+            this.KeyPreview = true;
             this.MainMenuStrip = this.menuStrip;
-            this.MinimumSize = new System.Drawing.Size(745, 590);
+            this.MinimumSize = new System.Drawing.Size(822, 590);
             this.Name = "FormMain";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "snorbert";

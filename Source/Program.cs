@@ -32,6 +32,7 @@ namespace snorbert
         {
             Exception exception = (Exception)e.ExceptionObject;
 
+            IO.WriteTextToFile("An unhandled exception has occurred: " + exception.ToString() + Environment.NewLine, System.IO.Path.Combine(Misc.GetUserDataDirectory(), "Errors.log"), true); 
             Misc.WriteToEventLog(Application.ProductName, "An unhandled exception has occurred: " + exception.ToString(), EventLogEntryType.Error);
             UserInterface.DisplayErrorMessageBox("An unhandled exception has occurred, check the event log for details: " + exception.Message);
         }
@@ -45,6 +46,7 @@ namespace snorbert
         {
             Exception exception = (Exception)e.Exception;
 
+            IO.WriteTextToFile("An unhandled exception has occurred: " + exception.ToString() + Environment.NewLine, System.IO.Path.Combine(Misc.GetUserDataDirectory(), "Errors.log"), true); 
             Misc.WriteToEventLog(Application.ProductName, "An unhandled exception has occurred: " + Environment.NewLine + Environment.NewLine + exception.ToString(), EventLogEntryType.Error);
             UserInterface.DisplayErrorMessageBox("An unhandled exception has occurred, check the event log for details: " + exception.Message);
         }

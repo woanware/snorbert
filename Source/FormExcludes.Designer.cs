@@ -55,7 +55,6 @@
             this.listExcludes.FullRowSelect = true;
             this.listExcludes.HideSelection = false;
             this.listExcludes.Location = new System.Drawing.Point(10, 10);
-            this.listExcludes.MultiSelect = false;
             this.listExcludes.Name = "listExcludes";
             this.listExcludes.ShowGroups = false;
             this.listExcludes.Size = new System.Drawing.Size(512, 176);

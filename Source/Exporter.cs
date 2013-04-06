@@ -352,6 +352,63 @@ namespace snorbert
                 }
             });
         }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="signatures"></param>
+        /// <param name="filePath">The output file name</param>
+        public void ExportRules(List<Signature> signatures,
+                                string filePath)
+        {
+            if (IsRunning == true)
+            {
+                OnExclamation("Already performing an export");
+                return;
+            }
+
+            IsRunning = true;
+
+            Task task = Task.Factory.StartNew(() =>
+            {
+                try
+                {
+                    CsvConfiguration csvConfiguration = new CsvConfiguration();
+                    csvConfiguration.Delimiter = '\t';
+
+                    using (FileStream fileStream = new FileStream(filePath, FileMode.Append, FileAccess.Write))
+                    using (StreamWriter streamWriter = new StreamWriter(fileStream))
+                    using (CsvHelper.CsvWriter csvWriter = new CsvHelper.CsvWriter(streamWriter, csvConfiguration))
+                    {
+                        // Write out the file headers
+                        csvWriter.WriteField("SID");
+                        csvWriter.WriteField("Name");
+                        csvWriter.WriteField("Priority");
+                        csvWriter.WriteField("Count");
+                        csvWriter.NextRecord();
+
+                        foreach (Signature temp in signatures)
+                        {
+                            csvWriter.WriteField(temp.Sid);
+                            csvWriter.WriteField(temp.Name);
+                            csvWriter.WriteField(temp.Priority);
+                            csvWriter.WriteField(temp.Count);
+                            csvWriter.NextRecord();
+                        }
+                    }
+
+                    OnComplete();
+                }
+                catch (Exception ex)
+                {
+                    OnError("An error occurred whilst performing the export: " + ex.Message);
+                }
+                finally
+                {
+                    IsRunning = false;
+                }
+            });
+        }
         #endregion
 
         #region Event Methods

@@ -38,7 +38,12 @@ namespace snorbert
             SQL_EVENTS_RULES_FROM_EXPORT = 17,
             SQL_EVENTS_RULES_FROM_TO_EXPORT = 17,
             SQL_EXCLUDES = 18,
-            SQL_EXCLUDE = 19
+            SQL_EXCLUDE = 19,
+            SQL_SENSORS_HOSTNAME = 20,
+            SQL_RULES_FROM_ALL = 21,
+            SQL_RULES_FROM_TO_ALL = 22,
+            SQL_RULES_FROM_PRIORITY_ALL = 23,
+            SQL_RULES_FROM_TO_PRIORITY_ALL = 24
         }
         #endregion
 

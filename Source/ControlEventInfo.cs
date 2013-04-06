@@ -100,11 +100,11 @@ namespace snorbert
                 txtSigCategory.Text = temp.SigClassName;
                 txtSigGenId.Text = temp.SigGid.ToString();
                 txtSigSigRev.Text = temp.SigRev.ToString();
-                txtSigSigId.Text = temp.Sid.ToString();
+                txtSigSigId.Text = temp.SigSid.ToString();
 
                 NPoco.Database dbSqlCe = new NPoco.Database(Db.GetOpenSqlCeConnection(), DatabaseType.SQLCe);
 
-                Rule rule = dbSqlCe.SingleOrDefault<Rule>("SELECT * FROM Rules WHERE Sid = @0", new object[] { temp.Sid.ToString() });
+                Rule rule = dbSqlCe.SingleOrDefault<Rule>("SELECT * FROM Rules WHERE Sid = @0", new object[] { temp.SigSid.ToString() });
                 if (rule != null)
                 {
                     txtRule.Text = rule.Data;
@@ -134,7 +134,7 @@ namespace snorbert
 
                 // References Tab
                 NPoco.Database dbMySql = new NPoco.Database(Db.GetOpenMySqlConnection());
-                List<Reference> references = dbMySql.Fetch<Reference>(_sql.GetQuery(Sql.Query.SQL_REFERENCES), new object[] { temp.Sid });
+                List<Reference> references = dbMySql.Fetch<Reference>(_sql.GetQuery(Sql.Query.SQL_REFERENCES), new object[] { temp.SigSid });
                 listReferences.SetObjects(references);
                 ResizeReferenceListColumns();
 

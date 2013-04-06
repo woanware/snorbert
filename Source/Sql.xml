@@ -39,21 +39,21 @@
 				   IFNULL(udphdr.udp_csum, 0) as udp_csum,           
 				   data.data_payload as data_payload    
 			  FROM (SELECT event.timestamp as timestamp,
-				           event.sid as sid,
-				           event.cid as cid,
-				           event.signature
+				             event.sid as sid,
+				             event.cid as cid,
+				             event.signature
 			          FROM event
-		          ORDER BY event.timestamp  desc
+		        ORDER BY event.timestamp  desc
 			         LIMIT @0,@1) as event                                         
 	      LEFT JOIN data ON (data.sid = event.sid AND data.cid = event.cid )    
 	      LEFT JOIN iphdr  ON (event.sid = iphdr.sid AND event.cid = iphdr.cid) 
 	      LEFT JOIN tcphdr ON (event.sid = tcphdr.sid AND event.cid = tcphdr.cid) 
-		  LEFT JOIN udphdr ON (event.sid = udphdr.sid AND event.cid = udphdr.cid) 
-	      LEFT JOIN signature ON (signature.sig_id = event.signature) 	
-		  LEFT JOIN sig_class on (signature.sig_class_id = sig_class.sig_class_id)  
-		  LEFT JOIN exclude ON ((exclude.ip_src IS NULL OR exclude.ip_src = iphdr.ip_src)                      
-			                 AND (exclude.ip_dst IS NULL OR exclude.ip_dst = iphdr.ip_dst)                      
-			                 AND (exclude.sig_id IS NULL OR exclude.sig_id = event.signature)) 
+		    LEFT JOIN udphdr ON (event.sid = udphdr.sid AND event.cid = udphdr.cid) 
+	      LEFT JOIN signature ON (signature.sig_id = event.signature) 		
+		    LEFT JOIN sig_class on (signature.sig_class_id = sig_class.sig_class_id)  
+		    LEFT JOIN exclude ON ((exclude.ip_src IS NULL OR exclude.ip_src = iphdr.ip_src)                      
+			    AND (exclude.ip_dst IS NULL OR exclude.ip_dst = iphdr.ip_dst)                      
+			    AND (exclude.sig_id IS NULL OR exclude.sig_id = event.signature)) 
 			  WHERE exclude.id IS NULL]]></Data>
     </SqlQuery>
     
@@ -72,14 +72,62 @@
 							AND (exclude.sig_id IS NULL OR exclude.sig_id = event.signature)) 
 		     WHERE exclude.id IS NULL 
 			   AND event.timestamp > @0
+         AND event.sid IN (SELECT sid FROM sensor WHERE hostname=@1)
 		  GROUP BY signature.sig_id 
 		  ORDER BY signature.sig_priority DESC, 
 		           signature.sig_name;]]></Data>
     </SqlQuery>
-    
+
+    <SqlQuery>
+      <Query>SQL_RULES_FROM_ALL</Query>
+      <Data>
+        <![CDATA[SELECT signature.sig_id, 
+					signature.sig_name, 
+				   signature.sig_sid, 
+				   IFNULL(signature.sig_priority, 0) as sig_priority,
+				   count(signature.sig_name) AS count          
+			  FROM signature          
+			  JOIN event ON (signature.sig_id = event.signature)          
+			  JOIN iphdr ON (iphdr.cid = event.cid AND iphdr.sid = event.sid)
+	     LEFT JOIN exclude ON ((exclude.ip_src IS NULL OR exclude.ip_src = iphdr.ip_src) 
+							AND (exclude.ip_dst IS NULL OR exclude.ip_dst = iphdr.ip_dst)  
+							AND (exclude.sig_id IS NULL OR exclude.sig_id = event.signature)) 
+		     WHERE exclude.id IS NULL 
+			   AND event.timestamp > @0
+		  GROUP BY signature.sig_id 
+		  ORDER BY signature.sig_priority DESC, 
+		           signature.sig_name;]]>
+      </Data>
+    </SqlQuery>
+
     <SqlQuery>
       <Query>SQL_RULES_FROM_TO</Query>
-      <Data><![CDATA[SELECT signature.sig_id, 
+      <Data>
+        <![CDATA[SELECT signature.sig_id, 
+						signature.sig_name, 
+				   signature.sig_sid, 
+				   IFNULL(signature.sig_priority, 0) as sig_priority,
+				   count(signature.sig_name) AS count          
+			  FROM signature          
+			  JOIN event ON (signature.sig_id = event.signature)          
+			  JOIN iphdr ON (iphdr.cid = event.cid AND iphdr.sid = event.sid)
+	     LEFT JOIN exclude ON ((exclude.ip_src IS NULL OR exclude.ip_src = iphdr.ip_src) 
+		                    AND (exclude.ip_dst IS NULL OR exclude.ip_dst = iphdr.ip_dst)  
+							AND (exclude.sig_id IS NULL OR exclude.sig_id = event.signature)) 
+		     WHERE exclude.id IS NULL 
+			   AND event.timestamp > @0 
+			   AND event.timestamp < @1
+         AND event.sid IN (SELECT sid FROM sensor WHERE hostname=@2)
+		  GROUP BY signature.sig_id 
+		  ORDER BY signature.sig_priority DESC, 
+		           signature.sig_name;]]>
+      </Data>
+    </SqlQuery>
+    
+    <SqlQuery>
+      <Query>SQL_RULES_FROM_TO_ALL</Query>
+      <Data>
+           <![CDATA[SELECT signature.sig_id, 
 						signature.sig_name, 
 				   signature.sig_sid, 
 				   IFNULL(signature.sig_priority, 0) as sig_priority,
@@ -100,6 +148,29 @@
 
     <SqlQuery>
       <Query>SQL_RULES_FROM_PRIORITY</Query>
+      <Data>
+        <![CDATA[SELECT signature.sig_id, 
+					signature.sig_name, 
+				   signature.sig_sid, 
+				   IFNULL(signature.sig_priority, 0) as sig_priority,
+				   count(signature.sig_name) AS count          
+			  FROM signature          
+			  JOIN event ON (signature.sig_id = event.signature)          
+			  JOIN iphdr ON (iphdr.cid = event.cid AND iphdr.sid = event.sid)
+	     LEFT JOIN exclude ON ((exclude.ip_src IS NULL OR exclude.ip_src = iphdr.ip_src) 
+							AND (exclude.ip_dst IS NULL OR exclude.ip_dst = iphdr.ip_dst)  
+							AND (exclude.sig_id IS NULL OR exclude.sig_id = event.signature)) 
+		     WHERE exclude.id IS NULL 
+			     AND event.timestamp > @0
+           AND signature.sig_priority = @1
+           AND event.sid IN (SELECT sid FROM sensor WHERE hostname=@2)
+		  GROUP BY signature.sig_id 
+		  ORDER BY signature.sig_name;]]>
+      </Data>
+    </SqlQuery>
+
+    <SqlQuery>
+      <Query>SQL_RULES_FROM_PRIORITY_ALL</Query>
       <Data>
         <![CDATA[SELECT signature.sig_id, 
 					signature.sig_name, 
@@ -138,6 +209,30 @@
 			   AND event.timestamp > @0 
 			   AND event.timestamp < @1
          AND signature.sig_priority = @2
+         AND event.sid IN (SELECT sid FROM sensor WHERE hostname=@3)
+		  GROUP BY signature.sig_id 
+		  ORDER BY signature.sig_name;]]>
+      </Data>
+    </SqlQuery>
+
+    <SqlQuery>
+      <Query>SQL_RULES_FROM_TO_PRIORITY_ALL</Query>
+      <Data>
+        <![CDATA[SELECT signature.sig_id, 
+						signature.sig_name, 
+				   signature.sig_sid, 
+				   IFNULL(signature.sig_priority, 0) as sig_priority,
+				   count(signature.sig_name) AS count          
+			  FROM signature          
+			  JOIN event ON (signature.sig_id = event.signature)          
+			  JOIN iphdr ON (iphdr.cid = event.cid AND iphdr.sid = event.sid)
+	     LEFT JOIN exclude ON ((exclude.ip_src IS NULL OR exclude.ip_src = iphdr.ip_src) 
+		                    AND (exclude.ip_dst IS NULL OR exclude.ip_dst = iphdr.ip_dst)  
+							AND (exclude.sig_id IS NULL OR exclude.sig_id = event.signature)) 
+		     WHERE exclude.id IS NULL 
+			   AND event.timestamp > @0 
+			   AND event.timestamp < @1
+         AND signature.sig_priority = @2
 		  GROUP BY signature.sig_id 
 		  ORDER BY signature.sig_name;]]>
       </Data>
@@ -145,7 +240,9 @@
     
     <SqlQuery>
       <Query>SQL_EVENTS_RULES_FROM</Query>
-      <Data><![CDATA[SELECT IFNULL(event.cid, 0) as cid,
+      <Data>
+       <![CDATA[SELECT IFNULL(event.cid, 0) as cid,
+       IFNULL(event.sid, 0) as sid,
 				   IFNULL(cast(inet_ntoa(iphdr.ip_src) as char(15)), 0) as ip_src, 
 				   IFNULL(cast(inet_ntoa(iphdr.ip_dst) as char(15)), 0) as ip_dst, 
 				   IFNULL(iphdr.ip_ver, 0) as ip_ver,
@@ -179,13 +276,18 @@
 				   IFNULL(tcphdr.tcp_urp, 0) as tcp_urp, 
 				   IFNULL(udphdr.udp_len, 0) as udp_len,   
 				   IFNULL(udphdr.udp_csum, 0) as udp_csum,           
-				   data.data_payload as data_payload     
-			  FROM event    
-	     LEFT JOIN data ON (data.sid = event.sid AND data.cid = event.cid )    
+				   data.data_payload as data_payload,
+           IFNULL(acknowledgment.id, 0) as acknowledgment_id,
+           IFNULL(acknowledgment.initials, '') as initials,
+           IFNULL(acknowledgment_class.desc, '') as acknowledgment_class
+			FROM event    
+ LEFT JOIN data ON (data.sid = event.sid AND data.cid = event.cid )    
 	     LEFT JOIN iphdr  ON (event.sid = iphdr.sid AND event.cid = iphdr.cid) 
 		 LEFT JOIN tcphdr ON (event.sid = tcphdr.sid AND event.cid = tcphdr.cid) 
 		 LEFT JOIN udphdr ON (event.sid = udphdr.sid AND event.cid = udphdr.cid) 
-		 LEFT JOIN signature ON (signature.sig_id = event.signature) 	
+		 LEFT JOIN signature ON (signature.sig_id = event.signature) 
+     LEFT JOIN acknowledgment on (acknowledgment.sid = event.sid AND acknowledgment.cid = event.cid )
+     LEFT JOIN acknowledgment_class on (acknowledgment_class.id = acknowledgment.class )
 		 LEFT JOIN sig_class on (signature.sig_class_id = sig_class.sig_class_id)  
 		 LEFT JOIN exclude ON ((exclude.ip_src IS NULL OR exclude.ip_src = iphdr.ip_src)                      
 			                AND (exclude.ip_dst IS NULL OR exclude.ip_dst = iphdr.ip_dst)                      
@@ -198,7 +300,9 @@
     
     <SqlQuery>
       <Query>SQL_EVENTS_RULES_FROM_TO</Query>
-      <Data><![CDATA[SELECT IFNULL(event.cid, 0) as cid,
+      <Data>
+             <![CDATA[SELECT IFNULL(event.cid, 0) as cid,
+             IFNULL(event.sid, 0) as sid,
 				   IFNULL(cast(inet_ntoa(iphdr.ip_src) as char(15)), 0) as ip_src, 
 				   IFNULL(cast(inet_ntoa(iphdr.ip_dst) as char(15)), 0) as ip_dst, 
 				   IFNULL(iphdr.ip_ver, 0) as ip_ver,
@@ -232,13 +336,18 @@
 				   IFNULL(tcphdr.tcp_urp, 0) as tcp_urp, 
 				   IFNULL(udphdr.udp_len, 0) as udp_len,   
 				   IFNULL(udphdr.udp_csum, 0) as udp_csum,           
-				   data.data_payload as data_payload     
+				   data.data_payload as data_payload,
+           IFNULL(acknowledgment.id, 0) as acknowledgment_id,
+           IFNULL(acknowledgment.initials, '') as initials,
+           IFNULL(acknowledgment_class.desc, '') as acknowledgment_class
 			  FROM event    
 	     left JOIN data ON (data.sid = event.sid AND data.cid = event.cid )    
 		 left JOIN iphdr  ON (event.sid = iphdr.sid AND event.cid = iphdr.cid) 
 		 left JOIN tcphdr ON (event.sid = tcphdr.sid AND event.cid = tcphdr.cid) 
 		 left JOIN udphdr ON (event.sid = udphdr.sid AND event.cid = udphdr.cid) 
 		 left JOIN signature ON (signature.sig_id = event.signature) 	
+     LEFT JOIN acknowledgment on (acknowledgment.sid = event.sid AND acknowledgment.cid = event.cid )
+     LEFT JOIN acknowledgment_class on (acknowledgment_class.id = acknowledgment.class )
 		 left JOIN sig_class ON (signature.sig_class_id = sig_class.sig_class_id)  
 		 LEFT JOIN exclude ON ((exclude.ip_src IS NULL OR exclude.ip_src = iphdr.ip_src)                      
 			                AND (exclude.ip_dst IS NULL OR exclude.ip_dst = iphdr.ip_dst)                      
@@ -350,6 +459,13 @@
 		 LEFT JOIN event ON event.cid = sensor.last_cid and event.sid = sensor.sid]]></Data>
     </SqlQuery>
     
+    <SqlQuery>
+      <Query>SQL_SENSORS_HOSTNAME</Query>
+      <Data><![CDATA[SELECT sensor.sid as sid,
+				   sensor.hostname as hostname
+			  FROM sensor
+		 group by hostname]]></Data>
+    </SqlQuery>
 
     <SqlQuery>
       <Query>SQL_RULES_SRC_IPS_FROM</Query>

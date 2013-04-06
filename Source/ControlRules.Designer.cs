@@ -48,6 +48,10 @@
             this.ctxMenuCopyHost = new System.Windows.Forms.ToolStripMenuItem();
             this.ctxMenuCopyTimestamp = new System.Windows.Forms.ToolStripMenuItem();
             this.ctxMenuCopyPayloadAscii = new System.Windows.Forms.ToolStripMenuItem();
+            this.toolStripMenuItem3 = new System.Windows.Forms.ToolStripSeparator();
+            this.ctxMenuCopyAcknowledgment = new System.Windows.Forms.ToolStripMenuItem();
+            this.ctxMenuCopyAcknowledgmentSet = new System.Windows.Forms.ToolStripMenuItem();
+            this.ctxMenuCopyAcknowledgmentClear = new System.Windows.Forms.ToolStripMenuItem();
             this.ctxMenuSep1 = new System.Windows.Forms.ToolStripSeparator();
             this.ctxMenuExclude = new System.Windows.Forms.ToolStripMenuItem();
             this.ctxMenuSep2 = new System.Windows.Forms.ToolStripSeparator();
@@ -58,14 +62,21 @@
             this.ctxMenuExport = new System.Windows.Forms.ToolStripMenuItem();
             this.ctxMenuExportAll = new System.Windows.Forms.ToolStripMenuItem();
             this.ctxMenuExportCurrent = new System.Windows.Forms.ToolStripMenuItem();
+            this.toolStripMenuItem2 = new System.Windows.Forms.ToolStripSeparator();
+            this.ctxMenuExportRules = new System.Windows.Forms.ToolStripMenuItem();
             this.ctxMenuSep4 = new System.Windows.Forms.ToolStripSeparator();
             this.ctxMenuNwQuery = new System.Windows.Forms.ToolStripMenuItem();
             this.ctxMenuNwQuerySrcToDst = new System.Windows.Forms.ToolStripMenuItem();
-            this.ctxMenuNwQueryDstToSrc = new System.Windows.Forms.ToolStripMenuItem();
+            this.ctxMenuNwQuerySrcPriorTraffic = new System.Windows.Forms.ToolStripMenuItem();
+            this.ctxMenuNwQueryDstPriorTraffic = new System.Windows.Forms.ToolStripMenuItem();
+            this.ctxMenuSep5 = new System.Windows.Forms.ToolStripSeparator();
+            this.ctxMenuCommands = new System.Windows.Forms.ToolStripMenuItem();
             this.btnPagingPreviousPage = new System.Windows.Forms.Button();
             this.btnPagingNextPage = new System.Windows.Forms.Button();
             this.btnPagingFirstPage = new System.Windows.Forms.Button();
             this.panelTop = new System.Windows.Forms.Panel();
+            this.cboSensor = new System.Windows.Forms.ComboBox();
+            this.lblSensor = new System.Windows.Forms.Label();
             this.cboPriority = new System.Windows.Forms.ComboBox();
             this.lblPriority = new System.Windows.Forms.Label();
             this.label31 = new System.Windows.Forms.Label();
@@ -93,7 +104,7 @@
             | System.Windows.Forms.AnchorStyles.Right)));
             this.lblPagingRules.Location = new System.Drawing.Point(56, 175);
             this.lblPagingRules.Name = "lblPagingRules";
-            this.lblPagingRules.Size = new System.Drawing.Size(560, 24);
+            this.lblPagingRules.Size = new System.Drawing.Size(683, 24);
             this.lblPagingRules.TabIndex = 20;
             this.lblPagingRules.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             // 
@@ -117,7 +128,7 @@
             // splitter.Panel2
             // 
             this.splitter.Panel2.Controls.Add(this.controlEventInfo);
-            this.splitter.Size = new System.Drawing.Size(671, 404);
+            this.splitter.Size = new System.Drawing.Size(794, 404);
             this.splitter.SplitterDistance = 200;
             this.splitter.TabIndex = 21;
             // 
@@ -125,7 +136,7 @@
             // 
             this.btnPagingLastPage.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.btnPagingLastPage.Image = ((System.Drawing.Image)(resources.GetObject("btnPagingLastPage.Image")));
-            this.btnPagingLastPage.Location = new System.Drawing.Point(646, 175);
+            this.btnPagingLastPage.Location = new System.Drawing.Point(769, 175);
             this.btnPagingLastPage.Name = "btnPagingLastPage";
             this.btnPagingLastPage.Size = new System.Drawing.Size(25, 25);
             this.btnPagingLastPage.TabIndex = 25;
@@ -134,7 +145,7 @@
             // 
             // listEvents
             // 
-            this.listEvents.AlternateRowBackColor = System.Drawing.Color.LightGray;
+            this.listEvents.AlternateRowBackColor = System.Drawing.Color.White;
             this.listEvents.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
@@ -147,10 +158,9 @@
             this.listEvents.ShowCommandMenuOnRightClick = true;
             this.listEvents.ShowGroups = false;
             this.listEvents.ShowItemCountOnGroups = true;
-            this.listEvents.Size = new System.Drawing.Size(670, 114);
+            this.listEvents.Size = new System.Drawing.Size(793, 114);
             this.listEvents.SortGroupItemsByPrimaryColumn = false;
             this.listEvents.TabIndex = 21;
-            this.listEvents.UseAlternatingBackColors = true;
             this.listEvents.UseCompatibleStateImageBehavior = false;
             this.listEvents.UseFilterIndicator = true;
             this.listEvents.UseFiltering = true;
@@ -166,6 +176,8 @@
             this.ctxMenuPayload,
             this.toolStripMenuItem1,
             this.ctxMenuCopy,
+            this.toolStripMenuItem3,
+            this.ctxMenuCopyAcknowledgment,
             this.ctxMenuSep1,
             this.ctxMenuExclude,
             this.ctxMenuSep2,
@@ -173,10 +185,12 @@
             this.ctxMenuSep3,
             this.ctxMenuExport,
             this.ctxMenuSep4,
-            this.ctxMenuNwQuery});
+            this.ctxMenuNwQuery,
+            this.ctxMenuSep5,
+            this.ctxMenuCommands});
             this.ctxMenuEvent.Name = "ctxMenuEvent";
             this.ctxMenuEvent.RenderMode = System.Windows.Forms.ToolStripRenderMode.System;
-            this.ctxMenuEvent.Size = new System.Drawing.Size(189, 188);
+            this.ctxMenuEvent.Size = new System.Drawing.Size(189, 222);
             this.ctxMenuEvent.Opening += new System.ComponentModel.CancelEventHandler(this.ctxMenuEvent_Opening);
             // 
             // ctxMenuPayload
@@ -278,6 +292,34 @@
             this.ctxMenuCopyPayloadAscii.Text = "Payload (ASCII)";
             this.ctxMenuCopyPayloadAscii.Click += new System.EventHandler(this.ctxMenuCopyPayloadAscii_Click);
             // 
+            // toolStripMenuItem3
+            // 
+            this.toolStripMenuItem3.Name = "toolStripMenuItem3";
+            this.toolStripMenuItem3.Size = new System.Drawing.Size(185, 6);
+            // 
+            // ctxMenuCopyAcknowledgment
+            // 
+            this.ctxMenuCopyAcknowledgment.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.ctxMenuCopyAcknowledgmentSet,
+            this.ctxMenuCopyAcknowledgmentClear});
+            this.ctxMenuCopyAcknowledgment.Name = "ctxMenuCopyAcknowledgment";
+            this.ctxMenuCopyAcknowledgment.Size = new System.Drawing.Size(188, 22);
+            this.ctxMenuCopyAcknowledgment.Text = "Acknowledgment";
+            // 
+            // ctxMenuCopyAcknowledgmentSet
+            // 
+            this.ctxMenuCopyAcknowledgmentSet.Name = "ctxMenuCopyAcknowledgmentSet";
+            this.ctxMenuCopyAcknowledgmentSet.Size = new System.Drawing.Size(101, 22);
+            this.ctxMenuCopyAcknowledgmentSet.Text = "Set";
+            this.ctxMenuCopyAcknowledgmentSet.Click += new System.EventHandler(this.ctxMenuCopyAcknowledgmentSet_Click);
+            // 
+            // ctxMenuCopyAcknowledgmentClear
+            // 
+            this.ctxMenuCopyAcknowledgmentClear.Name = "ctxMenuCopyAcknowledgmentClear";
+            this.ctxMenuCopyAcknowledgmentClear.Size = new System.Drawing.Size(101, 22);
+            this.ctxMenuCopyAcknowledgmentClear.Text = "Clear";
+            this.ctxMenuCopyAcknowledgmentClear.Click += new System.EventHandler(this.ctxMenuCopyAcknowledgmentClear_Click);
+            // 
             // ctxMenuSep1
             // 
             this.ctxMenuSep1.Name = "ctxMenuSep1";
@@ -327,7 +369,9 @@
             // 
             this.ctxMenuExport.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.ctxMenuExportAll,
-            this.ctxMenuExportCurrent});
+            this.ctxMenuExportCurrent,
+            this.toolStripMenuItem2,
+            this.ctxMenuExportRules});
             this.ctxMenuExport.Name = "ctxMenuExport";
             this.ctxMenuExport.Size = new System.Drawing.Size(188, 22);
             this.ctxMenuExport.Text = "Export";
@@ -335,16 +379,28 @@
             // ctxMenuExportAll
             // 
             this.ctxMenuExportAll.Name = "ctxMenuExportAll";
-            this.ctxMenuExportAll.Size = new System.Drawing.Size(114, 22);
-            this.ctxMenuExportAll.Text = "All";
+            this.ctxMenuExportAll.Size = new System.Drawing.Size(180, 22);
+            this.ctxMenuExportAll.Text = "All Events";
             this.ctxMenuExportAll.Click += new System.EventHandler(this.ctxMenuExportAll_Click);
             // 
             // ctxMenuExportCurrent
             // 
             this.ctxMenuExportCurrent.Name = "ctxMenuExportCurrent";
-            this.ctxMenuExportCurrent.Size = new System.Drawing.Size(114, 22);
-            this.ctxMenuExportCurrent.Text = "Current";
+            this.ctxMenuExportCurrent.Size = new System.Drawing.Size(180, 22);
+            this.ctxMenuExportCurrent.Text = "Current Page Events";
             this.ctxMenuExportCurrent.Click += new System.EventHandler(this.ctxMenuExportCurrent_Click);
+            // 
+            // toolStripMenuItem2
+            // 
+            this.toolStripMenuItem2.Name = "toolStripMenuItem2";
+            this.toolStripMenuItem2.Size = new System.Drawing.Size(177, 6);
+            // 
+            // ctxMenuExportRules
+            // 
+            this.ctxMenuExportRules.Name = "ctxMenuExportRules";
+            this.ctxMenuExportRules.Size = new System.Drawing.Size(180, 22);
+            this.ctxMenuExportRules.Text = "Rules";
+            this.ctxMenuExportRules.Click += new System.EventHandler(this.ctxMenuExportRules_Click);
             // 
             // ctxMenuSep4
             // 
@@ -355,23 +411,43 @@
             // 
             this.ctxMenuNwQuery.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.ctxMenuNwQuerySrcToDst,
-            this.ctxMenuNwQueryDstToSrc});
+            this.ctxMenuNwQuerySrcPriorTraffic,
+            this.ctxMenuNwQueryDstPriorTraffic});
             this.ctxMenuNwQuery.Name = "ctxMenuNwQuery";
             this.ctxMenuNwQuery.Size = new System.Drawing.Size(188, 22);
             this.ctxMenuNwQuery.Text = "NetWitness Query";
-            this.ctxMenuNwQuery.Click += new System.EventHandler(this.ctxMenuNwQuery_Click);
             // 
             // ctxMenuNwQuerySrcToDst
             // 
             this.ctxMenuNwQuerySrcToDst.Name = "ctxMenuNwQuerySrcToDst";
-            this.ctxMenuNwQuerySrcToDst.Size = new System.Drawing.Size(183, 22);
+            this.ctxMenuNwQuerySrcToDst.Size = new System.Drawing.Size(202, 22);
             this.ctxMenuNwQuerySrcToDst.Text = "Source->Destination";
+            this.ctxMenuNwQuerySrcToDst.Click += new System.EventHandler(this.ctxMenuNwQuerySrcToDst_Click);
             // 
-            // ctxMenuNwQueryDstToSrc
+            // ctxMenuNwQuerySrcPriorTraffic
             // 
-            this.ctxMenuNwQueryDstToSrc.Name = "ctxMenuNwQueryDstToSrc";
-            this.ctxMenuNwQueryDstToSrc.Size = new System.Drawing.Size(183, 22);
-            this.ctxMenuNwQueryDstToSrc.Text = "Destination->Source";
+            this.ctxMenuNwQuerySrcPriorTraffic.Name = "ctxMenuNwQuerySrcPriorTraffic";
+            this.ctxMenuNwQuerySrcPriorTraffic.Size = new System.Drawing.Size(202, 22);
+            this.ctxMenuNwQuerySrcPriorTraffic.Text = "Source Prior Traffic ";
+            this.ctxMenuNwQuerySrcPriorTraffic.Click += new System.EventHandler(this.ctxMenuNwQuerySrcPriorTraffic_Click);
+            // 
+            // ctxMenuNwQueryDstPriorTraffic
+            // 
+            this.ctxMenuNwQueryDstPriorTraffic.Name = "ctxMenuNwQueryDstPriorTraffic";
+            this.ctxMenuNwQueryDstPriorTraffic.Size = new System.Drawing.Size(202, 22);
+            this.ctxMenuNwQueryDstPriorTraffic.Text = "Destination Prior Traffic ";
+            this.ctxMenuNwQueryDstPriorTraffic.Click += new System.EventHandler(this.ctxMenuNwQueryDstPriorTraffic_Click);
+            // 
+            // ctxMenuSep5
+            // 
+            this.ctxMenuSep5.Name = "ctxMenuSep5";
+            this.ctxMenuSep5.Size = new System.Drawing.Size(185, 6);
+            // 
+            // ctxMenuCommands
+            // 
+            this.ctxMenuCommands.Name = "ctxMenuCommands";
+            this.ctxMenuCommands.Size = new System.Drawing.Size(188, 22);
+            this.ctxMenuCommands.Text = "Commands";
             // 
             // btnPagingPreviousPage
             // 
@@ -388,7 +464,7 @@
             // 
             this.btnPagingNextPage.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.btnPagingNextPage.Image = ((System.Drawing.Image)(resources.GetObject("btnPagingNextPage.Image")));
-            this.btnPagingNextPage.Location = new System.Drawing.Point(618, 175);
+            this.btnPagingNextPage.Location = new System.Drawing.Point(741, 175);
             this.btnPagingNextPage.Name = "btnPagingNextPage";
             this.btnPagingNextPage.Size = new System.Drawing.Size(25, 25);
             this.btnPagingNextPage.TabIndex = 24;
@@ -408,6 +484,8 @@
             // 
             // panelTop
             // 
+            this.panelTop.Controls.Add(this.cboSensor);
+            this.panelTop.Controls.Add(this.lblSensor);
             this.panelTop.Controls.Add(this.cboPriority);
             this.panelTop.Controls.Add(this.lblPriority);
             this.panelTop.Controls.Add(this.label31);
@@ -422,8 +500,26 @@
             this.panelTop.Dock = System.Windows.Forms.DockStyle.Top;
             this.panelTop.Location = new System.Drawing.Point(0, 0);
             this.panelTop.Name = "panelTop";
-            this.panelTop.Size = new System.Drawing.Size(671, 57);
+            this.panelTop.Size = new System.Drawing.Size(794, 57);
             this.panelTop.TabIndex = 20;
+            // 
+            // cboSensor
+            // 
+            this.cboSensor.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.cboSensor.FormattingEnabled = true;
+            this.cboSensor.Location = new System.Drawing.Point(619, 0);
+            this.cboSensor.Name = "cboSensor";
+            this.cboSensor.Size = new System.Drawing.Size(144, 23);
+            this.cboSensor.TabIndex = 32;
+            // 
+            // lblSensor
+            // 
+            this.lblSensor.AutoSize = true;
+            this.lblSensor.Location = new System.Drawing.Point(571, 3);
+            this.lblSensor.Name = "lblSensor";
+            this.lblSensor.Size = new System.Drawing.Size(42, 15);
+            this.lblSensor.TabIndex = 31;
+            this.lblSensor.Text = "Sensor";
             // 
             // cboPriority
             // 
@@ -521,7 +617,7 @@
             this.cboRule.FormattingEnabled = true;
             this.cboRule.Location = new System.Drawing.Point(43, 29);
             this.cboRule.Name = "cboRule";
-            this.cboRule.Size = new System.Drawing.Size(628, 23);
+            this.cboRule.Size = new System.Drawing.Size(751, 23);
             this.cboRule.TabIndex = 21;
             this.cboRule.DropDownClosed += new System.EventHandler(this.cboRule_DropDownClosed);
             // 
@@ -571,7 +667,7 @@
             // 
             this.btnRefresh.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.btnRefresh.Image = ((System.Drawing.Image)(resources.GetObject("btnRefresh.Image")));
-            this.btnRefresh.Location = new System.Drawing.Point(646, -1);
+            this.btnRefresh.Location = new System.Drawing.Point(769, -1);
             this.btnRefresh.Name = "btnRefresh";
             this.btnRefresh.Size = new System.Drawing.Size(25, 25);
             this.btnRefresh.TabIndex = 12;
@@ -584,7 +680,7 @@
             this.controlEventInfo.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.controlEventInfo.Location = new System.Drawing.Point(0, 0);
             this.controlEventInfo.Name = "controlEventInfo";
-            this.controlEventInfo.Size = new System.Drawing.Size(671, 200);
+            this.controlEventInfo.Size = new System.Drawing.Size(794, 200);
             this.controlEventInfo.TabIndex = 1;
             // 
             // ControlRules
@@ -594,7 +690,7 @@
             this.Controls.Add(this.splitter);
             this.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.Name = "ControlRules";
-            this.Size = new System.Drawing.Size(671, 404);
+            this.Size = new System.Drawing.Size(794, 404);
             this.Load += new System.EventHandler(this.Control_Load);
             this.splitter.Panel1.ResumeLayout(false);
             this.splitter.Panel2.ResumeLayout(false);
@@ -656,7 +752,18 @@
         private System.Windows.Forms.ToolStripSeparator ctxMenuSep4;
         private System.Windows.Forms.ToolStripMenuItem ctxMenuNwQuery;
         private System.Windows.Forms.ToolStripMenuItem ctxMenuNwQuerySrcToDst;
-        private System.Windows.Forms.ToolStripMenuItem ctxMenuNwQueryDstToSrc;
+        private System.Windows.Forms.ToolStripMenuItem ctxMenuNwQuerySrcPriorTraffic;
         private System.Windows.Forms.ToolStripMenuItem ctxMenuCopyHost;
+        private System.Windows.Forms.ToolStripSeparator toolStripMenuItem2;
+        private System.Windows.Forms.ToolStripMenuItem ctxMenuExportRules;
+        private System.Windows.Forms.ToolStripMenuItem ctxMenuNwQueryDstPriorTraffic;
+        private System.Windows.Forms.ComboBox cboSensor;
+        private System.Windows.Forms.Label lblSensor;
+        private System.Windows.Forms.ToolStripSeparator ctxMenuSep5;
+        private System.Windows.Forms.ToolStripMenuItem ctxMenuCommands;
+        private System.Windows.Forms.ToolStripSeparator toolStripMenuItem3;
+        private System.Windows.Forms.ToolStripMenuItem ctxMenuCopyAcknowledgment;
+        private System.Windows.Forms.ToolStripMenuItem ctxMenuCopyAcknowledgmentSet;
+        private System.Windows.Forms.ToolStripMenuItem ctxMenuCopyAcknowledgmentClear;
     }
 }

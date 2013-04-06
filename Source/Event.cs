@@ -13,8 +13,10 @@ namespace snorbert
         #region Member Variables/Properties
         [Column("cid")]
         public long Cid { get; set; }
-        [Column("sig_sid")]
+        [Column("sid")]
         public long Sid { get; set; }
+        [Column("sig_sid")]
+        public long SigSid { get; set; }
         [Column("ip_src")]
         public string IpSrcTxt { get; set; }
         [Column("ip_dst")]
@@ -97,6 +99,12 @@ namespace snorbert
         public string PayloadAscii { get; set; }
         [Ignore]
         public string HttpHost { get; set; }
+        [Column("acknowledgment_id")]
+        public long AcknowledgmentId { get; set; }
+        [Column("initials")]
+        public string Initials { get; set; }
+        [Column("acknowledgment_class")]
+        public string AcknowledgmentClass { get; set; }
         #endregion
 
         #region Constructor
@@ -109,6 +117,8 @@ namespace snorbert
             SigClassName = string.Empty;
             PayloadAscii = string.Empty;
             TcpFlagsString = string.Empty;
+            Initials = string.Empty;
+            AcknowledgmentClass = string.Empty;
         }
         #endregion
     }

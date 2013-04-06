@@ -16,10 +16,8 @@ namespace snorbert
         /// <returns></returns>
         public static DbConnection GetOpenMySqlConnection()
         {
-            string connectionString = string.Empty;
             var connection = new MySql.Data.MySqlClient.MySqlConnection(ConfigurationManager.ConnectionStrings[0].ConnectionString);
             connection.Open();
-
             return connection;
         }
 
@@ -40,7 +38,6 @@ namespace snorbert
         {
             var connection = new SqlCeConnection(GetSqlCeConnectionString());
             connection.Open();
-
             return connection;
         }
 

@@ -47,5 +47,20 @@ namespace snorbert
             Comment = string.Empty;
         }
         #endregion
+
+        #region Properties
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <returns></returns>
+        public override string ToString()
+        {
+            string ret = "Source IP: " + SourceIpText + Environment.NewLine;
+            ret += "Destination IP: " + DestinationIpText + Environment.NewLine;
+            ret += "Rule: " + Rule + Environment.NewLine;
+            ret += "Comment: " + Comment;
+            return ret;
+        }
+        #endregion
     }
 }

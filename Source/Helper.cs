@@ -2,11 +2,9 @@
 using System;
 using System.Collections.Generic;
 using System.Net;
+using System.Text.RegularExpressions;
 using System.Windows.Forms;
 using woanware;
-using System.Text.RegularExpressions;
-using System.Web;
-using System.Threading.Tasks;
 
 namespace snorbert
 {
@@ -94,12 +92,87 @@ namespace snorbert
                                                     string dstPort,
                                                     string protocol)
         {
-
             //const string query = "%28ip.src%3d{0}%26%26{4}.srcport%3d{1}%26%26ip.dst%3d{2}%26%26{4}.dstport%3d{3}%29";
-            const string query = "%28ip.src={0}||ip.dst={2}%29%26%26%28ip.src={2}||ip.dst={0}%29%26%26%28{4}.srcport={1}||{4}.dstport={3}%29%26%26%28{4}.srcport={3}||{4}.dstport={1}%29";
-            string nw = string.Format("nw://{0}/?collection={1}&time=Last+24+Hours+of+Collection+Time&where=", ip, collection);
+            //const string query = "%28ip.src={0}||ip.dst={2}%29%26%26%28ip.src={2}||ip.dst={0}%29%26%26%28{4}.srcport={1}||{4}.dstport={3}%29%26%26%28{4}.srcport={3}||{4}.dstport={1}%29";
+            const string query = "ip.src%3d{0}%2c{2}+%26%26+ip.dst%3d{0}%2c{2}+%26%26+{4}.srcport%3d{1}%2c{3}+%26%26+{4}.dstport%3d{1}%2c{3}";
+            string nw = string.Format("nws://{0}/?collection={1}&time=Last+24+Hours+of+Collection+Time&where=", ip, collection);
             string temp = string.Format(query, srcIp, srcPort, dstIp, dstPort, protocol.ToLower());
-            return nw + temp;
+            string name = "&name=Snorbert:+" + temp;
+            return nw + temp + name;
+        }
+
+        /// <summary>
+        /// Generates the following query:
+        /// 
+        /// (ip.src={0}||ip.dst={2})&&(ip.src={2}||ip.dst={0})&&({4}.srcport={1}||{4}.dstport={3})&&({4}.srcport={3}||{4}.dstport={1})
+        /// </summary>
+        /// <param name="ip"></param>
+        /// <param name="collection"></param>
+        /// <param name="srcIp"></param>
+        /// <param name="srcPort"></param>
+        /// <param name="dstIp"></param>
+        /// <param name="dstPort"></param>
+        /// <param name="protocol"></param>
+        /// <param name="srcToDst"></param>
+        /// <returns></returns>
+        public static string ConstructNetWitnessUrl(string nwIp,
+                                                    string collection,
+                                                    string ip,
+                                                    DateTime timestamp)
+        {
+            DateTime priorTimestamp = timestamp.AddMinutes(-2);
+            DateTime postTimestamp = timestamp.AddMinutes(+1);
+            string time = string.Format("{0}-{1}-{2}+{3}%3a{4}+{5}++to++",
+                                        priorTimestamp.ToString("yyyy"),
+                                        priorTimestamp.ToString("MMM"),
+                                        priorTimestamp.ToString("dd"),
+                                        priorTimestamp.ToString("hh"),
+                                        priorTimestamp.ToString("mm"),
+                                        priorTimestamp.ToString("tt ").Trim());
+
+            time += string.Format("{0}-{1}-{2}+{3}%3a{4}+{5}",
+                                  postTimestamp.ToString("yyyy"),
+                                  postTimestamp.ToString("MMM"),
+                                  postTimestamp.ToString("dd"),
+                                  postTimestamp.ToString("hh"),
+                                  postTimestamp.ToString("mm"),
+                                  postTimestamp.ToString("tt ").Trim());
+
+            const string query = "%28ip.src%3d{0}+%7c%7c+ip.dst%3d{0}%29";
+            string nw = string.Format("nws://{0}/?collection={1}&time={2}&where=", nwIp, collection, time);
+            string temp = string.Format(query, ip);
+            string name = "&name=Snorbert:+" + temp;
+            return nw + temp + name;
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="command"></param>
+        /// <param name="srcIp"></param>
+        /// <param name="srcPort"></param>
+        /// <param name="dstIp"></param>
+        /// <param name="dstPort"></param>
+        /// <param name="protocol"></param>
+        /// <param name="sensorId"></param>
+        /// <returns></returns>
+        public static string ConstructCommand(string command,
+                                              string srcIp,
+                                              string srcPort,
+                                              string dstIp,
+                                              string dstPort,
+                                              string protocol,
+                                              string sensorId)
+        {
+            string temp = command;
+            temp = temp.Replace("#IP_SRC#", srcIp);
+            temp = temp.Replace("#IP_DST#", dstIp);
+            temp = temp.Replace("#PORT_SRC#", srcPort);
+            temp = temp.Replace("#PORT_DST#", dstPort);
+            temp = temp.Replace("#PROTO#", protocol);
+            temp = temp.Replace("#SENSOR_ID#", sensorId);
+
+            return temp;
         }
 
         /// <summary>
@@ -114,6 +187,9 @@ namespace snorbert
             {
                 try
                 {
+                    if (temp.Cid == 1575484)
+                    {
+                    }
                     temp.IpSrc = IPAddress.Parse(temp.IpSrcTxt);
                     temp.IpDst = IPAddress.Parse(temp.IpDstTxt);
 
@@ -205,7 +281,7 @@ namespace snorbert
                     value = temp.PayloadAscii.ToString();
                     break;
                 case Global.FieldsEventCopy.Sid:
-                    value = temp.Sid.ToString();
+                    value = temp.SigSid.ToString();
                     break;
                 case Global.FieldsEventCopy.SigName:
                     value = temp.SigName.ToString();

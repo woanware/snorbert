@@ -9,6 +9,8 @@ using System.Data.Common;
 using System.Collections.Generic;
 using NPoco;
 using System.Windows.Forms;
+using System.Security.Principal;
+using System.Security.AccessControl;
 
 namespace snorbert
 {
@@ -94,7 +96,12 @@ namespace snorbert
         {
             try
             {
-                using (Mutex mutex = new Mutex(false, "Global\\" + MUTEX))
+                SecurityIdentifier sid = new SecurityIdentifier(WellKnownSidType.WorldSid, null);
+                MutexSecurity mutexSecurity = new MutexSecurity();
+                mutexSecurity.AddAccessRule(new MutexAccessRule(sid, MutexRights.FullControl, AccessControlType.Allow));
+
+                bool created;
+                using (Mutex mutex = new Mutex(false, "Global\\" + MUTEX, out created, mutexSecurity))
                 {
                     if (!mutex.WaitOne(0, false))
                     {
@@ -177,7 +184,7 @@ namespace snorbert
         /// </summary>
         private List<string> GetChangedFiles()
         {
-            if (Directory.Exists(System.IO.Path.Combine(Misc.GetUserDataDirectory(), "Import")) == false)
+            if (System.IO.Directory.Exists(System.IO.Path.Combine(Misc.GetUserDataDirectory(), "Import")) == false)
             {
                 return null;
             }
@@ -225,6 +232,11 @@ namespace snorbert
         {
             try
             {
+                if (System.IO.Directory.Exists(System.IO.Path.Combine(Misc.GetUserDataDirectory(), "Rules")) == false)
+                {
+                    woanware.IO.CreateDirectory(System.IO.Path.Combine(Misc.GetUserDataDirectory(), "Rules"));
+                }
+
                 SqlCeEngine sqlCeEngine = new SqlCeEngine(Db.GetSqlCeConnectionString());
                 sqlCeEngine.CreateDatabase();
 

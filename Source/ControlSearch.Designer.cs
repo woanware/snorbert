@@ -79,7 +79,6 @@
             // 
             this.splitter.Panel1.Controls.Add(this.label33);
             this.splitter.Panel1.Controls.Add(this.lblPaging);
-            this.splitter.Panel1.Controls.Add(this.cboSearch);
             this.splitter.Panel1.Controls.Add(this.label32);
             this.splitter.Panel1.Controls.Add(this.listEvents);
             this.splitter.Panel1.Controls.Add(this.btnPagingNextPage);
@@ -119,7 +118,7 @@
             this.cboSearch.Items.AddRange(new object[] {
             "Any",
             "All"});
-            this.cboSearch.Location = new System.Drawing.Point(481, -38);
+            this.cboSearch.Location = new System.Drawing.Point(85, 91);
             this.cboSearch.Name = "cboSearch";
             this.cboSearch.Size = new System.Drawing.Size(60, 23);
             this.cboSearch.TabIndex = 27;
@@ -278,6 +277,7 @@
             // 
             this.panelTop.Controls.Add(this.listFilters);
             this.panelTop.Controls.Add(this.btnFilterAdd);
+            this.panelTop.Controls.Add(this.cboSearch);
             this.panelTop.Controls.Add(this.btnSearch);
             this.panelTop.Controls.Add(this.btnFilterEdit);
             this.panelTop.Controls.Add(this.btnFilterDelete);

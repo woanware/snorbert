@@ -6,6 +6,8 @@ using System.Text;
 using System.Windows.Forms;
 using woanware;
 using System.ComponentModel;
+using System.Drawing;
+using System.Threading;
 
 namespace snorbert
 {
@@ -19,6 +21,7 @@ namespace snorbert
         #endregion
 
         #region Member Variables
+        private string _initials = string.Empty;
         private int _pageLimit = 100;
         private long _currentPage = 1;
         private long _totalPages = 0;
@@ -28,6 +31,8 @@ namespace snorbert
         private HourGlass _hourGlass;
         private Sql _sql;
         private Connection _connection;
+        private Commands _commands;
+        private List<AcknowledgmentClass> _acknowledgmentClasses;
         #endregion
 
         #region Constructor
@@ -47,8 +52,26 @@ namespace snorbert
             Helper.AddListColumn(listEvents, "Host", "HttpHost");
             Helper.AddListColumn(listEvents, "Timestamp", "Timestamp");
             Helper.AddListColumn(listEvents, "TCP Flags", "TcpFlagsString");
+            Helper.AddListColumn(listEvents, "Classification", "AcknowledgmentClass");
+            Helper.AddListColumn(listEvents, "Initials", "Initials");
             Helper.AddListColumn(listEvents, "Payload (ASCII)", "PayloadAscii");
             Helper.ResizeEventListColumns(listEvents);
+
+            listEvents.RowFormatter = delegate(OLVListItem olvi)
+            {
+                Event temp = (Event)olvi.RowObject;
+                if (temp != null)
+                {
+                    if (temp.AcknowledgmentClass.ToLower() == "taken")
+                    {
+                        olvi.BackColor = Color.FromArgb(255, 246, 127); // Yellow
+                    }
+                    else if (temp.Initials.Length > 0)
+                    {
+                        olvi.BackColor = Color.FromArgb(176, 255, 119); // Green
+                    }
+                }
+            };
 
             cboTimeFrom.SelectedIndex = 0;
             cboTimeTo.SelectedIndex = 0;
@@ -65,6 +88,13 @@ namespace snorbert
             _exporter.Complete += OnExporter_Complete;
             _exporter.Error += OnExporter_Error;
             _exporter.Exclamation += OnExporter_Exclamation;
+
+            _commands = new Commands();
+            string ret = _commands.Load();
+            if (ret.Length > 0)
+            {
+                UserInterface.DisplayErrorMessageBox(this, "An error occurred whilst loading the commands: " + ret);
+            }
 
             LoadPriorities();
         }
@@ -142,7 +172,6 @@ namespace snorbert
 
                     Signature rule = (Signature)cboRule.Items[cboRule.SelectedIndex];
 
-                    //int preFilterCount = data.Count;
                     _totalRecords = rule.Count;
 
                     // Sometimes there will be more events for a rule, than there originally was 
@@ -318,32 +347,37 @@ namespace snorbert
             SetProcessingStatus(false);
             Clear();
 
-            NameValue nameValue = (NameValue)cboPriority.Items[cboPriority.SelectedIndex];
+            NameValue priority = (NameValue)cboPriority.Items[cboPriority.SelectedIndex];
+            NameValue sensor = (NameValue)cboSensor.Items[cboSensor.SelectedIndex];
 
             if (dtpDateTo.Checked == true)
             {
-                if (nameValue.Name.ToLower() == "all")
+                if (priority.Name.ToLower() == "all")
                 {
                     _querier.QueryRulesToFrom(dtpDateFrom.Value.Date.ToString("yyyy-MM-dd") + " " + cboTimeFrom.Text + ":00",
-                                              dtpDateTo.Value.Date.ToString("yyyy-MM-dd") + " " + cboTimeTo.Text + ":00");
+                                              dtpDateTo.Value.Date.ToString("yyyy-MM-dd") + " " + cboTimeTo.Text + ":00",
+                                              sensor.Value);
                 }
                 else
                 {
                     _querier.QueryRulesToFromPriority(dtpDateFrom.Value.Date.ToString("yyyy-MM-dd") + " " + cboTimeFrom.Text + ":00",
                                                       dtpDateTo.Value.Date.ToString("yyyy-MM-dd") + " " + cboTimeTo.Text + ":00",
-                                                      nameValue.Value);
+                                                      priority.Value,
+                                                      sensor.Value);
                 }
             }
             else
             {
-                if (nameValue.Name.ToLower() == "all")
+                if (priority.Name.ToLower() == "all")
                 {
-                    _querier.QueryRulesFrom(dtpDateFrom.Value.Date.ToString("yyyy-MM-dd") + " " + cboTimeFrom.Text + ":00");
+                    _querier.QueryRulesFrom(dtpDateFrom.Value.Date.ToString("yyyy-MM-dd") + " " + cboTimeFrom.Text + ":00",
+                                            sensor.Value);
                 }
                 else
                 {
                     _querier.QueryRulesFromPriority(dtpDateFrom.Value.Date.ToString("yyyy-MM-dd") + " " + cboTimeFrom.Text + ":00",
-                                                    nameValue.Value);
+                                                    priority.Value,
+                                                    sensor.Value);
                 }
             }
         }
@@ -354,27 +388,39 @@ namespace snorbert
         /// <param name="page"></param>
         private void LoadRuleEvents(long page)
         {
-            _currentPage = page;
-            _hourGlass = new HourGlass(this);
-            SetProcessingStatus(false);
-            Clear();
-
-            Signature rule = (Signature)cboRule.Items[cboRule.SelectedIndex];
-
-            if (dtpDateTo.Checked == true)
+            MethodInvoker methodInvoker = delegate
             {
-                _querier.QueryEventsRulesToFrom(dtpDateFrom.Value.Date.ToString("yyyy-MM-dd") + " " + cboTimeFrom.Text + ":00", 
-                                                dtpDateTo.Value.Date.ToString("yyyy-MM-dd") + " " + cboTimeTo.Text + ":00",
-                                                rule.Sid,
-                                                (_currentPage - 1) * _pageLimit,
-                                                _pageLimit);
+                _currentPage = page;
+                _hourGlass = new HourGlass(this);
+                SetProcessingStatus(false);
+                Clear();
+
+                Signature rule = (Signature)cboRule.Items[cboRule.SelectedIndex];
+
+                if (dtpDateTo.Checked == true)
+                {
+                    _querier.QueryEventsRulesToFrom(dtpDateFrom.Value.Date.ToString("yyyy-MM-dd") + " " + cboTimeFrom.Text + ":00",
+                                                    dtpDateTo.Value.Date.ToString("yyyy-MM-dd") + " " + cboTimeTo.Text + ":00",
+                                                    rule.Sid,
+                                                    (_currentPage - 1) * _pageLimit,
+                                                    _pageLimit);
+                }
+                else
+                {
+                    _querier.QueryEventsRulesFrom(dtpDateFrom.Value.Date.ToString("yyyy-MM-dd") + " " + cboTimeFrom.Text + ":00",
+                                                  rule.Sid,
+                                                  (_currentPage - 1) * _pageLimit,
+                                                  _pageLimit);
+                }
+            };
+
+            if (this.InvokeRequired == true)
+            {
+                this.BeginInvoke(methodInvoker);
             }
             else
             {
-                _querier.QueryEventsRulesFrom(dtpDateFrom.Value.Date.ToString("yyyy-MM-dd") + " " + cboTimeFrom.Text + ":00",
-                                              rule.Sid,
-                                              (_currentPage - 1) * _pageLimit,
-                                              _pageLimit);
+                methodInvoker.Invoke();
             }
         }
         #endregion
@@ -589,6 +635,67 @@ namespace snorbert
             {
                 ctxMenuPayload_Click(this, new EventArgs());
             }
+            else if (e.KeyCode == Keys.F1)
+            {
+                if (_initials.Length == 0)
+                {
+                    UserInterface.DisplayMessageBox(this, 
+                                                    "The user initials have not been set. Manually classify event to set", 
+                                                    MessageBoxIcon.Information);
+                    return;
+                }
+
+                var events = listEvents.Objects.Cast<Event>().ToList();
+
+                (new Thread(() =>
+                {
+                    SetProcessingStatus(false);
+
+                    bool acknowledgedPrevious = false;
+                    using (new HourGlass(this))
+                    {
+                        NPoco.Database db = new NPoco.Database(Db.GetOpenMySqlConnection());
+                        foreach (Event temp in events)
+                        {
+                            bool insert = true;
+                            var ack = db.Fetch<Acknowledgment>("select * from acknowledgment where cid=@0 and sid=@1", new object[] { temp.Cid, temp.Sid });
+                            if (ack.Count() > 0)
+                            {
+                                if (ack.First().Initials != _initials)
+                                {
+                                    acknowledgedPrevious = true;
+                                    insert = false;
+                                }
+                                else
+                                {
+                                    db.Delete(ack.First());
+                                }
+                            }
+
+                            if (insert == true)
+                            {
+                                Acknowledgment acknowledgment = new Acknowledgment();
+                                acknowledgment.Cid = temp.Cid;
+                                acknowledgment.Sid = temp.Sid;
+                                acknowledgment.Initials = _initials;
+                                acknowledgment.Class = 1;
+
+                                db.Insert(acknowledgment);
+                            }
+                        }
+                    }
+
+                    if (acknowledgedPrevious == true)
+                    {
+                        UserInterface.DisplayMessageBox(this,
+                                                        "Some events were not classified due to being already classified",
+                                                        MessageBoxIcon.Exclamation);
+                    }
+
+                    SetProcessingStatus(true);
+                    LoadRuleEvents(_currentPage);
+                })).Start();
+            }
         }
         #endregion
 
@@ -624,6 +731,11 @@ namespace snorbert
         public void SetConnection(Connection connection)
         {
             _connection = connection;
+            UpdateSensors();
+
+            NPoco.Database db = new NPoco.Database(Db.GetOpenMySqlConnection());
+            _acknowledgmentClasses = db.Fetch<AcknowledgmentClass>();
+            _acknowledgmentClasses = (from a in _acknowledgmentClasses orderby a.Desc select a).ToList();
         }
         #endregion
 
@@ -674,7 +786,42 @@ namespace snorbert
                 UserInterface.SetDropDownWidth(cboPriority);
 
                 cboPriority.SelectedIndex = 0;
+            }
+        }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        public void UpdateSensors()
+        {
+            NPoco.Database db = new NPoco.Database(Db.GetOpenMySqlConnection());
+            List<Sensor> data = db.Fetch<Sensor>(_sql.GetQuery(Sql.Query.SQL_SENSORS_HOSTNAME));
+
+            List<NameValue> sensors = new List<NameValue>();
+
+            // Add a default 
+            NameValue nameValue = new NameValue();
+            nameValue.Name = "All";
+            nameValue.Value = string.Empty;
+            sensors.Add(nameValue);
+
+            foreach (var result in data)
+            {
+                nameValue = new NameValue();
+                nameValue.Name = result.HostName;
+                nameValue.Value = result.HostName;
+                sensors.Add(nameValue);
+            }
+
+            cboSensor.Items.Clear();
+            cboSensor.DisplayMember = "Name";
+            cboSensor.ValueMember = "Value";
+            cboSensor.Items.AddRange(sensors.ToArray());
+            UserInterface.SetDropDownWidth(cboSensor);
+
+            if (sensors.Count > 0)
+            {
+                cboSensor.SelectedIndex = 0;
             }
         }
         #endregion
@@ -688,6 +835,15 @@ namespace snorbert
         private void Control_Load(object sender, EventArgs e)
         {
             Helper.ResizeEventListColumns(listEvents);
+
+            foreach (NameValue command in _commands.Data)
+            {
+                ToolStripMenuItem newCommand = new ToolStripMenuItem();
+                newCommand.Text = command.Name;
+                newCommand.Tag = command.Value;
+                newCommand.Click += ctxMenuCommand_Click;
+                ctxMenuCommands.DropDownItems.Add(newCommand);
+            }
         }
         #endregion
 
@@ -715,6 +871,15 @@ namespace snorbert
                 ctxMenuPayload.Enabled = false;
                 ctxMenuExclude.Enabled = false;
                 ctxMenuNwQuery.Enabled = false;
+            }
+
+            if (cboRule.Items.Count == 0)
+            {
+                ctxMenuExportRules.Enabled = false;
+            }
+            else
+            {
+                ctxMenuExportRules.Enabled = true;
             }
         }
 
@@ -1018,7 +1183,58 @@ namespace snorbert
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        private void ctxMenuNwQuery_Click(object sender, EventArgs e)
+        private void ctxMenuExportRules_Click(object sender, EventArgs e)
+        {
+            if (cboRule.Items.Count == 0)
+            {
+                return;
+            }
+
+            SaveFileDialog saveFileDialog = new SaveFileDialog();
+            saveFileDialog.Title = "Select the export CSV";
+            saveFileDialog.Filter = "TSV Files|*.tsv";
+            if (saveFileDialog.ShowDialog(this) == DialogResult.Cancel)
+            {
+                return;
+            }
+
+            _hourGlass = new HourGlass(this);
+            SetProcessingStatus(false);
+
+            //Signature rule = (Signature)cboRule.Items[cboRule.SelectedIndex];
+
+            //if (dtpDateTo.Checked == true)
+            //{
+            //    _exporter.ExportEventsAll(saveFileDialog.FileName,
+            //                              dtpDateFrom.Value.Date.ToString("yyyy-MM-dd") + " " + cboTimeFrom.Text + ":00",
+            //                              dtpDateTo.Value.Date.ToString("yyyy-MM-dd") + " " + cboTimeTo.Text + ":00",
+            //                              rule.Sid);
+            //}
+            //else
+            //{
+            //    _exporter.ExportEventsAll(saveFileDialog.FileName,
+            //                              dtpDateFrom.Value.Date.ToString("yyyy-MM-dd") + " " + cboTimeFrom.Text + ":00",
+            //                              rule.Sid);
+            //}
+
+
+            //Signature rule = (Signature)cboRule.Items[cboRule.SelectedIndex];
+
+            List<Signature> sigs = new List<Signature>();
+            foreach (Signature signature in cboRule.Items)
+            {
+                sigs.Add(signature);
+            }
+
+            _exporter.ExportRules(sigs, saveFileDialog.FileName);
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void ctxMenuNwQuerySrcToDst_Click(object sender, EventArgs e)
         {
             if (listEvents.SelectedObjects.Count != 1)
             {
@@ -1043,6 +1259,162 @@ namespace snorbert
             Clipboard.SetText(query);
 
             OnMessage("NetWitness query copied to the clipboard");
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void ctxMenuNwQuerySrcPriorTraffic_Click(object sender, EventArgs e)
+        {
+            if (listEvents.SelectedObjects.Count != 1)
+            {
+                return;
+            }
+
+            Event temp = (Event)listEvents.SelectedObjects[0];
+            if (temp == null)
+            {
+                UserInterface.DisplayErrorMessageBox(this, "Unable to locate event");
+                return;
+            }
+
+            string query = Helper.ConstructNetWitnessUrl(_connection.ConcentratorIp,
+                                                         _connection.CollectionName,
+                                                         temp.IpSrcTxt,
+                                                         temp.Timestamp);
+
+            Clipboard.SetText(query);
+
+            OnMessage("NetWitness query copied to the clipboard");
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void ctxMenuNwQueryDstPriorTraffic_Click(object sender, EventArgs e)
+        {
+            if (listEvents.SelectedObjects.Count != 1)
+            {
+                return;
+            }
+
+            Event temp = (Event)listEvents.SelectedObjects[0];
+            if (temp == null)
+            {
+                UserInterface.DisplayErrorMessageBox(this, "Unable to locate event");
+                return;
+            }
+
+            string query = Helper.ConstructNetWitnessUrl(_connection.ConcentratorIp,
+                                                         _connection.CollectionName,
+                                                         temp.IpDstTxt,
+                                                         temp.Timestamp);
+
+            Clipboard.SetText(query);
+
+            OnMessage("NetWitness query copied to the clipboard");
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void ctxMenuCommand_Click(object sender, EventArgs e)
+        {
+            if (listEvents.SelectedObjects.Count != 1)
+            {
+                return;
+            }
+
+            Event temp = (Event)listEvents.SelectedObjects[0];
+            if (temp == null)
+            {
+                UserInterface.DisplayErrorMessageBox(this, "Unable to locate event");
+                return;
+            }
+
+            ToolStripMenuItem ctxMenuCommand = (ToolStripMenuItem)sender;
+
+            string command = Helper.ConstructCommand(ctxMenuCommand.Tag.ToString(),
+                                                     temp.IpSrcTxt,
+                                                     temp.SrcPort.ToString(),
+                                                     temp.IpDstTxt,
+                                                     temp.DstPort.ToString(),
+                                                     temp.Protocol,
+                                                     temp.Sid.ToString());
+
+            Misc.ShellExecuteFile(command);
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void ctxMenuCopyAcknowledgmentSet_Click(object sender, EventArgs e)
+        {
+            if (listEvents.SelectedObjects.Count == 0)
+            {
+                return;
+            }
+
+            var list = listEvents.SelectedObjects.Cast<Event>().ToList();
+
+            Signature rule = (Signature)cboRule.Items[cboRule.SelectedIndex];
+            using (FormAcknowledgment formAcknowledgement = new FormAcknowledgment(_acknowledgmentClasses, list, rule.Text, _initials))
+            {
+                if (formAcknowledgement.ShowDialog(this) == DialogResult.OK)
+                {
+                    LoadRuleEvents(_currentPage);
+                    _initials = formAcknowledgement.Initials;
+                }
+            }
+        }
+        
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void ctxMenuCopyAcknowledgmentClear_Click(object sender, EventArgs e)
+        {
+            if (listEvents.SelectedObjects.Count == 0)
+            {
+                return;
+            }
+
+            var list = listEvents.SelectedObjects.Cast<Event>().ToList();
+
+            (new Thread(() =>
+            {
+                SetProcessingStatus(false);
+
+                using (new HourGlass(this))
+                {
+                    NPoco.Database db = new NPoco.Database(Db.GetOpenMySqlConnection());
+                    foreach (Event temp in list)
+                    {
+                        if (temp.AcknowledgmentId == 0)
+                        {
+                            continue;
+                        }
+
+                        Acknowledgment acknowledgment = new Acknowledgment();
+                        acknowledgment.Id = temp.AcknowledgmentId;
+                        var ack = db.SingleById<Acknowledgment>(acknowledgment.Id);
+
+                        db.Delete(ack);
+                    }
+                }
+
+                SetProcessingStatus(true);
+                LoadRuleEvents(_currentPage);
+            })).Start();
         }
         #endregion
     }

@@ -82,9 +82,10 @@ namespace snorbert
         /// <summary>
         /// 
         /// </summary>
-        /// <param name="offset"></param>
-        /// <param name="pageLimit"></param>
-        public void QueryRulesFrom(string dateFrom)
+        /// <param name="dateFrom"></param>
+        /// <param name="hostName"></param>
+        public void QueryRulesFrom(string dateFrom,
+                                   string hostName)
         {
             if (IsRunning == true)
             {
@@ -99,7 +100,17 @@ namespace snorbert
                 try
                 {
                     NPoco.Database db = new NPoco.Database(Db.GetOpenMySqlConnection());
-                    List<Signature> temp = db.Fetch<Signature>(_sql.GetQuery(Sql.Query.SQL_RULES_FROM), new object[] { dateFrom });
+                    
+                    List<Signature> temp;
+                    string query = string.Empty;
+                    if (hostName == string.Empty)
+                    {
+                        temp = db.Fetch<Signature>(_sql.GetQuery(Sql.Query.SQL_RULES_FROM_ALL), new object[] { dateFrom });
+                    }
+                    else
+                    {
+                        temp = db.Fetch<Signature>(_sql.GetQuery(Sql.Query.SQL_RULES_FROM), new object[] { dateFrom, hostName });
+                    }
 
                     foreach (var rule in temp)
                     {
@@ -131,8 +142,10 @@ namespace snorbert
         /// </summary>
         /// <param name="dateFrom"></param>
         /// <param name="priority"></param>
-        public void QueryRulesFromPriority(string dateFrom, 
-                                           string priority)
+        /// <param name="hostName"></param>
+        public void QueryRulesFromPriority(string dateFrom,
+                                           string priority,
+                                           string hostName)
         {
             if (IsRunning == true)
             {
@@ -147,8 +160,18 @@ namespace snorbert
                 try
                 {
                     NPoco.Database db = new NPoco.Database(Db.GetOpenMySqlConnection());
-                    List<Signature> temp = db.Fetch<Signature>(_sql.GetQuery(Sql.Query.SQL_RULES_FROM_PRIORITY), new object[] { dateFrom, priority });
 
+                    string query = string.Empty;
+                    if (hostName == string.Empty)
+                    {
+                        query = _sql.GetQuery(Sql.Query.SQL_RULES_FROM_PRIORITY_ALL);
+                    }
+                    else
+                    {
+                        query = _sql.GetQuery(Sql.Query.SQL_RULES_FROM_PRIORITY);
+                    }
+
+                    List<Signature> temp = db.Fetch<Signature>(query, new object[] { dateFrom, priority });
                     foreach (var rule in temp)
                     {
                         rule.Text = rule.Name + " (SID: " + rule.Sid.ToString() + "): " + rule.Count.ToString();
@@ -170,10 +193,12 @@ namespace snorbert
         /// <summary>
         /// 
         /// </summary>
-        /// <param name="offset"></param>
-        /// <param name="pageLimit"></param>
+        /// <param name="dateFrom"></param>
+        /// <param name="dateTo"></param>
+        /// <param name="hostName"></param>
         public void QueryRulesToFrom(string dateFrom, 
-                                     string dateTo)
+                                     string dateTo,
+                                     string hostName)
         {
             if (IsRunning == true)
             {
@@ -188,8 +213,17 @@ namespace snorbert
                 try
                 {
                     NPoco.Database db = new NPoco.Database(Db.GetOpenMySqlConnection());
-                    List<Signature> temp = db.Fetch<Signature>(_sql.GetQuery(Sql.Query.SQL_RULES_FROM_TO), new object[] { dateFrom, dateTo });
+                    string query = string.Empty;
+                    if (hostName == string.Empty)
+                    {
+                        query = _sql.GetQuery(Sql.Query.SQL_RULES_FROM_TO_ALL);
+                    }
+                    else
+                    {
+                        query = _sql.GetQuery(Sql.Query.SQL_RULES_FROM_TO);
+                    }
 
+                    List<Signature> temp = db.Fetch<Signature>(query, new object[] { dateFrom, dateTo });
                     foreach (var rule in temp)
                     {
                         if (rule.Priority.ToString().Length > 0)
@@ -221,9 +255,11 @@ namespace snorbert
         /// <param name="dateFrom"></param>
         /// <param name="dateTo"></param>
         /// <param name="priority"></param>
+        /// <param name="hostName"></param>
         public void QueryRulesToFromPriority(string dateFrom,
                                              string dateTo,
-                                             string priority)
+                                             string priority,
+                                             string hostName)
         {
             if (IsRunning == true)
             {
@@ -238,8 +274,17 @@ namespace snorbert
                 try
                 {
                     NPoco.Database db = new NPoco.Database(Db.GetOpenMySqlConnection());
-                    List<Signature> temp = db.Fetch<Signature>(_sql.GetQuery(Sql.Query.SQL_RULES_FROM_TO_PRIORITY), new object[] { dateFrom, dateTo, priority });
+                    string query = string.Empty;
+                    if (hostName == string.Empty)
+                    {
+                        query = _sql.GetQuery(Sql.Query.SQL_RULES_FROM_TO_PRIORITY_ALL);
+                    }
+                    else
+                    {
+                        query = _sql.GetQuery(Sql.Query.SQL_RULES_FROM_TO_PRIORITY);
+                    }
 
+                    List<Signature> temp = db.Fetch<Signature>(query, new object[] { dateFrom, dateTo, priority });
                     foreach (var rule in temp)
                     {
                         rule.Text = rule.Name + " (SID: " + rule.Sid.ToString() + "): " + rule.Count.ToString();

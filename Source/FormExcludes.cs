@@ -122,46 +122,95 @@ namespace snorbert
         /// <param name="e"></param>
         private void btnDelete_Click(object sender, System.EventArgs e)
         {
-            if (listExcludes.SelectedObjects.Count != 1)
+            if (listExcludes.SelectedObjects.Count == 0)
             {
                 return;
             }
 
-            Exclude exclude = (Exclude)listExcludes.SelectedObjects[0];
-
-            DialogResult dialogResult = MessageBox.Show(this,
-                                                        "Are you sure you want to delete the exclude?",
-                                                        Application.ProductName,
-                                                        MessageBoxButtons.YesNo,
-                                                        MessageBoxIcon.Question);
-
-            if (dialogResult == System.Windows.Forms.DialogResult.No)
+            if (listExcludes.SelectedObjects.Count == 1)
             {
-                return;
-            }
+                Exclude exclude = (Exclude)listExcludes.SelectedObjects[0];
 
-            try
-            {
-                NPoco.Database db = new NPoco.Database(Db.GetOpenMySqlConnection());
-                Exclude temp = db.SingleOrDefaultById<Exclude>(exclude.Id);
-                if (temp == null)
+                DialogResult dialogResult = MessageBox.Show(this,
+                                                            "Are you sure you want to delete the exclude?",
+                                                            Application.ProductName,
+                                                            MessageBoxButtons.YesNo,
+                                                            MessageBoxIcon.Question);
+
+                if (dialogResult == System.Windows.Forms.DialogResult.No)
                 {
-                    UserInterface.DisplayMessageBox(this, "Unable to locate exclude", MessageBoxIcon.Exclamation);
                     return;
                 }
 
-                int ret = db.Delete(temp);
-                if (ret != 1)
+                try
                 {
-                    UserInterface.DisplayErrorMessageBox(this, "The exclude could not be deleted");
+                    NPoco.Database db = new NPoco.Database(Db.GetOpenMySqlConnection());
+                    Exclude temp = db.SingleOrDefaultById<Exclude>(exclude.Id);
+                    if (temp == null)
+                    {
+                        UserInterface.DisplayMessageBox(this, "Unable to locate exclude", MessageBoxIcon.Exclamation);
+                        return;
+                    }
+
+                    int ret = db.Delete(temp);
+                    if (ret != 1)
+                    {
+                        UserInterface.DisplayErrorMessageBox(this, "The exclude could not be deleted");
+                        return;
+                    }
+
+                    LoadExcludes();
+                }
+                catch (Exception ex)
+                {
+                    UserInterface.DisplayErrorMessageBox("An error occurred whilst deleting the exclude" + ex.Message);
+                }
+            }
+            else
+            {
+                int count = listExcludes.SelectedObjects.Count;
+                DialogResult dialogResult = MessageBox.Show(this,
+                                                            "Are you sure you want to delete all " + count + " excludes?",
+                                                            Application.ProductName,
+                                                            MessageBoxButtons.YesNo,
+                                                            MessageBoxIcon.Question);
+
+                if (dialogResult == System.Windows.Forms.DialogResult.No)
+                {
                     return;
                 }
 
-                LoadExcludes();
-            }
-            catch (Exception ex)
-            {
-                UserInterface.DisplayErrorMessageBox("An error occurred whilst deleting the exclude" + ex.Message);
+                try
+                {
+                    NPoco.Database db = new NPoco.Database(Db.GetOpenMySqlConnection());
+                    foreach (var item in listExcludes.SelectedObjects)
+                    {
+                        Exclude exclude = (Exclude)item;
+                        Exclude temp = db.SingleOrDefaultById<Exclude>(exclude.Id);
+                        if (temp == null)
+                        {
+                            UserInterface.DisplayMessageBox(this, "Unable to locate exclude", MessageBoxIcon.Exclamation);
+                            return;
+                        }
+
+                        int ret = db.Delete(temp);
+                        if (ret != 1)
+                        {
+                            UserInterface.DisplayErrorMessageBox(this, 
+                                                                 "The exclude could not be deleted: " + Environment.NewLine + 
+                                                                 exclude.ToString());
+                            continue;
+                        }
+                    }
+
+                    LoadExcludes();
+                }
+                catch (Exception ex)
+                {
+                    UserInterface.DisplayErrorMessageBox("An error occurred whilst deleting the exclude" + ex.Message);
+                }
+
+                
             }
         }
         #endregion

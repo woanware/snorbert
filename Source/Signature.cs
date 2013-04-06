@@ -5,7 +5,7 @@ namespace snorbert
     /// <summary>
     /// 
     /// </summary>
-    internal class Signature
+    public class Signature
     {
         #region Member Variables
         [Column("sig_id")]
