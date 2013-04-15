@@ -32,4 +32,10 @@ The aim of the application is to provide a fast, usable interface for accessing 
 - snort/barnyard database change (see below)
 
 ## Database ##
-snorbert requires a change to the snort/barnyard database schema. Currently the change simply consists of one new table (Exclude). To add the new table just run the Create.sql file under the database directory of the repository. The table facilities the ability to exclude particular rules, IP addresses etc. 
+snorbert requires a number of changes to the snort/barnyard database schema. The following files should be run to create new tables:
+
+- Database\acknowledgment.sql 
+- Database\acknowledgment_class.sql
+- Database\exclude.sql
+
+Then the data population script (acknowledgment_class.data.sql) should be run to populate the **acknowledgment_class** table. The **exclude** table facilities the ability to exclude particular rules, IP addresses etc. The **acknowledgement*** tables allow for better collaborative working so that one analyst can see that another analyst is already working on a particular rule.
