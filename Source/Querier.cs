@@ -116,11 +116,11 @@ namespace snorbert
                     {
                         if (rule.Priority.ToString().Length > 0)
                         {
-                            rule.Text = rule.Name + " (SID: " + rule.Sid.ToString() + "/Priority: " + rule.Priority.ToString() + "): " + rule.Count.ToString();
+                            rule.Text = rule.Name + " (GID#SID: " + rule.Gid + "#" + rule.Sid.ToString() + "/Priority: " + rule.Priority.ToString() + "): " + rule.Count.ToString();
                         }
                         else
                         {
-                            rule.Text = rule.Name + " (SID: " + rule.Sid.ToString() + "): " + rule.Count.ToString();
+                            rule.Text = rule.Name + " (GID#SID: " + rule.Gid + "#" + rule.Sid.ToString() + "): " + rule.Count.ToString();
                         }
                     }
 

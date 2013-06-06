@@ -134,7 +134,7 @@ namespace snorbert
 
                 // References Tab
                 NPoco.Database dbMySql = new NPoco.Database(Db.GetOpenMySqlConnection());
-                List<Reference> references = dbMySql.Fetch<Reference>(_sql.GetQuery(Sql.Query.SQL_REFERENCES), new object[] { temp.SigSid });
+                List<Reference> references = dbMySql.Fetch<Reference>(_sql.GetQuery(Sql.Query.SQL_REFERENCES), new object[] { temp.SigId });
                 listReferences.SetObjects(references);
                 ResizeReferenceListColumns();
 
@@ -287,6 +287,19 @@ namespace snorbert
         private void ctxMenuHexSelectAll_Click(object sender, EventArgs e)
         {
             hexEvent.SelectAll();
+        }
+        #endregion
+
+        #region Properties
+        /// <summary>
+        /// 
+        /// </summary>
+        public string Signature
+        {
+            get
+            {
+                return txtRule.Text;
+            }
         }
         #endregion
     }

@@ -62,6 +62,7 @@
       <Data><![CDATA[SELECT signature.sig_id, 
 					signature.sig_name, 
 				   signature.sig_sid, 
+           signature.sig_gid,
 				   IFNULL(signature.sig_priority, 0) as sig_priority,
 				   count(signature.sig_name) AS count          
 			  FROM signature          
@@ -84,6 +85,7 @@
         <![CDATA[SELECT signature.sig_id, 
 					signature.sig_name, 
 				   signature.sig_sid, 
+           signature.sig_gid,
 				   IFNULL(signature.sig_priority, 0) as sig_priority,
 				   count(signature.sig_name) AS count          
 			  FROM signature          
@@ -106,6 +108,7 @@
         <![CDATA[SELECT signature.sig_id, 
 						signature.sig_name, 
 				   signature.sig_sid, 
+           signature.sig_gid,
 				   IFNULL(signature.sig_priority, 0) as sig_priority,
 				   count(signature.sig_name) AS count          
 			  FROM signature          
@@ -130,6 +133,7 @@
            <![CDATA[SELECT signature.sig_id, 
 						signature.sig_name, 
 				   signature.sig_sid, 
+           signature.sig_gid,
 				   IFNULL(signature.sig_priority, 0) as sig_priority,
 				   count(signature.sig_name) AS count          
 			  FROM signature          
@@ -152,6 +156,7 @@
         <![CDATA[SELECT signature.sig_id, 
 					signature.sig_name, 
 				   signature.sig_sid, 
+           signature.sig_gid,
 				   IFNULL(signature.sig_priority, 0) as sig_priority,
 				   count(signature.sig_name) AS count          
 			  FROM signature          
@@ -175,6 +180,7 @@
         <![CDATA[SELECT signature.sig_id, 
 					signature.sig_name, 
 				   signature.sig_sid, 
+           signature.sig_gid,
 				   IFNULL(signature.sig_priority, 0) as sig_priority,
 				   count(signature.sig_name) AS count          
 			  FROM signature          
@@ -197,6 +203,7 @@
         <![CDATA[SELECT signature.sig_id, 
 						signature.sig_name, 
 				   signature.sig_sid, 
+           signature.sig_gid,
 				   IFNULL(signature.sig_priority, 0) as sig_priority,
 				   count(signature.sig_name) AS count          
 			  FROM signature          
@@ -221,6 +228,7 @@
         <![CDATA[SELECT signature.sig_id, 
 						signature.sig_name, 
 				   signature.sig_sid, 
+           signature.sig_gid,
 				   IFNULL(signature.sig_priority, 0) as sig_priority,
 				   count(signature.sig_name) AS count          
 			  FROM signature          
@@ -260,6 +268,7 @@
 				   IFNULL(tcphdr.tcp_dport, 0) as tcp_dport, 
 				   IFNULL(udphdr.udp_dport, 0) as udp_dport,
 				   event.timestamp as timestamp, 
+           signature.sig_id as sig_id,
 				   signature.sig_sid as sig_sid,
 				   signature.sig_name as sig_name, 
 				   IFNULL(signature.sig_priority, 0) as sig_priority,
@@ -294,7 +303,7 @@
 			                AND (exclude.sig_id IS NULL OR exclude.sig_id = event.signature)) 
 			 WHERE exclude.id IS NULL   
 			   AND event.timestamp > @0
-			   AND signature.sig_sid = @1 
+			   AND signature.sig_id = @1 
 			 LIMIT @2, @3]]></Data>
     </SqlQuery>
     
@@ -320,6 +329,7 @@
 				   IFNULL(tcphdr.tcp_dport, 0) as tcp_dport, 
 				   IFNULL(udphdr.udp_dport, 0) as udp_dport,
 				   event.timestamp as timestamp, 
+           signature.sig_id as sig_id,
 				   signature.sig_sid as sig_sid,
 				   signature.sig_name as sig_name, 
 				   IFNULL(signature.sig_priority, 0) as sig_priority,
@@ -355,7 +365,7 @@
 			 WHERE exclude.id IS NULL   
 			   AND event.timestamp > @0 
 			   AND event.timestamp < @1
-			   AND signature.sig_sid = @2 
+			   AND signature.sig_id = @2 
 			 LIMIT @3, @4]]></Data>
     </SqlQuery>
     
@@ -378,6 +388,7 @@
 				   IFNULL(udphdr.udp_sport, 0) as udp_sport,                                                   
 				   IFNULL(tcphdr.tcp_dport, 0) as tcp_dport, 
 				   IFNULL(udphdr.udp_dport, 0) as udp_dport,
+           signature.sig_id as sig_id,
 				   signature.sig_sid as sig_sid,
 				   signature.sig_name as sig_name, 
 				   IFNULL(signature.sig_priority, 0) as sig_priority,
@@ -421,7 +432,7 @@
 		 LEFT JOIN sig_reference on reference.ref_id = sig_reference.ref_id
 		 LEFT JOIN signature on sig_reference.sig_id = signature.sig_id
 		 LEFT JOIN reference_system on reference.ref_system_id = reference_system.ref_system_id
-			 WHERE signature.sig_sid = @0
+			 WHERE signature.sig_id = @0
 		  ORDER BY sig_reference.ref_seq]]></Data>
     </SqlQuery>
     
@@ -450,13 +461,12 @@
     
     <SqlQuery>
       <Query>SQL_SENSORS</Query>
-      <Data><![CDATA[SELECT sensor.sid as sid,
-				   sensor.hostname as hostname,
-				   sensor.interface as inter,
-				   event.timestamp as timestamp,
-				   (select count(1) from event where event.sid=sensor.sid) as eventcount
-			  FROM sensor
-		 LEFT JOIN event ON event.cid = sensor.last_cid and event.sid = sensor.sid]]></Data>
+      <Data><![CDATA[SELECT sensor.sid as sid, 
+                            sensor.hostname as hostname, sensor.interface AS inter, 
+                            (SELECT event.timestamp FROM event WHERE event.sid = sensor.sid ORDER BY sid DESC LIMIT 1) as timestamp, 
+                            (SELECT COUNT(1) FROM event WHERE event.sid = sensor.sid) as eventcount
+                       FROM sensor
+                   GROUP BY sensor.sid;]]></Data>
     </SqlQuery>
     
     <SqlQuery>
@@ -541,7 +551,7 @@
 			                AND (exclude.ip_dst IS NULL OR exclude.ip_dst = iphdr.ip_dst)                      
 			                AND (exclude.sig_id IS NULL OR exclude.sig_id = event.signature))
 			 WHERE event.timestamp > @0
-			   AND signature.sig_sid = @1]]>
+			   AND signature.sig_id = @1]]>
       </Data>
     </SqlQuery>
 
@@ -569,7 +579,7 @@
 			                AND (exclude.sig_id IS NULL OR exclude.sig_id = event.signature))
 			 WHERE event.timestamp > @0 
 			   AND event.timestamp < @1
-			   AND signature.sig_sid = @2]]>
+			   AND signature.sig_id = @2]]>
       </Data>
     </SqlQuery>
 

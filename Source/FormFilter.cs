@@ -159,7 +159,7 @@ namespace snorbert
             AddFilterDefinition("Protocol", "iphdr.ip_proto", Global.FilterType.Protocol);
             AddFilterDefinition("Classification", "signature.sig_class_id", Global.FilterType.Classification);
             AddFilterDefinition("Signature", "signature.sig_sid", Global.FilterType.Numeric);
-            AddFilterDefinition("Signature Name", "signature.sig_sid", Global.FilterType.Text);
+            AddFilterDefinition("Signature Name", "signature.sig_name", Global.FilterType.Text);
             AddFilterDefinition("Start Time", "event.timestamp", Global.FilterType.Timestamp);
             AddFilterDefinition("End Time", "event.timestamp", Global.FilterType.Timestamp);
             AddFilterDefinition("Payload (ASCII)", "data.data_payload", Global.FilterType.PayloadAscii);

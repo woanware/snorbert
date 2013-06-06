@@ -401,14 +401,14 @@ namespace snorbert
                 {
                     _querier.QueryEventsRulesToFrom(dtpDateFrom.Value.Date.ToString("yyyy-MM-dd") + " " + cboTimeFrom.Text + ":00",
                                                     dtpDateTo.Value.Date.ToString("yyyy-MM-dd") + " " + cboTimeTo.Text + ":00",
-                                                    rule.Sid,
+                                                    rule.Id.ToString(),
                                                     (_currentPage - 1) * _pageLimit,
                                                     _pageLimit);
                 }
                 else
                 {
                     _querier.QueryEventsRulesFrom(dtpDateFrom.Value.Date.ToString("yyyy-MM-dd") + " " + cboTimeFrom.Text + ":00",
-                                                  rule.Sid,
+                                                  rule.Id.ToString(),
                                                   (_currentPage - 1) * _pageLimit,
                                                   _pageLimit);
                 }
@@ -983,6 +983,7 @@ namespace snorbert
             Helper.CopyDataToClipboard(this, listEvents, Global.FieldsEventCopy.PayloadAscii);
         }
 
+
         /// <summary>
         /// 
         /// </summary>
@@ -1175,6 +1176,31 @@ namespace snorbert
             using (FormPayload formPayload = new FormPayload(temp))
             {
                 formPayload.ShowDialog(this);
+            }
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void ctxMenuSignature_Click(object sender, EventArgs e)
+        {
+            if (listEvents.SelectedObjects.Count != 1)
+            {
+                return;
+            }
+
+            Event temp = (Event)listEvents.SelectedObjects[0];
+            if (temp == null)
+            {
+                UserInterface.DisplayErrorMessageBox(this, "Unable to locate event");
+                return;
+            }
+
+            using (FormRule form = new FormRule(controlEventInfo.Signature))
+            {
+                form.ShowDialog(this);
             }
         }
 

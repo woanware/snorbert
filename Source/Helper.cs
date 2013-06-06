@@ -187,9 +187,6 @@ namespace snorbert
             {
                 try
                 {
-                    if (temp.Cid == 1575484)
-                    {
-                    }
                     temp.IpSrc = IPAddress.Parse(temp.IpSrcTxt);
                     temp.IpDst = IPAddress.Parse(temp.IpDstTxt);
 

@@ -61,6 +61,8 @@ namespace snorbert
         public string Protocol { get; set; }
         [Column("timestamp")]
         public DateTime Timestamp { get; set; }
+        [Column("sig_id")]
+        public long SigId { get; set; }
         [Column("sig_name")]
         public string SigName { get; set; }
         [Column("sig_priority")]

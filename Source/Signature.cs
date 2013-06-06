@@ -12,6 +12,8 @@ namespace snorbert
         public long Id { get; set; }
         [Column("sig_sid")]
         public string Sid { get; set; }
+        [Column("sig_gid")]
+        public string Gid { get; set; }
         [Column("sig_name")]
         public string Name { get; set; }
         [Column("sig_priority")]

@@ -89,6 +89,7 @@
             this.dtpDateFrom = new System.Windows.Forms.DateTimePicker();
             this.btnRefresh = new System.Windows.Forms.Button();
             this.controlEventInfo = new snorbert.ControlEventInfo();
+            this.ctxMenuSignature = new System.Windows.Forms.ToolStripMenuItem();
             ((System.ComponentModel.ISupportInitialize)(this.splitter)).BeginInit();
             this.splitter.Panel1.SuspendLayout();
             this.splitter.Panel2.SuspendLayout();
@@ -174,6 +175,7 @@
             // 
             this.ctxMenuEvent.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.ctxMenuPayload,
+            this.ctxMenuSignature,
             this.toolStripMenuItem1,
             this.ctxMenuCopy,
             this.toolStripMenuItem3,
@@ -190,7 +192,7 @@
             this.ctxMenuCommands});
             this.ctxMenuEvent.Name = "ctxMenuEvent";
             this.ctxMenuEvent.RenderMode = System.Windows.Forms.ToolStripRenderMode.System;
-            this.ctxMenuEvent.Size = new System.Drawing.Size(189, 222);
+            this.ctxMenuEvent.Size = new System.Drawing.Size(189, 266);
             this.ctxMenuEvent.Opening += new System.ComponentModel.CancelEventHandler(this.ctxMenuEvent_Opening);
             // 
             // ctxMenuPayload
@@ -683,6 +685,13 @@
             this.controlEventInfo.Size = new System.Drawing.Size(794, 200);
             this.controlEventInfo.TabIndex = 1;
             // 
+            // ctxMenuSignature
+            // 
+            this.ctxMenuSignature.Name = "ctxMenuSignature";
+            this.ctxMenuSignature.Size = new System.Drawing.Size(188, 22);
+            this.ctxMenuSignature.Text = "Signature";
+            this.ctxMenuSignature.Click += new System.EventHandler(this.ctxMenuSignature_Click);
+            // 
             // ControlRules
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
@@ -765,5 +774,6 @@
         private System.Windows.Forms.ToolStripMenuItem ctxMenuCopyAcknowledgment;
         private System.Windows.Forms.ToolStripMenuItem ctxMenuCopyAcknowledgmentSet;
         private System.Windows.Forms.ToolStripMenuItem ctxMenuCopyAcknowledgmentClear;
+        private System.Windows.Forms.ToolStripMenuItem ctxMenuSignature;
     }
 }
