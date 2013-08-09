@@ -79,119 +79,123 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Acknowledgment.cs" />
-    <Compile Include="Commands.cs" />
-    <Compile Include="ControlEventInfo.cs">
+    <Compile Include="Data\Acknowledgment.cs" />
+    <Compile Include="Configs\Commands.cs" />
+    <Compile Include="Controls\ControlEventInfo.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="ControlEventInfo.Designer.cs">
+    <Compile Include="Controls\ControlEventInfo.Designer.cs">
       <DependentUpon>ControlEventInfo.cs</DependentUpon>
     </Compile>
-    <Compile Include="ControlEvents.cs">
+    <Compile Include="Controls\ControlEvents.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="ControlEvents.Designer.cs">
+    <Compile Include="Controls\ControlEvents.Designer.cs">
       <DependentUpon>ControlEvents.cs</DependentUpon>
     </Compile>
-    <Compile Include="ControlRules.cs">
+    <Compile Include="Controls\ControlRules.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="ControlRules.Designer.cs">
+    <Compile Include="Controls\ControlRules.Designer.cs">
       <DependentUpon>ControlRules.cs</DependentUpon>
     </Compile>
-    <Compile Include="ControlSearch.cs">
+    <Compile Include="Controls\ControlSearch.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="ControlSearch.Designer.cs">
+    <Compile Include="Controls\ControlSearch.Designer.cs">
       <DependentUpon>ControlSearch.cs</DependentUpon>
     </Compile>
-    <Compile Include="ControlSensors.cs">
+    <Compile Include="Controls\ControlSensors.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="ControlSensors.Designer.cs">
+    <Compile Include="Controls\ControlSensors.Designer.cs">
       <DependentUpon>ControlSensors.cs</DependentUpon>
     </Compile>
-    <Compile Include="AcknowledgmentClass.cs" />
+    <Compile Include="Data\AcknowledgmentClass.cs" />
     <Compile Include="Db.cs" />
-    <Compile Include="FormAcknowledgment.cs">
+    <Compile Include="Forms\FormAcknowledgment.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="FormAcknowledgment.Designer.cs">
+    <Compile Include="Forms\FormAcknowledgment.Designer.cs">
       <DependentUpon>FormAcknowledgment.cs</DependentUpon>
     </Compile>
-    <Compile Include="FormExcludeEdit.cs">
+    <Compile Include="Forms\FormAcknowledgmentExport.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="FormExcludeEdit.Designer.cs">
+    <Compile Include="Forms\FormAcknowledgmentExport.Designer.cs">
+      <DependentUpon>FormAcknowledgmentExport.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Forms\FormExcludeEdit.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\FormExcludeEdit.Designer.cs">
       <DependentUpon>FormExcludeEdit.cs</DependentUpon>
     </Compile>
-    <Compile Include="Exclude.cs" />
+    <Compile Include="Data\Exclude.cs" />
     <Compile Include="Exporter.cs" />
-    <Compile Include="FalsePositive.cs" />
-    <Compile Include="FalsePositives.cs" />
-    <Compile Include="FormExcludes.cs">
+    <Compile Include="Forms\FormExcludes.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="FormExcludes.Designer.cs">
+    <Compile Include="Forms\FormExcludes.Designer.cs">
       <DependentUpon>FormExcludes.cs</DependentUpon>
     </Compile>
-    <Compile Include="Event.cs" />
-    <Compile Include="Connection.cs" />
-    <Compile Include="Connections.cs" />
-    <Compile Include="Filter.cs" />
-    <Compile Include="FilterDefinition.cs" />
-    <Compile Include="FormFilter.cs">
+    <Compile Include="Data\Event.cs" />
+    <Compile Include="Objects\Connection.cs" />
+    <Compile Include="Configs\Connections.cs" />
+    <Compile Include="Objects\Filter.cs" />
+    <Compile Include="Objects\FilterDefinition.cs" />
+    <Compile Include="Forms\FormFilter.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="FormFilter.Designer.cs">
+    <Compile Include="Forms\FormFilter.Designer.cs">
       <DependentUpon>FormFilter.cs</DependentUpon>
     </Compile>
-    <Compile Include="FormExcludeAdd.cs">
+    <Compile Include="Forms\FormExcludeAdd.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="FormExcludeAdd.Designer.cs">
+    <Compile Include="Forms\FormExcludeAdd.Designer.cs">
       <DependentUpon>FormExcludeAdd.cs</DependentUpon>
     </Compile>
-    <Compile Include="FormFind.cs">
+    <Compile Include="Forms\FormFind.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="FormFind.Designer.cs">
+    <Compile Include="Forms\FormFind.Designer.cs">
       <DependentUpon>FormFind.cs</DependentUpon>
     </Compile>
-    <Compile Include="FormPayload.cs">
+    <Compile Include="Forms\FormPayload.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="FormPayload.Designer.cs">
+    <Compile Include="Forms\FormPayload.Designer.cs">
       <DependentUpon>FormPayload.cs</DependentUpon>
     </Compile>
-    <Compile Include="FormRule.cs">
+    <Compile Include="Forms\FormRule.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="FormRule.Designer.cs">
+    <Compile Include="Forms\FormRule.Designer.cs">
       <DependentUpon>FormRule.cs</DependentUpon>
     </Compile>
-    <Compile Include="FormAbout.cs">
+    <Compile Include="Forms\FormAbout.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="FormAbout.Designer.cs">
+    <Compile Include="Forms\FormAbout.Designer.cs">
       <DependentUpon>FormAbout.cs</DependentUpon>
     </Compile>
-    <Compile Include="FormConnection.cs">
+    <Compile Include="Forms\FormConnection.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="FormConnection.Designer.cs">
+    <Compile Include="Forms\FormConnection.Designer.cs">
       <DependentUpon>FormConnection.cs</DependentUpon>
     </Compile>
-    <Compile Include="FormConnections.cs">
+    <Compile Include="Forms\FormConnections.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="FormConnections.Designer.cs">
+    <Compile Include="Forms\FormConnections.Designer.cs">
       <DependentUpon>FormConnections.cs</DependentUpon>
     </Compile>
-    <Compile Include="FormMain.cs">
+    <Compile Include="Forms\FormMain.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="FormMain.Designer.cs">
+    <Compile Include="Forms\FormMain.Designer.cs">
       <DependentUpon>FormMain.cs</DependentUpon>
     </Compile>
     <Compile Include="Global.cs" />
@@ -199,65 +203,68 @@
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Querier.cs" />
-    <Compile Include="Reference.cs" />
-    <Compile Include="Rule.cs" />
-    <Compile Include="SigClass.cs" />
-    <Compile Include="Signature.cs" />
-    <Compile Include="RuleFile.cs" />
+    <Compile Include="Data\Reference.cs" />
+    <Compile Include="Data\Rule.cs" />
+    <Compile Include="Data\SigClass.cs" />
+    <Compile Include="Data\Signature.cs" />
+    <Compile Include="Objects\RuleFile.cs" />
     <Compile Include="RuleImporter.cs" />
-    <Compile Include="Sensor.cs" />
-    <Compile Include="Settings.cs" />
-    <Compile Include="Sql.cs" />
-    <Compile Include="SqlQuery.cs" />
-    <EmbeddedResource Include="ControlEventInfo.resx">
+    <Compile Include="Data\Sensor.cs" />
+    <Compile Include="Configs\Settings.cs" />
+    <Compile Include="Configs\Sql.cs" />
+    <Compile Include="Configs\SqlQuery.cs" />
+    <EmbeddedResource Include="Controls\ControlEventInfo.resx">
       <DependentUpon>ControlEventInfo.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="ControlEvents.resx">
+    <EmbeddedResource Include="Controls\ControlEvents.resx">
       <DependentUpon>ControlEvents.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="ControlRules.resx">
+    <EmbeddedResource Include="Controls\ControlRules.resx">
       <DependentUpon>ControlRules.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="ControlSearch.resx">
+    <EmbeddedResource Include="Controls\ControlSearch.resx">
       <DependentUpon>ControlSearch.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="ControlSensors.resx">
+    <EmbeddedResource Include="Controls\ControlSensors.resx">
       <DependentUpon>ControlSensors.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="FormAcknowledgment.resx">
+    <EmbeddedResource Include="Forms\FormAcknowledgment.resx">
       <DependentUpon>FormAcknowledgment.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="FormExcludeEdit.resx">
+    <EmbeddedResource Include="Forms\FormAcknowledgmentExport.resx">
+      <DependentUpon>FormAcknowledgmentExport.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\FormExcludeEdit.resx">
       <DependentUpon>FormExcludeEdit.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="FormExcludes.resx">
+    <EmbeddedResource Include="Forms\FormExcludes.resx">
       <DependentUpon>FormExcludes.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="FormFilter.resx">
+    <EmbeddedResource Include="Forms\FormFilter.resx">
       <DependentUpon>FormFilter.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="FormExcludeAdd.resx">
+    <EmbeddedResource Include="Forms\FormExcludeAdd.resx">
       <DependentUpon>FormExcludeAdd.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="FormFind.resx">
+    <EmbeddedResource Include="Forms\FormFind.resx">
       <DependentUpon>FormFind.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="FormPayload.resx">
+    <EmbeddedResource Include="Forms\FormPayload.resx">
       <DependentUpon>FormPayload.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="FormRule.resx">
+    <EmbeddedResource Include="Forms\FormRule.resx">
       <DependentUpon>FormRule.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="FormAbout.resx">
+    <EmbeddedResource Include="Forms\FormAbout.resx">
       <DependentUpon>FormAbout.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="FormConnection.resx">
+    <EmbeddedResource Include="Forms\FormConnection.resx">
       <DependentUpon>FormConnection.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="FormConnections.resx">
+    <EmbeddedResource Include="Forms\FormConnections.resx">
       <DependentUpon>FormConnections.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="FormMain.resx">
+    <EmbeddedResource Include="Forms\FormMain.resx">
       <DependentUpon>FormMain.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
@@ -290,9 +297,97 @@
     <Content Include="Priorities.txt">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Sql.xml">
+    <Content Include="Queries\SQL_ACKNOWLEDGMENT_FROM_TO_ALL.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Queries\SQL_ACKNOWLEDGMENT_FROM_ALL.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Queries\SQL_ACKNOWLEDGMENT_FROM.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Queries\SQL_ACKNOWLEDGMENT_FROM_TO.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Queries\SQL_EVENTS.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Queries\SQL_EVENTS_RULES_FROM.xml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
       <SubType>Designer</SubType>
+    </Content>
+    <Content Include="Queries\SQL_EVENTS_RULES_FROM_EXPORT.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Queries\SQL_EVENTS_RULES_FROM_TO.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Queries\SQL_EVENTS_RULES_FROM_TO_EXPORT.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Queries\SQL_EVENTS_SEARCH.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Queries\SQL_EXCLUDE.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Queries\SQL_EXCLUDES.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Queries\SQL_REFERENCES.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Queries\SQL_RULES_DST_IPS_FROM.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Queries\SQL_RULES_DST_IPS_FROM_TO.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Queries\SQL_RULES_FROM.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <SubType>Designer</SubType>
+    </Content>
+    <Content Include="Queries\SQL_RULES_FROM_ALL.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Queries\SQL_RULES_FROM_PRIORITY.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Queries\SQL_RULES_FROM_PRIORITY_ALL.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Queries\SQL_RULES_FROM_TO.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Queries\SQL_RULES_FROM_TO_ALL.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Queries\SQL_RULES_FROM_TO_PRIORITY.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Queries\SQL_RULES_FROM_TO_PRIORITY_ALL.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Queries\SQL_RULES_SRC_IPS_FROM.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Queries\SQL_RULES_SRC_IPS_FROM_TO.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Queries\SQL_SENSORS.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Queries\SQL_SENSORS_HOSTNAME.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Queries\SQL_SIG_CLASS.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Queries\SQL_SIG_NAMES.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Queries\SQL_SIG_PRIORITIES.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

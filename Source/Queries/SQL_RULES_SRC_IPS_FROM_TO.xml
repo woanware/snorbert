@@ -1,0 +1,11 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<SqlQuery xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+  <Query>SQL_RULES_SRC_IPS_FROM_TO</Query>
+  <Data><![CDATA[SELECT distinct IFNULL(cast(inet_ntoa(iphdr.ip_src) as char(15)), 0) as ip_src
+                   FROM event
+              LEFT JOIN iphdr ON (event.sid = iphdr.sid AND event.cid = iphdr.cid)
+                  WHERE event.signature=@0 
+                    AND event.timestamp > @1
+                    AND event.timestamp < @2]]>
+  </Data>
+</SqlQuery>

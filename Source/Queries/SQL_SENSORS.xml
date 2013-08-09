@@ -1,0 +1,11 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<SqlQuery xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+  <Query>SQL_SENSORS</Query>
+  <Data><![CDATA[SELECT sensor.sid as sid, 
+                        sensor.hostname as hostname, sensor.interface AS inter, 
+                        (SELECT event.timestamp FROM event WHERE event.sid = sensor.sid ORDER BY sid DESC LIMIT 1) as timestamp, 
+                        (SELECT COUNT(1) FROM event WHERE event.sid = sensor.sid) as eventcount
+                   FROM sensor
+               GROUP BY sensor.sid;]]>
+  </Data>
+</SqlQuery>

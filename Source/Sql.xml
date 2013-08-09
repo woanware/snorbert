@@ -589,7 +589,9 @@
         <![CDATA[SELECT exclude.id as id,
                         IFNULL(exclude.sig_id,0) as sig_id,
                         IFNULL(cast(inet_ntoa(ip_src) as char(15)), 0) as ip_src, 
+                        IFNULL(ip_src_port, 0) as ip_src_port, 
 				                IFNULL(cast(inet_ntoa(ip_dst) as char(15)), 0) as ip_dst,
+                        IFNULL(ip_dst_port, 0) as ip_dst_port, 
 				                IFNULL(exclude.fp,0) as fp,
 		                    IFNULL(comment,'') as comment,
 		                    IFNULL(signature.sig_name,'') as sig_name,
@@ -617,6 +619,45 @@
                   WHERE exclude.id = @0]]>
       </Data>
     </SqlQuery>
+
+    <SqlQuery>
+      <Query>SQL_ACKNOWLEDGMENT_FROM</Query>
+      <Data>
+        <![CDATA[SELECT acknowledgment.notes,
+                        signature.sig_name,
+                        signature.sig_sid,
+                        signature.sig_gid
+                   FROM event
+              LEFT JOIN signature ON (signature.sig_id = event.signature)
+             RIGHT JOIN acknowledgment on (acknowledgment.sid = event.sid AND acknowledgment.cid = event.cid )
+              LEFT JOIN acknowledgment_class on (acknowledgment_class.id = acknowledgment.class )
+                  WHERE acknowledgment.initials = @0
+                    AND event.timestamp > @1
+               GROUP BY acknowledgment.notes,
+	                      signature.sig_name]]>
+      </Data>
+    </SqlQuery>
+
+    <SqlQuery>
+      <Query>SQL_ACKNOWLEDGMENT_FROM_TO</Query>
+      <Data>
+        <![CDATA[SELECT acknowledgment.notes,
+                        signature.sig_name,
+                        signature.sig_sid,
+                        signature.sig_gid
+                   FROM event
+              LEFT JOIN signature ON (signature.sig_id = event.signature)
+             RIGHT JOIN acknowledgment on (acknowledgment.sid = event.sid AND acknowledgment.cid = event.cid )
+              LEFT JOIN acknowledgment_class on (acknowledgment_class.id = acknowledgment.class )
+                  WHERE acknowledgment.initials = @0
+                    AND event.timestamp > @1
+                    AND event.timestamp < @2
+               GROUP BY acknowledgment.notes,
+	                      signature.sig_name]]>
+      </Data>
+    </SqlQuery>
+
+
 	
   </Queries>
 </Sql>

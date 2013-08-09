@@ -38,4 +38,4 @@ snorbert requires a number of changes to the snort/barnyard database schema. The
 - Database\acknowledgment_class.sql
 - Database\exclude.sql
 
-Then the data population script (acknowledgment_class.data.sql) should be run to populate the **acknowledgment_class** table. The **exclude** table facilities the ability to exclude particular rules, IP addresses etc. The **acknowledgement*** tables allow for better collaborative working so that one analyst can see that another analyst is already working on a particular rule.
+Then the data population script (acknowledgment\_class.data.sql) should be run to populate the **acknowledgment_class** table. The exclude table facilities the ability to exclude particular rules, IP addresses etc. The **acknowledgement** tables allow for better collaborative working so that one analyst can see that another analyst is already working on a particular rule.

@@ -11,6 +11,9 @@ using NPoco;
 using System.Windows.Forms;
 using System.Security.Principal;
 using System.Security.AccessControl;
+using snorbert.Configs;
+using snorbert.Data;
+using snorbert.Objects;
 
 namespace snorbert
 {
@@ -128,31 +131,32 @@ namespace snorbert
 
                     DropIndex();
 
-                    NPoco.Database db = new NPoco.Database(Db.GetOpenSqlCeConnection(), DatabaseType.SQLCe);
-
-                    Regex regex = new Regex(@"sid\:(.*?);", RegexOptions.IgnoreCase);
-                    foreach (string file in files)
+                    using (NPoco.Database db = new NPoco.Database(Db.GetOpenSqlCeConnection(), DatabaseType.SQLCe))
                     {
-                        foreach (var line in File.ReadAllLines(file))
+                        Regex regex = new Regex(@"sid\:(.*?);", RegexOptions.IgnoreCase);
+                        foreach (string file in files)
                         {
-                            Match match = regex.Match(line);
-                            if (match.Success == false)
+                            foreach (var line in File.ReadAllLines(file))
                             {
-                                continue;
-                            }
+                                Match match = regex.Match(line);
+                                if (match.Success == false)
+                                {
+                                    continue;
+                                }
 
-                            Rule rule = db.SingleOrDefault<Rule>("SELECT * FROM Rules WHERE Sid = @0", new object[] { match.Groups[1].Value.Trim() });
-                            if (rule != null)
-                            {
-                                rule.Data = line;
-                                db.Update(rule);
-                            }
-                            else
-                            {
-                                rule = new Rule();
-                                rule.Sid = match.Groups[1].Value.Trim();
-                                rule.Data = line;
-                                db.Insert(rule);
+                                Rule rule = db.SingleOrDefault<Rule>("SELECT * FROM Rules WHERE Sid = @0", new object[] { match.Groups[1].Value.Trim() });
+                                if (rule != null)
+                                {
+                                    rule.Data = line;
+                                    db.Update(rule);
+                                }
+                                else
+                                {
+                                    rule = new Rule();
+                                    rule.Sid = match.Groups[1].Value.Trim();
+                                    rule.Data = line;
+                                    db.Insert(rule);
+                                }
                             }
                         }
                     }

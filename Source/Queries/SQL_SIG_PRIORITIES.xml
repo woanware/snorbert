@@ -1,0 +1,8 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<SqlQuery xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+  <Query>SQL_SIG_PRIORITIES</Query>
+  <Data><![CDATA[SELECT distinct sig_priority 
+                   FROM signature 
+               ORDER BY sig_priority DESC]]>
+  </Data>
+</SqlQuery>

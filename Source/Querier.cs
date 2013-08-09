@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 using woanware;
+using snorbert.Configs;
+using snorbert.Data;
 
 namespace snorbert
 {
@@ -58,15 +60,17 @@ namespace snorbert
 
             IsRunning = true;
 
-            Task task = Task.Factory.StartNew(() =>
+            new Thread(() =>
             {
                 try
                 {
-                    NPoco.Database db = new NPoco.Database(Db.GetOpenMySqlConnection());
-                    List<Event> data = db.Fetch<Event>(_sql.GetQuery(Sql.Query.SQL_EVENTS), new object[] { offset, pageLimit });
+                    using (NPoco.Database db = new NPoco.Database(Db.GetOpenMySqlConnection()))
+                    {
+                        List<Event> data = db.Fetch<Event>(_sql.GetQuery(Sql.Query.SQL_EVENTS), new object[] { offset, pageLimit });
 
-                    data = Helper.ProcessEventDataSet(data);
-                    OnComplete(data);
+                        data = Helper.ProcessEventDataSet(data);
+                        OnComplete(data);
+                    }
                 }
                 catch (Exception ex)
                 {
@@ -76,7 +80,7 @@ namespace snorbert
                 {
                     IsRunning = false;
                 }
-            });
+            }).Start();
         }
 
         /// <summary>
@@ -95,36 +99,37 @@ namespace snorbert
 
             IsRunning = true;
 
-            Task task = Task.Factory.StartNew(() =>
+            new Thread(() =>
             {
                 try
                 {
-                    NPoco.Database db = new NPoco.Database(Db.GetOpenMySqlConnection());
-                    
-                    List<Signature> temp;
-                    string query = string.Empty;
-                    if (hostName == string.Empty)
+                    using (NPoco.Database db = new NPoco.Database(Db.GetOpenMySqlConnection()))
                     {
-                        temp = db.Fetch<Signature>(_sql.GetQuery(Sql.Query.SQL_RULES_FROM_ALL), new object[] { dateFrom });
-                    }
-                    else
-                    {
-                        temp = db.Fetch<Signature>(_sql.GetQuery(Sql.Query.SQL_RULES_FROM), new object[] { dateFrom, hostName });
-                    }
-
-                    foreach (var rule in temp)
-                    {
-                        if (rule.Priority.ToString().Length > 0)
+                        List<Signature> temp;
+                        string query = string.Empty;
+                        if (hostName == string.Empty)
                         {
-                            rule.Text = rule.Name + " (GID#SID: " + rule.Gid + "#" + rule.Sid.ToString() + "/Priority: " + rule.Priority.ToString() + "): " + rule.Count.ToString();
+                            temp = db.Fetch<Signature>(_sql.GetQuery(Sql.Query.SQL_RULES_FROM_ALL), new object[] { dateFrom });
                         }
                         else
                         {
-                            rule.Text = rule.Name + " (GID#SID: " + rule.Gid + "#" + rule.Sid.ToString() + "): " + rule.Count.ToString();
+                            temp = db.Fetch<Signature>(_sql.GetQuery(Sql.Query.SQL_RULES_FROM), new object[] { dateFrom, hostName });
                         }
-                    }
 
-                    OnComplete(temp);
+                        foreach (var rule in temp)
+                        {
+                            if (rule.Priority.ToString().Length > 0)
+                            {
+                                rule.Text = rule.Name + " (GID#SID: " + rule.Gid + "#" + rule.Sid.ToString() + "/Priority: " + rule.Priority.ToString() + "): " + rule.Count.ToString();
+                            }
+                            else
+                            {
+                                rule.Text = rule.Name + " (GID#SID: " + rule.Gid + "#" + rule.Sid.ToString() + "): " + rule.Count.ToString();
+                            }
+                        }
+
+                        OnComplete(temp);
+                    }                    
                 }
                 catch (Exception ex)
                 {
@@ -134,7 +139,7 @@ namespace snorbert
                 {
                     IsRunning = false;
                 }
-            });
+            }).Start();
         }
 
         /// <summary>
@@ -155,29 +160,30 @@ namespace snorbert
 
             IsRunning = true;
 
-            Task task = Task.Factory.StartNew(() =>
+            new Thread(() =>
             {
                 try
                 {
-                    NPoco.Database db = new NPoco.Database(Db.GetOpenMySqlConnection());
-
-                    string query = string.Empty;
-                    if (hostName == string.Empty)
+                    using (NPoco.Database db = new NPoco.Database(Db.GetOpenMySqlConnection()))
                     {
-                        query = _sql.GetQuery(Sql.Query.SQL_RULES_FROM_PRIORITY_ALL);
-                    }
-                    else
-                    {
-                        query = _sql.GetQuery(Sql.Query.SQL_RULES_FROM_PRIORITY);
-                    }
+                        string query = string.Empty;
+                        if (hostName == string.Empty)
+                        {
+                            query = _sql.GetQuery(Sql.Query.SQL_RULES_FROM_PRIORITY_ALL);
+                        }
+                        else
+                        {
+                            query = _sql.GetQuery(Sql.Query.SQL_RULES_FROM_PRIORITY);
+                        }
 
-                    List<Signature> temp = db.Fetch<Signature>(query, new object[] { dateFrom, priority });
-                    foreach (var rule in temp)
-                    {
-                        rule.Text = rule.Name + " (SID: " + rule.Sid.ToString() + "): " + rule.Count.ToString();
-                    }
+                        List<Signature> temp = db.Fetch<Signature>(query, new object[] { dateFrom, priority });
+                        foreach (var rule in temp)
+                        {
+                            rule.Text = rule.Name + " (SID: " + rule.Sid.ToString() + "): " + rule.Count.ToString();
+                        }
 
-                    OnComplete(temp);
+                        OnComplete(temp);
+                    }                    
                 }
                 catch (Exception ex)
                 {
@@ -187,7 +193,7 @@ namespace snorbert
                 {
                     IsRunning = false;
                 }
-            });
+            }).Start();
         }
 
         /// <summary>
@@ -208,35 +214,37 @@ namespace snorbert
 
             IsRunning = true;
 
-            Task task = Task.Factory.StartNew(() =>
+            new Thread(() =>
             {
                 try
                 {
-                    NPoco.Database db = new NPoco.Database(Db.GetOpenMySqlConnection());
-                    string query = string.Empty;
-                    if (hostName == string.Empty)
+                    using (NPoco.Database db = new NPoco.Database(Db.GetOpenMySqlConnection()))
                     {
-                        query = _sql.GetQuery(Sql.Query.SQL_RULES_FROM_TO_ALL);
-                    }
-                    else
-                    {
-                        query = _sql.GetQuery(Sql.Query.SQL_RULES_FROM_TO);
-                    }
-
-                    List<Signature> temp = db.Fetch<Signature>(query, new object[] { dateFrom, dateTo });
-                    foreach (var rule in temp)
-                    {
-                        if (rule.Priority.ToString().Length > 0)
+                        List<Signature> temp;
+                        string query = string.Empty;
+                        if (hostName == string.Empty)
                         {
-                            rule.Text = rule.Name + " (SID: " + rule.Sid.ToString() + "/Priority: " + rule.Priority.ToString() + "): " + rule.Count.ToString();
+                            temp = db.Fetch<Signature>(_sql.GetQuery(Sql.Query.SQL_RULES_FROM_TO_ALL), new object[] { dateFrom, dateTo });
                         }
                         else
                         {
-                            rule.Text = rule.Name + " (SID: " + rule.Sid.ToString() + "): " + rule.Count.ToString();
+                            temp = db.Fetch<Signature>(_sql.GetQuery(Sql.Query.SQL_RULES_FROM_TO), new object[] { dateFrom, dateTo, hostName });
                         }
-                    }
 
-                    OnComplete(temp);
+                        foreach (var rule in temp)
+                        {
+                            if (rule.Priority.ToString().Length > 0)
+                            {
+                                rule.Text = rule.Name + " (SID: " + rule.Sid.ToString() + "/Priority: " + rule.Priority.ToString() + "): " + rule.Count.ToString();
+                            }
+                            else
+                            {
+                                rule.Text = rule.Name + " (SID: " + rule.Sid.ToString() + "): " + rule.Count.ToString();
+                            }
+                        }
+
+                        OnComplete(temp);
+                    }
                 }
                 catch (Exception ex)
                 {
@@ -246,7 +254,7 @@ namespace snorbert
                 {
                     IsRunning = false;
                 }
-            });
+            }).Start();
         }
 
         /// <summary>
@@ -269,28 +277,30 @@ namespace snorbert
 
             IsRunning = true;
 
-            Task task = Task.Factory.StartNew(() =>
+            new Thread(() =>
             {
                 try
                 {
-                    NPoco.Database db = new NPoco.Database(Db.GetOpenMySqlConnection());
-                    string query = string.Empty;
-                    if (hostName == string.Empty)
+                    using (NPoco.Database db = new NPoco.Database(Db.GetOpenMySqlConnection()))
                     {
-                        query = _sql.GetQuery(Sql.Query.SQL_RULES_FROM_TO_PRIORITY_ALL);
-                    }
-                    else
-                    {
-                        query = _sql.GetQuery(Sql.Query.SQL_RULES_FROM_TO_PRIORITY);
-                    }
+                        string query = string.Empty;
+                        if (hostName == string.Empty)
+                        {
+                            query = _sql.GetQuery(Sql.Query.SQL_RULES_FROM_TO_PRIORITY_ALL);
+                        }
+                        else
+                        {
+                            query = _sql.GetQuery(Sql.Query.SQL_RULES_FROM_TO_PRIORITY);
+                        }
 
-                    List<Signature> temp = db.Fetch<Signature>(query, new object[] { dateFrom, dateTo, priority });
-                    foreach (var rule in temp)
-                    {
-                        rule.Text = rule.Name + " (SID: " + rule.Sid.ToString() + "): " + rule.Count.ToString();
-                    }
+                        List<Signature> temp = db.Fetch<Signature>(query, new object[] { dateFrom, dateTo, priority });
+                        foreach (var rule in temp)
+                        {
+                            rule.Text = rule.Name + " (SID: " + rule.Sid.ToString() + "): " + rule.Count.ToString();
+                        }
 
-                    OnComplete(temp);
+                        OnComplete(temp);
+                    }
                 }
                 catch (Exception ex)
                 {
@@ -300,7 +310,7 @@ namespace snorbert
                 {
                     IsRunning = false;
                 }
-            });
+            }).Start();
         }
 
         /// <summary>
@@ -322,19 +332,21 @@ namespace snorbert
 
             IsRunning = true;
 
-            Task task = Task.Factory.StartNew(() =>
+            new Thread(() =>
             {
                 try
                 {
-                    NPoco.Database db = new NPoco.Database(Db.GetOpenMySqlConnection());
-                    List<Event> data = db.Fetch<Event>(_sql.GetQuery(Sql.Query.SQL_EVENTS_RULES_FROM_TO), new object[] { dateFrom, 
+                    using (NPoco.Database db = new NPoco.Database(Db.GetOpenMySqlConnection()))
+                    {
+                        List<Event> data = db.Fetch<Event>(_sql.GetQuery(Sql.Query.SQL_EVENTS_RULES_FROM_TO), new object[] { dateFrom, 
                                                                                                                          dateTo,
                                                                                                                          sid, 
                                                                                                                          offset, 
                                                                                                                          pageLimit });
 
-                    data = Helper.ProcessEventDataSet(data);
-                    OnComplete(data);
+                        data = Helper.ProcessEventDataSet(data);
+                        OnComplete(data);
+                    }
                 }
                 catch (Exception ex)
                 {
@@ -344,7 +356,7 @@ namespace snorbert
                 {
                     IsRunning = false;
                 }
-            });
+            }).Start();
         }
 
         /// <summary>
@@ -365,18 +377,20 @@ namespace snorbert
 
             IsRunning = true;
 
-            Task task = Task.Factory.StartNew(() =>
+            new Thread(() =>
             {
                 try
                 {
-                    NPoco.Database db = new NPoco.Database(Db.GetOpenMySqlConnection());
-                    List<Event> data = db.Fetch<Event>(_sql.GetQuery(Sql.Query.SQL_EVENTS_RULES_FROM), new object[] { dateFrom, 
+                    using (NPoco.Database db = new NPoco.Database(Db.GetOpenMySqlConnection()))
+                    {
+                        List<Event> data = db.Fetch<Event>(_sql.GetQuery(Sql.Query.SQL_EVENTS_RULES_FROM), new object[] { dateFrom, 
                                                                                                                       sid, 
                                                                                                                       offset, 
                                                                                                                       pageLimit});
 
-                    data = Helper.ProcessEventDataSet(data);
-                    OnComplete(data);
+                        data = Helper.ProcessEventDataSet(data);
+                        OnComplete(data);
+                    }
                 }
                 catch (Exception ex)
                 {
@@ -386,7 +400,7 @@ namespace snorbert
                 {
                     IsRunning = false;
                 }
-            });
+            }).Start();
         }
 
         /// <summary>
@@ -405,15 +419,17 @@ namespace snorbert
 
             IsRunning = true;
 
-            Task task = Task.Factory.StartNew(() =>
+            new Thread(() =>
             {
                 try
                 {
-                    NPoco.Database db = new NPoco.Database(Db.GetOpenMySqlConnection());
-                    List<Event> data = db.Fetch<Event>(_sql.GetQuery(Sql.Query.SQL_EVENTS_SEARCH) + where, args);
+                    using (NPoco.Database db = new NPoco.Database(Db.GetOpenMySqlConnection()))
+                    {
+                        List<Event> data = db.Fetch<Event>(_sql.GetQuery(Sql.Query.SQL_EVENTS_SEARCH) + where, args);
 
-                    data = Helper.ProcessEventDataSet(data);
-                    OnComplete(data);
+                        data = Helper.ProcessEventDataSet(data);
+                        OnComplete(data);
+                    }
                 }
                 catch (Exception ex)
                 {
@@ -423,7 +439,7 @@ namespace snorbert
                 {
                     IsRunning = false;
                 }
-            });
+            }).Start();
         }
 
         /// <summary>
@@ -439,28 +455,30 @@ namespace snorbert
 
             IsRunning = true;
 
-            Task task = Task.Factory.StartNew(() =>
+            new Thread(() =>
             {
                 try
                 {
-                    NPoco.Database db = new NPoco.Database(Db.GetOpenMySqlConnection());
-                    List<Sensor> sensors = db.Fetch<Sensor>(_sql.GetQuery(Sql.Query.SQL_SENSORS));
-
-                    long count = 0;
-                    foreach (Sensor sensor in sensors)
+                    using (NPoco.Database db = new NPoco.Database(Db.GetOpenMySqlConnection()))
                     {
-                        count += sensor.EventCount;
-                    }
+                        List<Sensor> sensors = db.Fetch<Sensor>(_sql.GetQuery(Sql.Query.SQL_SENSORS));
 
-                    foreach (Sensor sensor in sensors)
-                    {
-                        if (sensor.EventCount > 0)
+                        long count = 0;
+                        foreach (Sensor sensor in sensors)
                         {
-                            sensor.EventPercentage = (int)(sensor.EventCount / count) * 100;
+                            count += sensor.EventCount;
                         }
-                    }
 
-                    OnComplete(sensors);
+                        foreach (Sensor sensor in sensors)
+                        {
+                            if (sensor.EventCount > 0)
+                            {
+                                sensor.EventPercentage = (int)(sensor.EventCount / count) * 100;
+                            }
+                        }
+
+                        OnComplete(sensors);
+                    }
                 }
                 catch (Exception ex)
                 {
@@ -470,7 +488,7 @@ namespace snorbert
                 {
                     IsRunning = false;
                 }
-            });
+            }).Start();
         }
 
         /// <summary>
@@ -493,31 +511,32 @@ namespace snorbert
 
             IsRunning = true;
 
-            Task task = Task.Factory.StartNew(() =>
+            new Thread(() =>
             {
                 try
                 {
-                    NPoco.Database db = new NPoco.Database(Db.GetOpenMySqlConnection());
-
-                    List<string> data = new List<string>();
-                    if (sourceIps == true)
+                    using (NPoco.Database db = new NPoco.Database(Db.GetOpenMySqlConnection()))
                     {
-                        List<Event> temp = db.Fetch<Event>(_sql.GetQuery(Sql.Query.SQL_RULES_SRC_IPS_FROM_TO), new object[] { id, dateFrom, dateTo });
-                        foreach (var rule in temp)
+                        List<string> data = new List<string>();
+                        if (sourceIps == true)
                         {
-                            data.Add(rule.IpSrcTxt);
+                            List<Event> temp = db.Fetch<Event>(_sql.GetQuery(Sql.Query.SQL_RULES_SRC_IPS_FROM_TO), new object[] { id, dateFrom, dateTo });
+                            foreach (var rule in temp)
+                            {
+                                data.Add(rule.IpSrcTxt);
+                            }
                         }
-                    }
-                    else
-                    {
-                        List<Event> temp = db.Fetch<Event>(_sql.GetQuery(Sql.Query.SQL_RULES_DST_IPS_FROM_TO), new object[] { id, dateFrom, dateTo });
-                        foreach (var rule in temp)
+                        else
                         {
-                            data.Add(rule.IpDstTxt);
+                            List<Event> temp = db.Fetch<Event>(_sql.GetQuery(Sql.Query.SQL_RULES_DST_IPS_FROM_TO), new object[] { id, dateFrom, dateTo });
+                            foreach (var rule in temp)
+                            {
+                                data.Add(rule.IpDstTxt);
+                            }
                         }
-                    }
 
-                    OnComplete(data);
+                        OnComplete(data);
+                    }
                 }
                 catch (Exception ex)
                 {
@@ -527,7 +546,7 @@ namespace snorbert
                 {
                     IsRunning = false;
                 }
-            });
+            }).Start();
         }
 
         /// <summary>
@@ -548,31 +567,32 @@ namespace snorbert
 
             IsRunning = true;
 
-            Task task = Task.Factory.StartNew(() =>
+            new Thread(() =>
             {
                 try
                 {
-                    NPoco.Database db = new NPoco.Database(Db.GetOpenMySqlConnection());
-
-                    List<string> data = new List<string>();
-                    if (sourceIps == true)
+                    using (NPoco.Database db = new NPoco.Database(Db.GetOpenMySqlConnection()))
                     {
-                        List<Event> temp = db.Fetch<Event>(_sql.GetQuery(Sql.Query.SQL_RULES_SRC_IPS_FROM), new object[] { id, dateFrom });
-                        foreach (var rule in temp)
+                        List<string> data = new List<string>();
+                        if (sourceIps == true)
                         {
-                            data.Add(rule.IpSrcTxt);
+                            List<Event> temp = db.Fetch<Event>(_sql.GetQuery(Sql.Query.SQL_RULES_SRC_IPS_FROM), new object[] { id, dateFrom });
+                            foreach (var rule in temp)
+                            {
+                                data.Add(rule.IpSrcTxt);
+                            }
                         }
-                    }
-                    else
-                    {
-                        List<Event> temp = db.Fetch<Event>(_sql.GetQuery(Sql.Query.SQL_RULES_DST_IPS_FROM), new object[] { id, dateFrom });
-                        foreach (var rule in temp)
+                        else
                         {
-                            data.Add(rule.IpDstTxt);
+                            List<Event> temp = db.Fetch<Event>(_sql.GetQuery(Sql.Query.SQL_RULES_DST_IPS_FROM), new object[] { id, dateFrom });
+                            foreach (var rule in temp)
+                            {
+                                data.Add(rule.IpDstTxt);
+                            }
                         }
-                    }
 
-                    OnComplete(data);
+                        OnComplete(data);
+                    }
                 }
                 catch (Exception ex)
                 {
@@ -582,7 +602,7 @@ namespace snorbert
                 {
                     IsRunning = false;
                 }
-            });
+            }).Start();
         }
         #endregion
 

@@ -1,0 +1,36 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<SqlQuery xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+  <Query>SQL_RULES_FROM_TO_ALL</Query>
+  <Data>
+                     <![CDATA[SELECT signature.sig_id, 
+					              signature.sig_name, 
+				                signature.sig_sid, 
+                        signature.sig_gid,
+				                IFNULL(signature.sig_priority, 0) as sig_priority,
+				                count(signature.sig_name) AS count          
+			             FROM signature          
+			             JOIN event ON (signature.sig_id = event.signature)          
+			             JOIN iphdr ON (iphdr.cid = event.cid AND iphdr.sid = event.sid)
+              LEFT JOIN tcphdr ON (event.sid = tcphdr.sid AND event.cid = tcphdr.cid) 
+              LEFT JOIN udphdr ON (event.sid = udphdr.sid AND event.cid = udphdr.cid) 
+	            LEFT JOIN exclude ON
+			          (
+		              ((exclude.ip_src = iphdr.ip_src AND exclude.port_src = tcphdr.tcp_sport)
+	  		          OR (exclude.ip_dst = iphdr.ip_dst AND exclude.port_dst = tcphdr.tcp_dport)
+		              OR (exclude.ip_src = iphdr.ip_src AND exclude.port_src = udphdr.udp_sport)
+	  		          OR (exclude.ip_dst = iphdr.ip_dst AND exclude.port_dst = udphdr.udp_dport))	 			   		
+	                OR (exclude.ip_dst = 0 OR exclude.ip_dst = iphdr.ip_dst)
+	               AND (exclude.ip_src = 0 OR exclude.ip_src = iphdr.ip_src)
+	               AND (exclude.port_src = 0 OR (exclude.port_src = tcphdr.tcp_sport OR exclude.port_src = udphdr.udp_sport))
+	               AND (exclude.port_dst = 0 OR (exclude.port_dst = tcphdr.tcp_dport OR exclude.port_dst = udphdr.udp_dport))	       
+             		 AND (exclude.sig_id = 0 OR exclude.sig_id = event.signature)
+		             AND (exclude.ip_proto = iphdr.ip_proto)
+               )
+		              WHERE exclude.id IS NULL 
+			              AND event.timestamp > @0 
+			              AND event.timestamp < @1
+		           GROUP BY signature.sig_id 
+		           ORDER BY signature.sig_priority DESC, 
+		                    signature.sig_name;]]>
+  </Data>
+</SqlQuery>

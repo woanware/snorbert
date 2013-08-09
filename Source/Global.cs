@@ -60,16 +60,17 @@ namespace snorbert
         /// </summary>
         public enum FieldsEvent : int
         {
-            Cid = 0,
-            SrcIp = 1,
-            SrcPort = 2,
-            DstIp = 3,
-            DstPort = 4,
-            Protocol = 5,
-            Host = 6,
-            Timestamp = 7,
-            TcpFlags = 8,
-            Payload = 9
+            SrcIp = 0,
+            SrcPort = 1,
+            DstIp = 2,
+            DstPort = 3,
+            Protocol = 4,
+            Host = 5,
+            Timestamp = 6,
+            TcpFlags = 7,
+            Classification = 8,
+            Initials = 9,
+            Payload = 10
         }
 
         /// <summary>
@@ -77,16 +78,16 @@ namespace snorbert
         /// </summary>
         public enum FieldsEventCopy : int
         {
-            Cid = 0,
-            Sid = 1,
-            SrcIp = 2,
-            SrcPort = 3,
-            DstIp = 4,
-            DstPort = 5,
-            SigName = 6,
-            Timestamp = 7,
-            PayloadAscii = 8,
-            HttpHost = 9
+            Sid,
+            SrcIp,
+            SrcPort,
+            DstIp,
+            DstPort,
+            SigName,
+            Timestamp,
+            PayloadAscii,
+            HttpHost,
+            Cid
         }
 
         /// <summary>
@@ -103,18 +104,18 @@ namespace snorbert
         /// </summary>
         public enum FilterType
         {
-            Numeric = 0,
-            Text = 1,
-            Ip = 2,
-            Timestamp = 3,
-            Severity = 4,
-            //SignatureName = 5,
-            //SignatureId = 6,
-            Classification = 5,
-            PayloadAscii = 6,
-            PayloadHex = 7,
-            Sensor = 8,
-            Protocol = 9
+            Numeric,
+            Text,
+            Ip,
+            Timestamp,
+            Severity,
+            //SignatureName,
+            //SignatureId,
+            Classification,
+            PayloadAscii,
+            PayloadHex,
+            Sensor,
+            Protocol
         }
         #endregion
     }

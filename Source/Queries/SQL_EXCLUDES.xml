@@ -1,0 +1,19 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<SqlQuery xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+  <Query>SQL_EXCLUDES</Query>
+  <Data><![CDATA[SELECT exclude.id as id,
+                        IFNULL(exclude.sig_id,0) as sig_id,
+                        IFNULL(cast(inet_ntoa(ip_src) as char(15)), 0) as ip_src, 
+                        IFNULL(port_src, 0) as port_src, 
+				                IFNULL(cast(inet_ntoa(ip_dst) as char(15)), 0) as ip_dst,
+                        IFNULL(port_dst, 0) as port_dst, 
+                        IFNULL(ip_proto, 0) as ip_proto, 
+				                IFNULL(exclude.fp,0) as fp,
+		                    IFNULL(comment,'') as comment,
+		                    IFNULL(signature.sig_name,'') as sig_name,
+                        IFNULL(signature.sig_sid, 0) as sig_sid, 
+                        exclude.timeadded as timestamp	 
+                   FROM exclude
+              LEFT JOIN signature ON (signature.sig_id = exclude.sig_id) ]]>
+  </Data>
+</SqlQuery>

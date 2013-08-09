@@ -1,0 +1,13 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<SqlQuery xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+  <Query>SQL_REFERENCES</Query>
+  <Data><![CDATA[SELECT reference.ref_tag as ref_tag,
+				                reference_system.ref_system_name as ref_system_name
+			             FROM reference 
+		          LEFT JOIN sig_reference on reference.ref_id = sig_reference.ref_id
+		          LEFT JOIN signature on sig_reference.sig_id = signature.sig_id
+		          LEFT JOIN reference_system on reference.ref_system_id = reference_system.ref_system_id
+			            WHERE signature.sig_id = @0
+		           ORDER BY sig_reference.ref_seq]]>
+  </Data>
+</SqlQuery>

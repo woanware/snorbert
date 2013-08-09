@@ -5,6 +5,7 @@ using System.Net;
 using System.Text.RegularExpressions;
 using System.Windows.Forms;
 using woanware;
+using snorbert.Data;
 
 namespace snorbert
 {
@@ -262,8 +263,11 @@ namespace snorbert
             string value = string.Empty;
             switch (field)
             {
-                case Global.FieldsEventCopy.Cid:
-                    value = temp.Cid.ToString();
+                case Global.FieldsEventCopy.SrcIp:
+                    value = temp.IpSrcTxt.ToString();
+                    break;
+                case Global.FieldsEventCopy.SrcPort:
+                    value = temp.SrcPort.ToString();
                     break;
                 case Global.FieldsEventCopy.DstIp:
                     value = temp.IpDstTxt.ToString();
@@ -283,11 +287,8 @@ namespace snorbert
                 case Global.FieldsEventCopy.SigName:
                     value = temp.SigName.ToString();
                     break;
-                case Global.FieldsEventCopy.SrcIp:
-                    value = temp.IpSrcTxt.ToString();
-                    break;
-                case Global.FieldsEventCopy.SrcPort:
-                    value = temp.SrcPort.ToString();
+                case Global.FieldsEventCopy.Cid:
+                    value = temp.Cid.ToString();
                     break;
                 case Global.FieldsEventCopy.Timestamp:
                     value = temp.Timestamp.ToString();
@@ -311,7 +312,7 @@ namespace snorbert
         /// <summary>
         /// Resizes the event list's columns
         /// </summary>
-        public static void ResizeEventListColumns(FastObjectListView list)
+        public static void ResizeEventListColumns(FastObjectListView list, bool hasSignatureColumn)
         {
             if (list.Items.Count == 0)
             {
@@ -322,12 +323,20 @@ namespace snorbert
             }
             else
             {
-                list.Columns[(int)Global.FieldsEvent.Cid].AutoResize(ColumnHeaderAutoResizeStyle.ColumnContent);
                 list.Columns[(int)Global.FieldsEvent.SrcIp].AutoResize(ColumnHeaderAutoResizeStyle.ColumnContent);
+                list.Columns[(int)Global.FieldsEvent.SrcPort].AutoResize(ColumnHeaderAutoResizeStyle.ColumnContent);
                 list.Columns[(int)Global.FieldsEvent.DstIp].AutoResize(ColumnHeaderAutoResizeStyle.ColumnContent);
+                list.Columns[(int)Global.FieldsEvent.DstPort].AutoResize(ColumnHeaderAutoResizeStyle.ColumnContent);
                 list.Columns[(int)Global.FieldsEvent.Host].AutoResize(ColumnHeaderAutoResizeStyle.ColumnContent);
                 list.Columns[(int)Global.FieldsEvent.Protocol].AutoResize(ColumnHeaderAutoResizeStyle.ColumnContent);
                 list.Columns[(int)Global.FieldsEvent.Timestamp].AutoResize(ColumnHeaderAutoResizeStyle.ColumnContent);
+                list.Columns[(int)Global.FieldsEvent.Classification].AutoResize(ColumnHeaderAutoResizeStyle.ColumnContent);
+                list.Columns[(int)Global.FieldsEvent.Initials].AutoResize(ColumnHeaderAutoResizeStyle.ColumnContent);
+
+                if (hasSignatureColumn == true)
+                {
+                    list.Columns[(int)Global.FieldsEvent.Payload].AutoResize(ColumnHeaderAutoResizeStyle.ColumnContent);
+                }
             }
         }
     }
