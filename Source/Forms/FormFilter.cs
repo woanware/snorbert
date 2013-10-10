@@ -19,9 +19,9 @@ namespace snorbert.Forms
         private List<Filter> _filters;
         private Filter _filter;
         private List<FilterDefinition> _filterDefinitions;
-        //private List<NameValue> _signatures;
         private List<NameValue> _priorities;
         private List<NameValue> _classifications;
+        private List<NameValue> _acknowledgementClasses;
         private List<NameValue> _sensors;
         private List<NameValue> _protocols;
         #endregion
@@ -62,17 +62,8 @@ namespace snorbert.Forms
                 foreach (var result in data)
                 {
                     NameValue nameValue = new NameValue();
-                    //if (result.Priority == null)
-                    //{
-                       // nameValue.Name = "IS NULL";
-                        //nameValue.Value = "IS NULL";
-                    //}
-                    //else
-                    //{
-                        nameValue.Name = result.Priority;
-                        nameValue.Value = result.Priority;
-                    //}
-                    
+                    nameValue.Name = result.Priority;
+                    nameValue.Value = result.Priority;
                     _priorities.Add(nameValue);
                 }
             }
@@ -95,6 +86,27 @@ namespace snorbert.Forms
                     nameValue.Name = result.Name;
                     nameValue.Value = result.Id.ToString();
                     _classifications.Add(nameValue);
+                }
+            }
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="db"></param>
+        public void LoadAcknowledgementClasses(NPoco.Database db)
+        {
+            using (new HourGlass(this))
+            {
+                List<AcknowledgmentClass> data = db.Fetch<AcknowledgmentClass>(_sql.GetQuery(Sql.Query.SQL_ACKNOWLEDGEMENT_CLASSES));
+
+                _acknowledgementClasses = new List<NameValue>();
+                foreach (var result in data)
+                {
+                    NameValue nameValue = new NameValue();
+                    nameValue.Name = result.Desc;
+                    nameValue.Value = result.Id.ToString();
+                    _acknowledgementClasses.Add(nameValue);
                 }
             }
         }
@@ -169,6 +181,8 @@ namespace snorbert.Forms
             AddFilterDefinition("Payload (HEX)", "data.data_payload", Global.FilterType.PayloadHex);
             AddFilterDefinition("Severity", "signature.sig_priority", Global.FilterType.Severity);
             AddFilterDefinition("Sensor", "event.sid", Global.FilterType.Sensor);
+            AddFilterDefinition("Initials", "acknowledgment.initials", Global.FilterType.Initials);
+            AddFilterDefinition("Acknowledgement Classifications", "acknowledgment.class", Global.FilterType.AcknowledgementClass);
         }
 
         /// <summary>
@@ -289,6 +303,21 @@ namespace snorbert.Forms
 
             switch (fd.Type)
             {
+                case Global.FilterType.AcknowledgementClass:
+                    cboCondition.Items.Clear();
+                    cboCondition.Items.Add("=");
+                    cboCondition.Items.Add("!=");
+
+                    cboValue.Items.Clear();
+                    cboValue.DisplayMember = "Name";
+                    cboValue.ValueMember = "Value";
+                    cboValue.Items.AddRange(_acknowledgementClasses.ToArray());
+                    UserInterface.SetDropDownWidth(cboValue);
+
+                    cboValue.Visible = true;
+                    txtValue.Visible = false;
+                    ipValue.Visible = false;
+                    break;
                 case Global.FilterType.Classification:
                     cboCondition.Items.Clear();
                     cboCondition.Items.Add("=");
@@ -367,40 +396,7 @@ namespace snorbert.Forms
                     txtValue.Visible = false;
                     ipValue.Visible = false;
                     break;
-                //case Global.FilterType.SignatureName :
-                //    cboCondition.Items.Clear();
-                //    cboCondition.Items.Add("=");
-                //    cboCondition.Items.Add("!=");
-                //    cboCondition.Items.Add("LIKE");
-                //    cboCondition.Items.Add("NOT LIKE");
-
-                //    cboValue.Items.Clear();
-                //    cboValue.DisplayMember = "Name";
-                //    cboValue.ValueMember = "Value";
-                //    cboValue.Items.AddRange(_signatures.ToArray());
-                //    UserInterface.SetDropDownWidth(cboValue);
-
-                //    cboValue.Visible = true;
-                //    txtValue.Visible = false;
-                //    ipValue.Visible = false;
-                //    break;
-                //case Global.FilterType.SignatureId:
-                //    cboCondition.Items.Clear();
-                //    cboCondition.Items.Add("=");
-                //    cboCondition.Items.Add("!=");
-                //    cboCondition.Items.Add("LIKE");
-                //    cboCondition.Items.Add("NOT LIKE");
-
-                //    cboValue.Items.Clear();
-                //    cboValue.DisplayMember = "Value";
-                //    cboValue.ValueMember = "Name";
-                //    cboValue.Items.AddRange(_signatures.ToArray());
-                //    UserInterface.SetDropDownWidth(cboValue);
-
-                //    cboValue.Visible = true;
-                //    txtValue.Visible = false;
-                //    ipValue.Visible = false;
-                //    break;
+                case Global.FilterType.Initials:
                 case Global.FilterType.Text:
                     cboCondition.Items.Clear();
                     cboCondition.Items.Add("=");
@@ -462,11 +458,10 @@ namespace snorbert.Forms
         {
             switch (fd.Type)
             {
+                case Global.FilterType.AcknowledgementClass:
                 case Global.FilterType.Classification:
                 case Global.FilterType.Severity:
                 case Global.FilterType.Sensor:
-                //case Global.FilterType.SignatureName:
-                //case Global.FilterType.SignatureId:
                 case Global.FilterType.Protocol:
                     if (cboValue.SelectedIndex == -1)
                     {
@@ -543,6 +538,8 @@ namespace snorbert.Forms
                     }
 
                     return payloadHex; // Test if hex?
+                case Global.FilterType.Initials:
+                    return txtValue.Text.ToUpper();
                 default:
                     return string.Empty;
             }
@@ -561,8 +558,8 @@ namespace snorbert.Forms
                     return ipValue.Text;
                 case Global.FilterType.Numeric:
                     return txtValue.Text;
+                case Global.FilterType.AcknowledgementClass:
                 case Global.FilterType.Severity:
-                //case Global.FilterType.SignatureName:
                 case Global.FilterType.Sensor:
                 case Global.FilterType.Classification:
                 case Global.FilterType.Protocol:
@@ -574,14 +571,6 @@ namespace snorbert.Forms
 
                     NameValue nameValueSeverity = (NameValue)cboValue.Items[cboValue.SelectedIndex];
                     return nameValueSeverity.Name;
-                //case Global.FilterType.SignatureId:
-                //    if (cboValue.SelectedIndex == -1)
-                //    {
-                //        return string.Empty;
-                //    }
-
-                //    NameValue nameValueSigId = (NameValue)cboValue.Items[cboValue.SelectedIndex];
-                //    return nameValueSigId.Value;
                 case Global.FilterType.Text:
                     return txtValue.Text;
                 case Global.FilterType.Timestamp:
@@ -667,6 +656,7 @@ namespace snorbert.Forms
             {
                 LoadPriorities(db);
                 LoadClassifications(db);
+                LoadAcknowledgementClasses(db);
                 LoadSensors(db);
                 LoadProtocols();
             }

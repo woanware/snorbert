@@ -1,5 +1,62 @@
 # History #
 
+**v1.2.0**
+
+- Added new "rules" table to the barnyard/snort schema which will store the signature/rule information. This removes the import process which occurs on startup and therefore the dependency on SQL CE
+- Added new button to Event Info tab that displays the linked rules. This functionality looks at the "flowbit" data for the snort rule
+- Updated IP Address control to r57
+
+**v1.1.10**
+
+- Fixed issue where the rules query errored when a sensor and priority were selected. Thanks CalG
+- Modified the highlighted item colour for the Rules drop down list as when viewed under a low colour RDP session it was unreadable e.g. black text on a dark blue background. Thanks MattN
+
+**v1.1.9**
+
+- Fixed issue where an error occurred when the final rule is acknowledged. Thanks ChrisB
+
+**v1.1.8**
+
+- Updated the SQL_RULES_EVENTS query and the calling code to include the LIMIT statements as the number of parameters supplied varied depending on whether the "To" timestamp value was required
+
+**v1.1.7**
+
+- Modified the Acknowledgement export to include the Acknowledgement class (reason)
+
+**v1.1.6**
+
+- Rewrote most of the queries involved in the loading of rules and events so that it is easier to view events that have already been acknowledged. Thanks DannyF
+- Rewrote the rest of the queries to use dynamic WHERE clauses which has reduced the query files from 31 to 17
+- Corrected tab order on the Acknowledement Export window
+- Removed selected item check when extracting unique source/destination IP addresses. Thanks ChrisB
+
+**v1.1.5**
+
+- Added more error checking when performing the acknowledgements
+- Added combo box selected index checks when the Rule checks are performed
+- General tidy up of some forms so they are consistent
+- Updated the list column resizing to reduce redraw messages. Thanks DanO
+
+**v1.1.4**
+
+- Fixed a bug in the Rules drop down height calculations 
+
+**v1.1.3**
+
+- Added alerting where new events are alerted to the user. The alerts are configurable via the Alerts.xml file (stored  in the users local %AppData% for snorbert)
+- Added the ability to search on Initials and Acknowledgement Class
+- The Rules tab will now only show events that are not acknowledged or have an Acknowledgement of Taken
+- Added the ability to Export Acknowledgments to text format as well as TSV
+- Sets the Rules dropdown list height to 75% of the main window's height. Thanks DannyF
+- Removed the query already running checks in the Querier object
+- Added Enter key accept on the Filter window. Thanks DannyF 
+- Fixed context menu item for Acknowledging. Thanks DannyF 
+- Added CTRL-ALT-A acknowledging to Search and Events tab. Thanks DannyF 
+- Updated Search SQL query to include Acknowledgement data. Thanks DannyF 
+- Fixed the acknowledgement export queries e.g. parameters in wrong order where initials are supplied
+- The Acknowledgment Export Window now closes once the export is complete
+- Changed the search terms on the Search tab from "Any,All" to "OR,AND" 
+
 **v1.1.2**
 
 - Modified the keyboard shortcuts to:

@@ -18,8 +18,7 @@ The aim of the application is to provide a fast, usable interface for accessing 
 
 - [CsvHelper](https://github.com/JoshClose/CsvHelper): CSV output
 - [Be.HexEditor](http://sourceforge.net/projects/hexbox/) : HEX view of packet data
-- [IP Address Control](http://www.codeproject.com/Articles/9352/A-C-IP-Address-Control) : Easy validation of IP addresses
-- [SQL Server CE](http://www.microsoft.com/en-gb/download/details.aspx?id=30709): SQL Server CE used for rule storage
+- [IP Address Control](https://code.google.com/p/ipaddresscontrollib/) : Easy validation of IP addresses
 - [MySql](http://dev.mysql.com/downloads/connector/net/) : Access to snort MySQL databases
 - [NPoco](https://github.com/schotime/NPoco): Data access
 - [ObjectListView](http://objectlistview.sourceforge.net/cs/index.html) : Data viewing via lists 
@@ -27,7 +26,7 @@ The aim of the application is to provide a fast, usable interface for accessing 
 
 ## Requirements ##
 
-- Microsoft .NET Framework v4.5
+- Microsoft .NET Framework v4.0
 - snort/barnyard database change (see below)
 
 ## Database ##
@@ -36,8 +35,11 @@ snorbert requires a number of changes to the snort/barnyard database schema. The
 - Database\acknowledgment.sql 
 - Database\acknowledgment_class.sql
 - Database\exclude.sql
+- Database\rule.sql
 
 Then the data population script (acknowledgment\_class.data.sql) should be run to populate the **acknowledgment_class** table. The exclude table facilities the ability to exclude particular rules, IP addresses etc. The **acknowledgement** tables allow for better collaborative working so that one analyst can see that another analyst is already working on a particular rule.
+
+To use the "rule" functionality you must run the import.py python script which will populate the "rule" table. This can be implemented as a cron job or whenever your rules have changed
 
 # Usage #
 
@@ -82,3 +84,25 @@ The values will be pre-populated using the event selected in the list; this is t
  
 Select the false positive filter that you want to delete and use the delete button on the window or use the DEL key.
 
+## Alerts ##
+
+snobert has the ability to alert the user when important events have triggered. The Alerts are configured via the Alerts.xml file that should be placed in the users AppData directory for the application e.g.
+
+    C:\:\Users\woanware\AppData\Local\woanware\snorbert\Alerts.xml
+
+The format of the config file is shown below:
+
+    <?xml version="1.0" encoding="utf-8"?>
+    <Alerts xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+      <Interval>60</Interval>
+      <Priorities>
+        <int>1</int>
+      </Priorities>
+      <Keywords>
+	    <string>[BADSTUFF]</string>
+      </Keywords>
+    </Alerts> 
+
+The Interval (minutes) value is used to configure an internal timer which is used to perform the check in the background. The Priorities section is used to define any priority signatures that need to be alerted. The Keywords section is used to alert on signatures that have specific keywords in the signature name.
+
+When events are identified that match any alerting criteria a message box is displayed and the applications window is flashed. The rule which has the new events against it will have red text. The red text will only be shown until the next automatic refresh/check

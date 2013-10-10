@@ -4,6 +4,7 @@ using System.Diagnostics;
 using System.Threading;
 using System.Windows.Forms;
 using woanware;
+using snorbert.Configs;
 
 namespace snorbert
 {

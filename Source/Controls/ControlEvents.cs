@@ -20,6 +20,7 @@ namespace snorbert.Controls
         #endregion
 
         #region Member Variables
+        private string _initials = string.Empty;
         private long _currentPage = 1;
         private HourGlass _hourGlass;
         private bool _moreData;
@@ -27,6 +28,7 @@ namespace snorbert.Controls
         private Querier _querier;
         private Sql _sql;
         private Connection _connection;
+        private List<AcknowledgmentClass> _acknowledgmentClasses;
         #endregion
 
         #region Constructor
@@ -209,6 +211,28 @@ namespace snorbert.Controls
         /// <summary>
         /// 
         /// </summary>
+        private void ShowAcknowledgementWindow()
+        {
+            if (listEvents.SelectedObjects.Count == 0)
+            {
+                return;
+            }
+
+            var list = listEvents.SelectedObjects.Cast<Event>().ToList();
+
+            using (FormAcknowledgment formAcknowledgement = new FormAcknowledgment(_acknowledgmentClasses, list, "N/A", _initials))
+            {
+                if (formAcknowledgement.ShowDialog(this) == DialogResult.OK)
+                {
+                    LoadEvents(_currentPage);
+                    _initials = formAcknowledgement.Initials;
+                }
+            }
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
         /// <param name="enabled"></param>
         public void SetProcessingStatus(bool enabled)
         {
@@ -370,6 +394,12 @@ namespace snorbert.Controls
         public void SetConnection(Connection connection)
         {
             _connection = connection;
+
+            using (NPoco.Database db = new NPoco.Database(Db.GetOpenMySqlConnection()))
+            {
+                _acknowledgmentClasses = db.Fetch<AcknowledgmentClass>();
+                _acknowledgmentClasses = (from a in _acknowledgmentClasses orderby a.Desc select a).ToList();
+            }
         }
 
         /// <summary>
@@ -386,6 +416,14 @@ namespace snorbert.Controls
         public void ShowSignature()
         {
             ShowSignatureWindow();
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        public void ShowAcknowledgement()
+        {
+            ShowAcknowledgementWindow();
         }
         #endregion
 

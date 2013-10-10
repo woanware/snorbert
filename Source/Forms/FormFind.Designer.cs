@@ -40,15 +40,15 @@
             // 
             // txtFind
             // 
-            this.txtFind.Location = new System.Drawing.Point(41, 8);
+            this.txtFind.Location = new System.Drawing.Point(11, 25);
             this.txtFind.Name = "txtFind";
-            this.txtFind.Size = new System.Drawing.Size(277, 23);
+            this.txtFind.Size = new System.Drawing.Size(309, 23);
             this.txtFind.TabIndex = 1;
             // 
             // lblFind
             // 
             this.lblFind.AutoSize = true;
-            this.lblFind.Location = new System.Drawing.Point(9, 12);
+            this.lblFind.Location = new System.Drawing.Point(11, 7);
             this.lblFind.Name = "lblFind";
             this.lblFind.Size = new System.Drawing.Size(30, 15);
             this.lblFind.TabIndex = 0;
@@ -57,7 +57,7 @@
             // btnFind
             // 
             this.btnFind.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.btnFind.Location = new System.Drawing.Point(168, 71);
+            this.btnFind.Location = new System.Drawing.Point(168, 92);
             this.btnFind.Name = "btnFind";
             this.btnFind.Size = new System.Drawing.Size(75, 23);
             this.btnFind.TabIndex = 5;
@@ -69,7 +69,7 @@
             // 
             this.btnClose.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.btnClose.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-            this.btnClose.Location = new System.Drawing.Point(246, 71);
+            this.btnClose.Location = new System.Drawing.Point(246, 92);
             this.btnClose.Name = "btnClose";
             this.btnClose.Size = new System.Drawing.Size(75, 23);
             this.btnClose.TabIndex = 6;
@@ -81,7 +81,7 @@
             // 
             this.chkMatchCase.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.chkMatchCase.AutoSize = true;
-            this.chkMatchCase.Location = new System.Drawing.Point(11, 40);
+            this.chkMatchCase.Location = new System.Drawing.Point(11, 56);
             this.chkMatchCase.Name = "chkMatchCase";
             this.chkMatchCase.Size = new System.Drawing.Size(86, 19);
             this.chkMatchCase.TabIndex = 2;
@@ -92,7 +92,7 @@
             // 
             this.chkMatchWholeWord.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.chkMatchWholeWord.AutoSize = true;
-            this.chkMatchWholeWord.Location = new System.Drawing.Point(11, 59);
+            this.chkMatchWholeWord.Location = new System.Drawing.Point(11, 75);
             this.chkMatchWholeWord.Name = "chkMatchWholeWord";
             this.chkMatchWholeWord.Size = new System.Drawing.Size(125, 19);
             this.chkMatchWholeWord.TabIndex = 3;
@@ -103,7 +103,7 @@
             // 
             this.chkSearchUpwards.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.chkSearchUpwards.AutoSize = true;
-            this.chkSearchUpwards.Location = new System.Drawing.Point(11, 78);
+            this.chkSearchUpwards.Location = new System.Drawing.Point(11, 94);
             this.chkSearchUpwards.Name = "chkSearchUpwards";
             this.chkSearchUpwards.Size = new System.Drawing.Size(109, 19);
             this.chkSearchUpwards.TabIndex = 4;
@@ -115,7 +115,7 @@
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.CancelButton = this.btnClose;
-            this.ClientSize = new System.Drawing.Size(331, 104);
+            this.ClientSize = new System.Drawing.Size(331, 125);
             this.Controls.Add(this.chkSearchUpwards);
             this.Controls.Add(this.chkMatchWholeWord);
             this.Controls.Add(this.chkMatchCase);

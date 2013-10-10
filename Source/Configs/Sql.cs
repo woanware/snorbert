@@ -19,35 +19,22 @@ namespace snorbert.Configs
         public enum Query
         {
             SQL_EVENTS,
-            SQL_RULES_FROM,
-            SQL_RULES_FROM_TO,
-            SQL_RULES_FROM_PRIORITY,
-            SQL_RULES_FROM_TO_PRIORITY,
-            SQL_EVENTS_RULES_FROM,
-            SQL_EVENTS_RULES_FROM_TO,
             SQL_EVENTS_SEARCH,
             SQL_REFERENCES,
             SQL_SIG_NAMES,
             SQL_SIG_PRIORITIES,
             SQL_SIG_CLASS,
             SQL_SENSORS,
-            SQL_RULES_SRC_IPS_FROM,
-            SQL_RULES_SRC_IPS_FROM_TO,
-            SQL_RULES_DST_IPS_FROM,
-            SQL_RULES_DST_IPS_FROM_TO,
-            SQL_EVENTS_RULES_FROM_EXPORT,
-            SQL_EVENTS_RULES_FROM_TO_EXPORT,
+            SQL_RULES,
+            SQL_RULES_EVENTS,
+            SQL_RULES_SRC_IPS,
+            SQL_RULES_DST_IPS,
+            SQL_RULES_EVENTS_EXPORT,
             SQL_EXCLUDES,
             SQL_EXCLUDE,
             SQL_SENSORS_HOSTNAME,
-            SQL_RULES_FROM_ALL,
-            SQL_RULES_FROM_TO_ALL,
-            SQL_RULES_FROM_PRIORITY_ALL,
-            SQL_RULES_FROM_TO_PRIORITY_ALL,
-            SQL_ACKNOWLEDGMENT_FROM,
-            SQL_ACKNOWLEDGMENT_FROM_TO,
-            SQL_ACKNOWLEDGMENT_FROM_ALL,
-            SQL_ACKNOWLEDGMENT_FROM_TO_ALL
+            SQL_ACKNOWLEDGEMENT,
+            SQL_ACKNOWLEDGEMENT_CLASSES
         }
         #endregion
 

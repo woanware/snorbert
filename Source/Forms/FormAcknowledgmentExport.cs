@@ -24,6 +24,7 @@ namespace snorbert.Forms
         {
             InitializeComponent();
 
+            cboFormat.SelectedIndex = 0;
             cboTimeFrom.SelectedIndex = 0;
             cboTimeTo.SelectedIndex = 0;
             dtpDateTo.Checked = false;
@@ -66,6 +67,7 @@ namespace snorbert.Forms
         {
             _hourGlass.Dispose();
             UserInterface.DisplayMessageBox(this, "Export complete", MessageBoxIcon.Information);
+            this.DialogResult = System.Windows.Forms.DialogResult.OK;
         }
         #endregion
 
@@ -84,8 +86,13 @@ namespace snorbert.Forms
                 return;
             }
 
-            _hourGlass = new HourGlass(this);
+            bool text = false;
+            if (cboFormat.SelectedIndex == 0)
+            {
+                text = true;
+            }
 
+            _hourGlass = new HourGlass(this);
 
             if (dtpDateTo.Checked == true)
             {
@@ -93,14 +100,16 @@ namespace snorbert.Forms
                 {
                      _exporter.ExportAcknowledgmentsFromToAll(txtOutputFile.Text, 
                                                               dtpDateFrom.Value.Date.ToString("yyyy-MM-dd") + " " + cboTimeFrom.Text + ":00",
-                                                              dtpDateTo.Value.Date.ToString("yyyy-MM-dd") + " " + cboTimeTo.Text + ":00");
+                                                              dtpDateTo.Value.Date.ToString("yyyy-MM-dd") + " " + cboTimeTo.Text + ":00",
+                                                              text);
                 }
                 else
                 {
                      _exporter.ExportAcknowledgmentsFromTo(txtOutputFile.Text, 
                                                            dtpDateFrom.Value.Date.ToString("yyyy-MM-dd") + " " + cboTimeFrom.Text + ":00",
                                                            dtpDateTo.Value.Date.ToString("yyyy-MM-dd") + " " + cboTimeTo.Text + ":00",
-                                                           txtInitials.Text);
+                                                           txtInitials.Text,
+                                                           text);
                 }
             }
             else
@@ -108,13 +117,15 @@ namespace snorbert.Forms
                 if (txtInitials.Text.Trim().Length == 0)
                 {
                      _exporter.ExportAcknowledgmentsFromAll(txtOutputFile.Text, 
-                                                            dtpDateFrom.Value.Date.ToString("yyyy-MM-dd") + " " + cboTimeFrom.Text + ":00");
+                                                            dtpDateFrom.Value.Date.ToString("yyyy-MM-dd") + " " + cboTimeFrom.Text + ":00",
+                                                            text);
                 }
                 else
                 {
                      _exporter.ExportAcknowledgmentsFrom(txtOutputFile.Text, 
                                                          dtpDateFrom.Value.Date.ToString("yyyy-MM-dd") + " " + cboTimeFrom.Text + ":00",
-                                                         txtInitials.Text);
+                                                         txtInitials.Text,
+                                                         text);
                 }                            
             }
         }

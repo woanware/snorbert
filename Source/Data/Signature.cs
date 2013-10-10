@@ -22,6 +22,8 @@ namespace snorbert.Data
         public long Count { get; set; }
         [Ignore]
         public string Text { get; set; }
+        [Ignore]
+        public bool Updated { get; set; }
         #endregion
 
         #region Constructors

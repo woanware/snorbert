@@ -297,8 +297,8 @@
             this.cboSearch.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.cboSearch.FormattingEnabled = true;
             this.cboSearch.Items.AddRange(new object[] {
-            "Any",
-            "All"});
+            "OR",
+            "AND"});
             this.cboSearch.Location = new System.Drawing.Point(85, 91);
             this.cboSearch.Name = "cboSearch";
             this.cboSearch.Size = new System.Drawing.Size(60, 23);

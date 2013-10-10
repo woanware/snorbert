@@ -25,7 +25,6 @@ namespace snorbert.Forms
         private Connections _connections;
         private HourGlass _hourGlass;
         private int _pageLimit = 100;
-        private RuleImporter _ruleImporter;
         private Exporter _exporter;
         #endregion
 
@@ -56,6 +55,7 @@ namespace snorbert.Forms
                 controlEvents.SetSql(_sql);
                 controlEvents.Message += Control_OnMessage;
 
+                controlRules.SetParent(this);
                 controlRules.SetSql(_sql);
                 controlRules.Message += Control_OnMessage;
 
@@ -66,12 +66,6 @@ namespace snorbert.Forms
                 controlSensors.Message += Control_OnMessage;
 
                 LoadConnections();
-
-                _ruleImporter = new RuleImporter(_settings);
-                _ruleImporter.Complete += OnRuleImporter_Complete;
-                _ruleImporter.Error += OnRuleImporter_Error;
-                _ruleImporter.Message += OnRuleImporter_Message;
-                _ruleImporter.Check();
 
                 _exporter = new Exporter();
                 _exporter.SetSql(_sql);
@@ -94,36 +88,6 @@ namespace snorbert.Forms
         private void Control_OnMessage(string message)
         {
             UpdateStatusBar(message);
-        }
-        #endregion
-
-        #region Rule Import Event Handlers
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="message"></param>
-        private void OnRuleImporter_Error(string message)
-        {
-            SetProcessingStatus(true);
-            UpdateStatusBar(message);
-        }
-
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="message"></param>
-        private void OnRuleImporter_Message(string message)
-        {
-            UpdateStatusBar(message);
-        }
-
-        /// <summary>
-        /// 
-        /// </summary>
-        private void OnRuleImporter_Complete()
-        {
-            SetProcessingStatus(true);
-            UpdateStatusBar("Rule import complete...");
         }
         #endregion
 
@@ -333,75 +297,6 @@ namespace snorbert.Forms
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        private void menuToolsImportRules_Click(object sender, EventArgs e)
-        {
-            OpenFileDialog openFileDialog = new OpenFileDialog();
-            openFileDialog.Filter = "Rules|*.rules";
-            openFileDialog.Multiselect = true;
-            openFileDialog.Title = "Select the rules to import";
-
-            if (openFileDialog.ShowDialog(this) == System.Windows.Forms.DialogResult.Cancel)
-            {
-                return;
-            }
-
-            // Check if any of the files exist in the Import folder, if so then flag to user, if ok then copy to import folder and call CheckXXXX
-            List<string> existingFiles = new List<string>();
-            foreach (string file in openFileDialog.FileNames)
-            {
-                string path = System.IO.Path.Combine(Misc.GetUserDataDirectory(), "Import", System.IO.Path.GetFileName(file));
-                if (File.Exists(path) == false)
-                {
-                    continue;
-                }
-
-                existingFiles.Add(System.IO.Path.GetFileName(file));
-            }
-
-            if (existingFiles.Count > 0)
-            {
-                DialogResult dialogResult = MessageBox.Show(this,
-                                                        "The following files already exist in the Import folder. Do you want to overwrite them? " + Environment.NewLine + Environment.NewLine +
-                                                        string.Join(Environment.NewLine, existingFiles.ToArray()),
-                                                        Application.ProductName,
-                                                        MessageBoxButtons.YesNo,
-                                                        MessageBoxIcon.Question);
-
-                if (dialogResult == System.Windows.Forms.DialogResult.No)
-                {
-                    return;
-                }
-            }
-
-            List<string> problemFiles = new List<string>();
-            using (new HourGlass(this))
-            {
-                foreach (string file in openFileDialog.FileNames)
-                {
-                    string path = System.IO.Path.Combine(Misc.GetUserDataDirectory(), "Import", System.IO.Path.GetFileName(file));
-                    string ret = woanware.IO.CopyFile(file, path, true);
-                    if (ret.Length > 0)
-                    {
-                        problemFiles.Add(System.IO.Path.GetFileName(file));
-                    }
-                }
-            }
-            
-            if (problemFiles.Count > 0)
-            {
-                UserInterface.DisplayErrorMessageBox(this,
-                                                     "The following files had errors when being copied to the Import directory: " + Environment.NewLine + Environment.NewLine +
-                                                     string.Join(Environment.NewLine, problemFiles.ToArray()));
-            }
-
-            _ruleImporter.Check();
-        }
-
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
         private void menuToolsExcludeConfiguration_Click(object sender, EventArgs e)
         {
             using (FormExcludes formExcludes = new FormExcludes(_sql))
@@ -561,9 +456,17 @@ namespace snorbert.Forms
             }
             else if (keyData == (Keys.Alt | Keys.Control | Keys.A))
             {
-                if (tabMain.SelectedTab == tabPageRules)
+                if (tabMain.SelectedTab == tabPageEvents)
+                {
+                    controlEvents.ShowAcknowledgement();
+                }
+                else if (tabMain.SelectedTab == tabPageRules)
                 {
                     controlRules.ShowAcknowledgement();
+                }
+                else if (tabMain.SelectedTab == tabPageSearch)
+                {
+                    controlSearch.ShowAcknowledgement();
                 }
                 return true;
             }
@@ -571,5 +474,11 @@ namespace snorbert.Forms
             return base.ProcessCmdKey(ref msg, keyData);
         }
         #endregion 
+
+        public void SetToFront()
+        {
+            this.Activate();
+            UserInterface.FlashWindow(this.Handle);
+        }
     }
 }

@@ -12,6 +12,7 @@ using snorbert.Forms;
 using snorbert.Configs;
 using snorbert.Data;
 using snorbert.Objects;
+using System.Drawing.Drawing2D;
 
 namespace snorbert.Controls
 {
@@ -37,6 +38,9 @@ namespace snorbert.Controls
         private Connection _connection;
         private Commands _commands;
         private List<AcknowledgmentClass> _acknowledgmentClasses;
+        private Alerts _alerts;
+        private System.Timers.Timer _timerCheck;
+        private FormMain _formMain;
         #endregion
 
         #region Constructor
@@ -84,6 +88,7 @@ namespace snorbert.Controls
             _querier.Error += OnQuerier_Error;
             _querier.Exclamation += OnQuerier_Exclamation;
             _querier.RuleQueryComplete += OnQuerier_RuleQueryComplete;
+            _querier.RuleCheckQueryComplete += OnQuerier_RuleCheckQueryComplete;
             _querier.EventQueryComplete += OnQuerier_EventQueryComplete;
             _querier.RuleIpQueryComplete += OnQuerier_RuleIpQueryComplete;
 
@@ -99,11 +104,235 @@ namespace snorbert.Controls
                 //UserInterface.DisplayErrorMessageBox(this, "An error occurred whilst loading the commands: " + ret);
             }
 
+            _alerts = new Alerts();
+            ret = _alerts.Load();
+            if (ret.Length == 0)
+            {
+                if (_alerts.Interval > 0)
+                {
+                    _timerCheck = new System.Timers.Timer();
+                    _timerCheck.Elapsed += OnTimerCheck_Elapsed;
+                    _timerCheck.Interval = (_alerts.Interval * 60000); // Convert to milliseconds
+                    _timerCheck.Enabled = true;
+                }
+            }
+
             LoadPriorities();
         }
         #endregion
 
+        #region Timer Event Handlers
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void OnTimerCheck_Elapsed(object sender, System.Timers.ElapsedEventArgs e)
+        {
+            MethodInvoker methodInvoker = delegate
+            {
+                if (cboPriority.SelectedIndex == -1)
+                {
+                    return;
+                }
+
+                if (cboSensor.SelectedIndex == -1)
+                {
+                    return;
+                }
+
+                _timerCheck.Enabled = false;
+
+                NameValue priority = (NameValue)cboPriority.Items[cboPriority.SelectedIndex];
+                NameValue sensor = (NameValue)cboSensor.Items[cboSensor.SelectedIndex];
+
+                string dateTo = string.Empty;
+                if (dtpDateTo.Checked == true)
+                {
+                    dateTo = dtpDateTo.Value.Date.ToString("yyyy-MM-dd") + " " + cboTimeTo.Text + ":00";
+                }
+
+                string dateFrom = dtpDateFrom.Value.Date.ToString("yyyy-MM-dd") + " " + cboTimeFrom.Text + ":00";
+
+                if (cboPriority.SelectedIndex == -1)
+                {
+                    return;
+                }
+
+                if (cboSensor.SelectedIndex == -1)
+                {
+                    return;
+                }
+
+                if (dateTo.Length > 0)
+                {
+                    if (priority.Name.ToLower() == "all")
+                    {
+                        _querier.QueryRulesFromTo(dateFrom,
+                                                  dateTo,
+                                                  sensor.Value,
+                                                  chkIncludeAcknowledged.Checked,
+                                                  true);
+                    }
+                    else
+                    {
+                        _querier.QueryRulesFromToPriority(dateFrom,
+                                                          dateTo,
+                                                          priority.Value,
+                                                          sensor.Value,
+                                                          chkIncludeAcknowledged.Checked,
+                                                          true);
+                    }
+                }
+                else
+                {
+                    if (priority.Name.ToLower() == "all")
+                    {
+                        _querier.QueryRulesFrom(dateFrom,
+                                                sensor.Value,
+                                                chkIncludeAcknowledged.Checked,
+                                                true);
+                    }
+                    else
+                    {
+                        _querier.QueryRulesFromPriority(dateFrom,
+                                                        priority.Value,
+                                                        sensor.Value,
+                                                        chkIncludeAcknowledged.Checked,
+                                                        true);
+                    }
+                }
+            };
+
+            if (this.InvokeRequired == true)
+            {
+                this.BeginInvoke(methodInvoker);
+            }
+            else
+            {
+                methodInvoker.Invoke();
+            }
+        }
+        #endregion
+
         #region Querier Event Handlers
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="data"></param>
+        private void OnQuerier_RuleCheckQueryComplete(List<Signature> data)
+        {
+            MethodInvoker methodInvoker = delegate
+            {
+                try
+                {
+                    if (data == null)
+                    {
+                        return;
+                    }
+
+                    if (data.Count == 0)
+                    {
+                        return;
+                    }
+
+                    Signature[] temp = new Signature[cboRule.Items.Count];
+                    cboRule.Items.CopyTo(temp, 0);
+
+                    List<Signature> oldData = new List<Signature>(temp);
+
+                    // Check all of the alert priorites
+                    bool raiseAlert = false;
+                    foreach (int p in _alerts.Priorities)
+                    {
+                        var newRules = from d in data where d.Priority == p.ToString() select d;
+                        foreach (Signature s in newRules)
+                        {
+                            var oldRules = from d in oldData where d.Id == s.Id select d;
+                            if (oldRules.Count() == 0)
+                            {
+                                s.Updated = true;
+                                raiseAlert = true;
+                                continue;
+                            }
+
+                            if (s.Count > oldRules.First().Count)
+                            {
+                                s.Updated = true;
+                                raiseAlert = true;
+                                continue;
+                            }
+                        }
+                    }
+
+                    // Check all of the alert keywords
+                    foreach (string kw in _alerts.Keywords)
+                    {
+                        var newRules = from d in data where d.Name.IndexOf(kw, StringComparison.InvariantCultureIgnoreCase) > -1 select d;
+                        foreach (Signature s in newRules)
+                        {
+                            var oldRules = from d in oldData where d.Id == s.Id select d;
+                            if (oldRules.Count() == 0)
+                            {
+                                s.Updated = true;
+                                raiseAlert = true;
+                                continue;
+                            }
+
+                            if (s.Count > oldRules.First().Count)
+                            {
+                                s.Updated = true;
+                                raiseAlert = true;
+                                continue;
+                            }
+                        }
+                    }
+
+                    Signature rule = null;
+                    if (cboRule.SelectedIndex != -1)
+                    {
+                        rule = (Signature)cboRule.Items[cboRule.SelectedIndex];
+                    }
+
+                    cboRule.Items.Clear();
+                    cboRule.DisplayMember = "Text";
+                    cboRule.ValueMember = "Sid";
+                    cboRule.Items.AddRange(data.ToArray());
+
+                    if (rule != null)
+                    {
+                        IEnumerable<Signature> query = from Signature sig in cboRule.Items where (sig.Id.Equals(rule.Id)) select sig;
+                        cboRule.SelectedItem = query.First();
+                    }
+
+                    if (raiseAlert == true)
+                    {
+                        _formMain.SetToFront();
+                        
+                        UserInterface.DisplayMessageBox(this, "New alerts have identified. Check the rules", MessageBoxIcon.Exclamation);
+                        OnMessage("Loaded " + cboRule.Items.Count + " rules");
+                    }
+                }
+                catch (Exception ex)
+                {
+                    //UserInterface.DisplayErrorMessageBox(this, "An error occurred whilst performing the search: " + ex.Message);
+                }
+                finally
+                {
+                    _timerCheck.Enabled = true;
+                }
+            };
+
+            if (this.InvokeRequired == true)
+            {
+                this.BeginInvoke(methodInvoker);
+            }
+            else
+            {
+                methodInvoker.Invoke();
+            }
+        }
+
         /// <summary>
         /// 
         /// </summary>
@@ -173,7 +402,29 @@ namespace snorbert.Controls
                         return;
                     }
 
+                    if (cboRule.SelectedIndex == -1)
+                    {
+                        return;
+                    }
+
                     Signature rule = (Signature)cboRule.Items[cboRule.SelectedIndex];
+
+                    if (data.Count == 0)
+                    {
+                        cboRule.Items.Remove(cboRule.Items[cboRule.SelectedIndex]);
+                        if (cboRule.Items.Count > 1)
+                        {
+                            cboRule.SelectedIndex += 2;
+                            cboRule_DropDownClosed(this, new EventArgs());
+                        }
+                        else if (cboRule.Items.Count == 1)
+                        {
+                            cboRule.SelectedIndex = 0;
+                            cboRule_DropDownClosed(this, new EventArgs());
+                        }
+
+                        return;
+                    }
 
                     _totalRecords = rule.Count;
 
@@ -369,16 +620,20 @@ namespace snorbert.Controls
             {
                 if (priority.Name.ToLower() == "all")
                 {
-                    _querier.QueryRulesToFrom(dtpDateFrom.Value.Date.ToString("yyyy-MM-dd") + " " + cboTimeFrom.Text + ":00",
+                    _querier.QueryRulesFromTo(dtpDateFrom.Value.Date.ToString("yyyy-MM-dd") + " " + cboTimeFrom.Text + ":00",
                                               dtpDateTo.Value.Date.ToString("yyyy-MM-dd") + " " + cboTimeTo.Text + ":00",
-                                              sensor.Value);
+                                              sensor.Value,
+                                              chkIncludeAcknowledged.Checked,
+                                              false);
                 }
                 else
                 {
-                    _querier.QueryRulesToFromPriority(dtpDateFrom.Value.Date.ToString("yyyy-MM-dd") + " " + cboTimeFrom.Text + ":00",
+                    _querier.QueryRulesFromToPriority(dtpDateFrom.Value.Date.ToString("yyyy-MM-dd") + " " + cboTimeFrom.Text + ":00",
                                                       dtpDateTo.Value.Date.ToString("yyyy-MM-dd") + " " + cboTimeTo.Text + ":00",
                                                       priority.Value,
-                                                      sensor.Value);
+                                                      sensor.Value,
+                                                      chkIncludeAcknowledged.Checked,
+                                                      false);
                 }
             }
             else
@@ -386,13 +641,17 @@ namespace snorbert.Controls
                 if (priority.Name.ToLower() == "all")
                 {
                     _querier.QueryRulesFrom(dtpDateFrom.Value.Date.ToString("yyyy-MM-dd") + " " + cboTimeFrom.Text + ":00",
-                                            sensor.Value);
+                                            sensor.Value,
+                                            chkIncludeAcknowledged.Checked,
+                                            false);
                 }
                 else
                 {
                     _querier.QueryRulesFromPriority(dtpDateFrom.Value.Date.ToString("yyyy-MM-dd") + " " + cboTimeFrom.Text + ":00",
                                                     priority.Value,
-                                                    sensor.Value);
+                                                    sensor.Value,
+                                                    chkIncludeAcknowledged.Checked,
+                                                    false);
                 }
             }
         }
@@ -413,24 +672,27 @@ namespace snorbert.Controls
                 if (cboRule.SelectedIndex == -1)
                 {
                     UserInterface.DisplayMessageBox("No rule selected", MessageBoxIcon.Exclamation);
+                    return;
                 }
 
                 Signature rule = (Signature)cboRule.Items[cboRule.SelectedIndex];
 
                 if (dtpDateTo.Checked == true)
                 {
-                    _querier.QueryEventsRulesToFrom(dtpDateFrom.Value.Date.ToString("yyyy-MM-dd") + " " + cboTimeFrom.Text + ":00",
+                    _querier.QueryEventsRulesFromTo(dtpDateFrom.Value.Date.ToString("yyyy-MM-dd") + " " + cboTimeFrom.Text + ":00",
                                                     dtpDateTo.Value.Date.ToString("yyyy-MM-dd") + " " + cboTimeTo.Text + ":00",
                                                     rule.Id.ToString(),
                                                     (_currentPage - 1) * _pageLimit,
-                                                    _pageLimit);
+                                                    _pageLimit,
+                                                    chkIncludeAcknowledged.Checked);
                 }
                 else
                 {
                     _querier.QueryEventsRulesFrom(dtpDateFrom.Value.Date.ToString("yyyy-MM-dd") + " " + cboTimeFrom.Text + ":00",
                                                   rule.Id.ToString(),
                                                   (_currentPage - 1) * _pageLimit,
-                                                  _pageLimit);
+                                                  _pageLimit,
+                                                  chkIncludeAcknowledged.Checked);
                 }
             };
 
@@ -621,6 +883,46 @@ namespace snorbert.Controls
         #endregion
 
         #region Combobox Event Handlers
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        protected void cboRule_DrawItem(object sender, System.Windows.Forms.DrawItemEventArgs e)
+        {
+            if (e.Index == -1)
+            {
+                return;
+            }
+
+            Signature rule = (Signature)cboRule.Items[e.Index];
+
+            // Determine the forecolor based on whether or not the item is selected    
+            Brush brush;
+            if (rule.Updated == true)
+            {
+                brush = Brushes.Red;
+            }
+            else
+            {
+                brush = Brushes.Black;
+            }
+
+            if ((e.State & DrawItemState.Selected) == DrawItemState.Selected)
+            {
+                e.Graphics.FillRectangle(new SolidBrush(Color.LightGray), e.Bounds);
+            }
+            else
+            {
+                e.Graphics.FillRectangle(new SolidBrush(cboRule.BackColor), e.Bounds);
+            }
+
+            e.Graphics.SmoothingMode = SmoothingMode.AntiAlias;
+            e.Graphics.DrawString(rule.Text, cboRule.Font, brush, e.Bounds.X, e.Bounds.Y);
+
+            e.DrawFocusRectangle();
+        }
+
         /// <summary>
         /// 
         /// </summary>
@@ -870,6 +1172,15 @@ namespace snorbert.Controls
 
             SetAcknowledgement("false positive");
         }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="formMain"></param>
+        public void SetParent(FormMain formMain)
+        {
+            _formMain = formMain;
+        }
         #endregion
 
         #region Event Methods
@@ -896,6 +1207,11 @@ namespace snorbert.Controls
         {
             var events = listEvents.SelectedObjects.Cast<Event>().ToList();
 
+            if (cboRule.SelectedIndex == -1)
+            {
+                return;
+            }
+
             Signature rule = (Signature)cboRule.Items[cboRule.SelectedIndex];
 
             var acknowledgementClass = (from a in _acknowledgmentClasses where a.Desc.ToLower() == ackClass.ToLower() select a).SingleOrDefault();
@@ -907,69 +1223,89 @@ namespace snorbert.Controls
 
             (new Thread(() =>
             {
-                bool errors = false;
-                bool acknowledgedPrevious = false;
-                using (new HourGlass(this))
-                using (NPoco.Database db = new NPoco.Database(Db.GetOpenMySqlConnection()))
+                try
                 {
-                    db.BeginTransaction();
-                    foreach (Event temp in events)
+                    bool errors = false;
+                    bool acknowledgedPrevious = false;
+                    using (new HourGlass(this))
+                    using (NPoco.Database db = new NPoco.Database(Db.GetOpenMySqlConnection()))
                     {
-                        try
+                        db.BeginTransaction();
+                        foreach (Event temp in events)
                         {
-                            bool insert = true;
-                            var ack = db.Fetch<Acknowledgment>("select * from acknowledgment where cid=@0 and sid=@1", new object[] { temp.Cid, temp.Sid });
-                            if (ack.Count() > 0)
+                            try
                             {
-                                if (ack.First().Initials != _initials)
+                                bool insert = true;
+                                var ack = db.Fetch<Acknowledgment>("select * from acknowledgment where cid=@0 and sid=@1", new object[] { temp.Cid, temp.Sid });
+                                if (ack.Count() > 0)
                                 {
-                                    acknowledgedPrevious = true;
-                                    insert = false;
+                                    if (ack.First().Initials != _initials)
+                                    {
+                                        acknowledgedPrevious = true;
+                                        insert = false;
+                                    }
+                                    else
+                                    {
+                                        db.Delete(ack.First());
+                                    }
                                 }
-                                else
+
+                                if (insert == true)
                                 {
-                                    db.Delete(ack.First());
+                                    Acknowledgment acknowledgment = new Acknowledgment();
+                                    acknowledgment.Cid = temp.Cid;
+                                    acknowledgment.Sid = temp.Sid;
+                                    acknowledgment.Initials = _initials;
+                                    acknowledgment.Notes = string.Empty;
+                                    acknowledgment.Class = acknowledgementClass.Id;
+                                    acknowledgment.Timestamp = DateTime.Parse(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss"));
+
+                                    db.Insert(acknowledgment);
                                 }
                             }
-
-                            if (insert == true)
+                            catch (Exception ex)
                             {
-                                Acknowledgment acknowledgment = new Acknowledgment();
-                                acknowledgment.Cid = temp.Cid;
-                                acknowledgment.Sid = temp.Sid;
-                                acknowledgment.Initials = _initials;
-                                acknowledgment.Notes = string.Empty;
-                                acknowledgment.Class = acknowledgementClass.Id;
-                                acknowledgment.Timestamp = DateTime.Parse(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss"));
-
-                                db.Insert(acknowledgment);
+                                db.AbortTransaction();
+                                errors = true;
+                                IO.WriteTextToFile("Acknowledgement Insert Error: " + ex.ToString() + Environment.NewLine, 
+                                                   System.IO.Path.Combine(Misc.GetUserDataDirectory(), "Errors.txt"), 
+                                                   true);
+                                break;
                             }
                         }
-                        catch (Exception ex)
+
+                        if (errors == false)
                         {
-                            errors = true;
-                            IO.WriteTextToFile("Acknowledgement Insert Error: " + ex.ToString() + Environment.NewLine, System.IO.Path.Combine(Misc.GetUserDataDirectory(), "Errors.txt"), true);
+                            db.CompleteTransaction();
                         }
                     }
 
-                    db.CompleteTransaction();
-                }
+                    if (acknowledgedPrevious == true)
+                    {
+                        UserInterface.DisplayMessageBox(this,
+                                                        "Some events were not classified due to being already classified",
+                                                        MessageBoxIcon.Exclamation);
+                    }
 
-                if (acknowledgedPrevious == true)
-                {
-                    UserInterface.DisplayMessageBox(this,
-                                                    "Some events were not classified due to being already classified",
-                                                    MessageBoxIcon.Exclamation);
-                }
+                    if (errors == true)
+                    {
+                        UserInterface.DisplayMessageBox(this,
+                                                        "Errors occured, check the Errors.txt file",
+                                                        MessageBoxIcon.Exclamation);
+                    }
 
-                if (errors == true)
+                    LoadRuleEvents(_currentPage);
+                }
+                catch (Exception ex)
                 {
                     UserInterface.DisplayMessageBox(this,
                                                     "Errors occured, check the Errors.txt file",
-                                                    MessageBoxIcon.Exclamation);
+                                                     MessageBoxIcon.Exclamation);
+                    IO.WriteTextToFile("Acknowledgement Insert Error (" + DateTime.Now + "): " + ex.ToString() + Environment.NewLine,
+                                       System.IO.Path.Combine(Misc.GetUserDataDirectory(), "Errors.txt"),
+                                       true);
                 }
 
-                LoadRuleEvents(_currentPage);
             })).Start();
         }
 
@@ -1064,6 +1400,26 @@ namespace snorbert.Controls
                 newCommand.Click += ctxMenuCommand_Click;
                 ctxMenuCommands.DropDownItems.Add(newCommand);
             }
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void ControlRules_Resize(object sender, EventArgs e)
+        {
+            if (_formMain == null)
+            {
+                return;
+            }
+
+            if (_formMain.WindowState == FormWindowState.Minimized)
+            {
+                return;
+            }
+
+            cboRule.DropDownHeight = (int)Math.Round(this.Parent.Height * 0.75);
         }
         #endregion
 
@@ -1249,18 +1605,6 @@ namespace snorbert.Controls
         /// <param name="e"></param>
         private void ctxMenuExtractIpInfoUniqueSource_Click(object sender, EventArgs e)
         {
-            if (listEvents.SelectedObjects.Count != 1)
-            {
-                return;
-            }
-
-            Event temp = (Event)listEvents.SelectedObjects[0];
-            if (temp == null)
-            {
-                UserInterface.DisplayErrorMessageBox(this, "Unable to locate event");
-                return;
-            }
-
             _hourGlass = new HourGlass(this);
             SetProcessingStatus(false);
 
@@ -1288,18 +1632,6 @@ namespace snorbert.Controls
         /// <param name="e"></param>
         private void ctxMenuExtractIpInfoUniqueDestination_Click(object sender, EventArgs e)
         {
-            if (listEvents.SelectedObjects.Count != 1)
-            {
-                return;
-            }
-
-            Event temp = (Event)listEvents.SelectedObjects[0];
-            if (temp == null)
-            {
-                UserInterface.DisplayErrorMessageBox(this, "Unable to locate event");
-                return;
-            }
-
             _hourGlass = new HourGlass(this);
             SetProcessingStatus(false);
 
@@ -1558,7 +1890,7 @@ namespace snorbert.Controls
         /// <param name="e"></param>
         private void ctxMenuAcknowledgmentSet_Click(object sender, EventArgs e)
         {
-            
+            ShowAcknowledgementWindow();
         }
         
         /// <summary>

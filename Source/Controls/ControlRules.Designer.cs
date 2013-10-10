@@ -76,6 +76,7 @@
             this.btnPagingNextPage = new System.Windows.Forms.Button();
             this.btnPagingFirstPage = new System.Windows.Forms.Button();
             this.panelTop = new System.Windows.Forms.Panel();
+            this.chkIncludeAcknowledged = new System.Windows.Forms.CheckBox();
             this.cboSensor = new System.Windows.Forms.ComboBox();
             this.lblSensor = new System.Windows.Forms.Label();
             this.cboPriority = new System.Windows.Forms.ComboBox();
@@ -105,7 +106,7 @@
             | System.Windows.Forms.AnchorStyles.Right)));
             this.lblPagingRules.Location = new System.Drawing.Point(56, 175);
             this.lblPagingRules.Name = "lblPagingRules";
-            this.lblPagingRules.Size = new System.Drawing.Size(683, 24);
+            this.lblPagingRules.Size = new System.Drawing.Size(755, 24);
             this.lblPagingRules.TabIndex = 20;
             this.lblPagingRules.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             // 
@@ -129,7 +130,7 @@
             // splitter.Panel2
             // 
             this.splitter.Panel2.Controls.Add(this.controlEventInfo);
-            this.splitter.Size = new System.Drawing.Size(794, 404);
+            this.splitter.Size = new System.Drawing.Size(866, 404);
             this.splitter.SplitterDistance = 200;
             this.splitter.TabIndex = 21;
             // 
@@ -137,7 +138,7 @@
             // 
             this.btnPagingLastPage.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.btnPagingLastPage.Image = ((System.Drawing.Image)(resources.GetObject("btnPagingLastPage.Image")));
-            this.btnPagingLastPage.Location = new System.Drawing.Point(769, 175);
+            this.btnPagingLastPage.Location = new System.Drawing.Point(841, 175);
             this.btnPagingLastPage.Name = "btnPagingLastPage";
             this.btnPagingLastPage.Size = new System.Drawing.Size(25, 25);
             this.btnPagingLastPage.TabIndex = 25;
@@ -159,7 +160,7 @@
             this.listEvents.ShowCommandMenuOnRightClick = true;
             this.listEvents.ShowGroups = false;
             this.listEvents.ShowItemCountOnGroups = true;
-            this.listEvents.Size = new System.Drawing.Size(793, 114);
+            this.listEvents.Size = new System.Drawing.Size(865, 114);
             this.listEvents.SortGroupItemsByPrimaryColumn = false;
             this.listEvents.TabIndex = 21;
             this.listEvents.UseCompatibleStateImageBehavior = false;
@@ -192,7 +193,7 @@
             this.ctxMenuCommands});
             this.ctxMenuEvent.Name = "ctxMenuEvent";
             this.ctxMenuEvent.RenderMode = System.Windows.Forms.ToolStripRenderMode.System;
-            this.ctxMenuEvent.Size = new System.Drawing.Size(189, 266);
+            this.ctxMenuEvent.Size = new System.Drawing.Size(189, 244);
             this.ctxMenuEvent.Opening += new System.ComponentModel.CancelEventHandler(this.ctxMenuEvent_Opening);
             // 
             // ctxMenuPayload
@@ -473,7 +474,7 @@
             // 
             this.btnPagingNextPage.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.btnPagingNextPage.Image = ((System.Drawing.Image)(resources.GetObject("btnPagingNextPage.Image")));
-            this.btnPagingNextPage.Location = new System.Drawing.Point(741, 175);
+            this.btnPagingNextPage.Location = new System.Drawing.Point(813, 175);
             this.btnPagingNextPage.Name = "btnPagingNextPage";
             this.btnPagingNextPage.Size = new System.Drawing.Size(25, 25);
             this.btnPagingNextPage.TabIndex = 24;
@@ -493,6 +494,7 @@
             // 
             // panelTop
             // 
+            this.panelTop.Controls.Add(this.chkIncludeAcknowledged);
             this.panelTop.Controls.Add(this.cboSensor);
             this.panelTop.Controls.Add(this.lblSensor);
             this.panelTop.Controls.Add(this.cboPriority);
@@ -509,14 +511,25 @@
             this.panelTop.Dock = System.Windows.Forms.DockStyle.Top;
             this.panelTop.Location = new System.Drawing.Point(0, 0);
             this.panelTop.Name = "panelTop";
-            this.panelTop.Size = new System.Drawing.Size(794, 57);
+            this.panelTop.Size = new System.Drawing.Size(866, 57);
             this.panelTop.TabIndex = 20;
+            // 
+            // chkIncludeAcknowledged
+            // 
+            this.chkIncludeAcknowledged.AutoSize = true;
+            this.chkIncludeAcknowledged.Location = new System.Drawing.Point(676, 4);
+            this.chkIncludeAcknowledged.Name = "chkIncludeAcknowledged";
+            this.chkIncludeAcknowledged.RightToLeft = System.Windows.Forms.RightToLeft.Yes;
+            this.chkIncludeAcknowledged.Size = new System.Drawing.Size(147, 19);
+            this.chkIncludeAcknowledged.TabIndex = 33;
+            this.chkIncludeAcknowledged.Text = "Include Acknowledged";
+            this.chkIncludeAcknowledged.UseVisualStyleBackColor = true;
             // 
             // cboSensor
             // 
             this.cboSensor.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.cboSensor.FormattingEnabled = true;
-            this.cboSensor.Location = new System.Drawing.Point(619, 0);
+            this.cboSensor.Location = new System.Drawing.Point(528, 1);
             this.cboSensor.Name = "cboSensor";
             this.cboSensor.Size = new System.Drawing.Size(144, 23);
             this.cboSensor.TabIndex = 32;
@@ -524,7 +537,7 @@
             // lblSensor
             // 
             this.lblSensor.AutoSize = true;
-            this.lblSensor.Location = new System.Drawing.Point(571, 3);
+            this.lblSensor.Location = new System.Drawing.Point(482, 4);
             this.lblSensor.Name = "lblSensor";
             this.lblSensor.Size = new System.Drawing.Size(42, 15);
             this.lblSensor.TabIndex = 31;
@@ -534,7 +547,7 @@
             // 
             this.cboPriority.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.cboPriority.FormattingEnabled = true;
-            this.cboPriority.Location = new System.Drawing.Point(505, 0);
+            this.cboPriority.Location = new System.Drawing.Point(416, 1);
             this.cboPriority.Name = "cboPriority";
             this.cboPriority.Size = new System.Drawing.Size(59, 23);
             this.cboPriority.TabIndex = 30;
@@ -542,7 +555,7 @@
             // lblPriority
             // 
             this.lblPriority.AutoSize = true;
-            this.lblPriority.Location = new System.Drawing.Point(457, 3);
+            this.lblPriority.Location = new System.Drawing.Point(368, 4);
             this.lblPriority.Name = "lblPriority";
             this.lblPriority.Size = new System.Drawing.Size(45, 15);
             this.lblPriority.TabIndex = 29;
@@ -551,7 +564,7 @@
             // label31
             // 
             this.label31.AutoSize = true;
-            this.label31.Location = new System.Drawing.Point(231, 3);
+            this.label31.Location = new System.Drawing.Point(182, 4);
             this.label31.Name = "label31";
             this.label31.Size = new System.Drawing.Size(21, 15);
             this.label31.TabIndex = 28;
@@ -586,24 +599,24 @@
             "21:00",
             "22:00",
             "23:00"});
-            this.cboTimeTo.Location = new System.Drawing.Point(387, 0);
+            this.cboTimeTo.Location = new System.Drawing.Point(314, 1);
             this.cboTimeTo.Name = "cboTimeTo";
-            this.cboTimeTo.Size = new System.Drawing.Size(66, 23);
+            this.cboTimeTo.Size = new System.Drawing.Size(50, 23);
             this.cboTimeTo.TabIndex = 27;
             // 
             // dtpDateTo
             // 
             this.dtpDateTo.Format = System.Windows.Forms.DateTimePickerFormat.Short;
-            this.dtpDateTo.Location = new System.Drawing.Point(259, 0);
+            this.dtpDateTo.Location = new System.Drawing.Point(210, 1);
             this.dtpDateTo.Name = "dtpDateTo";
             this.dtpDateTo.ShowCheckBox = true;
-            this.dtpDateTo.Size = new System.Drawing.Size(122, 23);
+            this.dtpDateTo.Size = new System.Drawing.Size(99, 23);
             this.dtpDateTo.TabIndex = 26;
             // 
             // lblDate
             // 
             this.lblDate.AutoSize = true;
-            this.lblDate.Location = new System.Drawing.Point(7, 3);
+            this.lblDate.Location = new System.Drawing.Point(7, 4);
             this.lblDate.Name = "lblDate";
             this.lblDate.Size = new System.Drawing.Size(35, 15);
             this.lblDate.TabIndex = 25;
@@ -622,12 +635,16 @@
             // 
             this.cboRule.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
+            this.cboRule.DrawMode = System.Windows.Forms.DrawMode.OwnerDrawVariable;
+            this.cboRule.DropDownHeight = 300;
             this.cboRule.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.cboRule.FormattingEnabled = true;
+            this.cboRule.IntegralHeight = false;
             this.cboRule.Location = new System.Drawing.Point(43, 29);
             this.cboRule.Name = "cboRule";
-            this.cboRule.Size = new System.Drawing.Size(751, 23);
+            this.cboRule.Size = new System.Drawing.Size(823, 24);
             this.cboRule.TabIndex = 21;
+            this.cboRule.DrawItem += new System.Windows.Forms.DrawItemEventHandler(this.cboRule_DrawItem);
             this.cboRule.DropDownClosed += new System.EventHandler(this.cboRule_DropDownClosed);
             // 
             // cboTimeFrom
@@ -659,24 +676,24 @@
             "21:00",
             "22:00",
             "23:00"});
-            this.cboTimeFrom.Location = new System.Drawing.Point(161, 0);
+            this.cboTimeFrom.Location = new System.Drawing.Point(127, 1);
             this.cboTimeFrom.Name = "cboTimeFrom";
-            this.cboTimeFrom.Size = new System.Drawing.Size(66, 23);
+            this.cboTimeFrom.Size = new System.Drawing.Size(50, 23);
             this.cboTimeFrom.TabIndex = 20;
             // 
             // dtpDateFrom
             // 
             this.dtpDateFrom.Format = System.Windows.Forms.DateTimePickerFormat.Short;
-            this.dtpDateFrom.Location = new System.Drawing.Point(44, 0);
+            this.dtpDateFrom.Location = new System.Drawing.Point(44, 1);
             this.dtpDateFrom.Name = "dtpDateFrom";
-            this.dtpDateFrom.Size = new System.Drawing.Size(111, 23);
+            this.dtpDateFrom.Size = new System.Drawing.Size(78, 23);
             this.dtpDateFrom.TabIndex = 19;
             // 
             // btnRefresh
             // 
             this.btnRefresh.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.btnRefresh.Image = ((System.Drawing.Image)(resources.GetObject("btnRefresh.Image")));
-            this.btnRefresh.Location = new System.Drawing.Point(769, 0);
+            this.btnRefresh.Location = new System.Drawing.Point(841, 0);
             this.btnRefresh.Name = "btnRefresh";
             this.btnRefresh.Size = new System.Drawing.Size(25, 25);
             this.btnRefresh.TabIndex = 12;
@@ -689,7 +706,7 @@
             this.controlEventInfo.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.controlEventInfo.Location = new System.Drawing.Point(0, 0);
             this.controlEventInfo.Name = "controlEventInfo";
-            this.controlEventInfo.Size = new System.Drawing.Size(794, 200);
+            this.controlEventInfo.Size = new System.Drawing.Size(866, 200);
             this.controlEventInfo.TabIndex = 1;
             // 
             // ControlRules
@@ -699,8 +716,9 @@
             this.Controls.Add(this.splitter);
             this.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.Name = "ControlRules";
-            this.Size = new System.Drawing.Size(794, 404);
+            this.Size = new System.Drawing.Size(866, 404);
             this.Load += new System.EventHandler(this.Control_Load);
+            this.Resize += new System.EventHandler(this.ControlRules_Resize);
             this.splitter.Panel1.ResumeLayout(false);
             this.splitter.Panel2.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.splitter)).EndInit();
@@ -775,5 +793,6 @@
         private System.Windows.Forms.ToolStripMenuItem ctxMenuCopyAcknowledgmentClear;
         private System.Windows.Forms.ToolStripMenuItem ctxMenuSignature;
         private System.Windows.Forms.ToolStripMenuItem ctxMenuCopyCid;
+        private System.Windows.Forms.CheckBox chkIncludeAcknowledged;
     }
 }

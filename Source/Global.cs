@@ -115,7 +115,9 @@ namespace snorbert
             PayloadAscii,
             PayloadHex,
             Sensor,
-            Protocol
+            Protocol,
+            AcknowledgementClass,
+            Initials
         }
         #endregion
     }

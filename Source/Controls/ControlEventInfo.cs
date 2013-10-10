@@ -105,17 +105,14 @@ namespace snorbert.Controls
                 txtSigSigRev.Text = temp.SigRev.ToString();
                 txtSigSigId.Text = temp.SigSid.ToString();
 
-                using (NPoco.Database dbSqlCe = new NPoco.Database(Db.GetOpenSqlCeConnection(), DatabaseType.SQLCe))
+                txtRule.Text = temp.Rule;
+                if (txtRule.Text.IndexOf("flowbits:isset,", StringComparison.InvariantCultureIgnoreCase) > -1)
                 {
-                    Rule rule = dbSqlCe.SingleOrDefault<Rule>("SELECT * FROM Rules WHERE Sid = @0", new object[] { temp.SigSid.ToString() });
-                    if (rule != null)
-                    {
-                        txtRule.Text = rule.Data;
-                    }
-                    else
-                    {
-                        txtRule.Text = string.Empty;
-                    }
+                    btnLinkedRules.Enabled = true;
+                }
+                else
+                {
+                    btnLinkedRules.Enabled = false;
                 }
 
                 // TCP Tab
@@ -256,6 +253,19 @@ namespace snorbert.Controls
             using (FormRule formRule = new FormRule(txtRule.Text))
             {
                 formRule.ShowDialog(this);
+            }
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void btnLinkedRules_Click(object sender, EventArgs e)
+        {
+            using (FormLinkedRules form = new FormLinkedRules(txtRule.Text))
+            {
+                form.ShowDialog(this);
             }
         }
         #endregion

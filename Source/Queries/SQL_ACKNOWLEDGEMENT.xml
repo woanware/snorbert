@@ -1,0 +1,17 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<SqlQuery xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+  <Query>SQL_ACKNOWLEDGEMENT</Query>
+  <Data><![CDATA[SELECT acknowledgment.notes,
+                       	acknowledgment_class.desc as description,
+                        signature.sig_name,
+                        signature.sig_sid,
+                        signature.sig_gid
+                   FROM event
+              LEFT JOIN signature ON (signature.sig_id = event.signature)
+             RIGHT JOIN acknowledgment on (acknowledgment.sid = event.sid AND acknowledgment.cid = event.cid )
+              LEFT JOIN acknowledgment_class on (acknowledgment_class.id = acknowledgment.class )
+                #WHERE#
+               GROUP BY acknowledgment.notes,
+	                      signature.sig_name]]>
+  </Data>
+</SqlQuery>

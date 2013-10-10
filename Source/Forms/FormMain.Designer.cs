@@ -33,6 +33,9 @@ namespace snorbert.Forms
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(FormMain));
             this.menuStrip = new System.Windows.Forms.MenuStrip();
             this.menuFile = new System.Windows.Forms.ToolStripMenuItem();
+            this.menuFileExport = new System.Windows.Forms.ToolStripMenuItem();
+            this.menuFileExportAcknowledgements = new System.Windows.Forms.ToolStripMenuItem();
+            this.toolStripMenuItem1 = new System.Windows.Forms.ToolStripSeparator();
             this.menuFileExit = new System.Windows.Forms.ToolStripMenuItem();
             this.menuTools = new System.Windows.Forms.ToolStripMenuItem();
             this.menuToolsConnections = new System.Windows.Forms.ToolStripMenuItem();
@@ -74,9 +77,6 @@ namespace snorbert.Forms
             this.controlSearch = new snorbert.Controls.ControlSearch();
             this.tabPageSensors = new System.Windows.Forms.TabPage();
             this.controlSensors = new snorbert.Controls.ControlSensors();
-            this.menuFileExport = new System.Windows.Forms.ToolStripMenuItem();
-            this.toolStripMenuItem1 = new System.Windows.Forms.ToolStripSeparator();
-            this.menuFileExportAcknowledgements = new System.Windows.Forms.ToolStripMenuItem();
             this.menuStrip.SuspendLayout();
             this.toolStrip.SuspendLayout();
             this.ctxMenuEvent.SuspendLayout();
@@ -99,7 +99,7 @@ namespace snorbert.Forms
             this.menuStrip.Name = "menuStrip";
             this.menuStrip.Padding = new System.Windows.Forms.Padding(7, 2, 0, 2);
             this.menuStrip.RenderMode = System.Windows.Forms.ToolStripRenderMode.System;
-            this.menuStrip.Size = new System.Drawing.Size(806, 24);
+            this.menuStrip.Size = new System.Drawing.Size(867, 24);
             this.menuStrip.TabIndex = 0;
             this.menuStrip.Text = "menuStrip1";
             // 
@@ -113,10 +113,30 @@ namespace snorbert.Forms
             this.menuFile.Size = new System.Drawing.Size(37, 20);
             this.menuFile.Text = "&File";
             // 
+            // menuFileExport
+            // 
+            this.menuFileExport.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.menuFileExportAcknowledgements});
+            this.menuFileExport.Name = "menuFileExport";
+            this.menuFileExport.Size = new System.Drawing.Size(107, 22);
+            this.menuFileExport.Text = "Export";
+            // 
+            // menuFileExportAcknowledgements
+            // 
+            this.menuFileExportAcknowledgements.Name = "menuFileExportAcknowledgements";
+            this.menuFileExportAcknowledgements.Size = new System.Drawing.Size(179, 22);
+            this.menuFileExportAcknowledgements.Text = "Acknowledgements";
+            this.menuFileExportAcknowledgements.Click += new System.EventHandler(this.menuFileExportAcknowledgements_Click);
+            // 
+            // toolStripMenuItem1
+            // 
+            this.toolStripMenuItem1.Name = "toolStripMenuItem1";
+            this.toolStripMenuItem1.Size = new System.Drawing.Size(104, 6);
+            // 
             // menuFileExit
             // 
             this.menuFileExit.Name = "menuFileExit";
-            this.menuFileExit.Size = new System.Drawing.Size(152, 22);
+            this.menuFileExit.Size = new System.Drawing.Size(107, 22);
             this.menuFileExit.Text = "&Exit";
             this.menuFileExit.Click += new System.EventHandler(this.menuFileExit_Click);
             // 
@@ -143,13 +163,6 @@ namespace snorbert.Forms
             // 
             this.menuToolsSep1.Name = "menuToolsSep1";
             this.menuToolsSep1.Size = new System.Drawing.Size(138, 6);
-            // 
-            // menuToolsImportRules
-            // 
-            this.menuToolsImportRules.Name = "menuToolsImportRules";
-            this.menuToolsImportRules.Size = new System.Drawing.Size(141, 22);
-            this.menuToolsImportRules.Text = "Import Rules";
-            this.menuToolsImportRules.Click += new System.EventHandler(this.menuToolsImportRules_Click);
             // 
             // menuToolsSep2
             // 
@@ -218,7 +231,7 @@ namespace snorbert.Forms
             this.toolStrip.Location = new System.Drawing.Point(0, 24);
             this.toolStrip.Name = "toolStrip";
             this.toolStrip.RenderMode = System.Windows.Forms.ToolStripRenderMode.System;
-            this.toolStrip.Size = new System.Drawing.Size(806, 25);
+            this.toolStrip.Size = new System.Drawing.Size(867, 25);
             this.toolStrip.TabIndex = 1;
             this.toolStrip.Text = "toolStrip1";
             // 
@@ -355,7 +368,7 @@ namespace snorbert.Forms
             this.statusStrip.Location = new System.Drawing.Point(0, 530);
             this.statusStrip.Name = "statusStrip";
             this.statusStrip.Padding = new System.Windows.Forms.Padding(1, 0, 16, 0);
-            this.statusStrip.Size = new System.Drawing.Size(806, 22);
+            this.statusStrip.Size = new System.Drawing.Size(867, 22);
             this.statusStrip.TabIndex = 3;
             this.statusStrip.Text = "statusStrip1";
             // 
@@ -370,7 +383,7 @@ namespace snorbert.Forms
             this.panelControl.Dock = System.Windows.Forms.DockStyle.Fill;
             this.panelControl.Location = new System.Drawing.Point(0, 49);
             this.panelControl.Name = "panelControl";
-            this.panelControl.Size = new System.Drawing.Size(806, 481);
+            this.panelControl.Size = new System.Drawing.Size(867, 481);
             this.panelControl.TabIndex = 4;
             // 
             // tabMain
@@ -383,7 +396,7 @@ namespace snorbert.Forms
             this.tabMain.Location = new System.Drawing.Point(0, 0);
             this.tabMain.Name = "tabMain";
             this.tabMain.SelectedIndex = 0;
-            this.tabMain.Size = new System.Drawing.Size(806, 481);
+            this.tabMain.Size = new System.Drawing.Size(867, 481);
             this.tabMain.TabIndex = 0;
             // 
             // tabPageEvents
@@ -414,7 +427,7 @@ namespace snorbert.Forms
             this.tabPageRules.Location = new System.Drawing.Point(4, 24);
             this.tabPageRules.Name = "tabPageRules";
             this.tabPageRules.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPageRules.Size = new System.Drawing.Size(798, 453);
+            this.tabPageRules.Size = new System.Drawing.Size(859, 453);
             this.tabPageRules.TabIndex = 1;
             this.tabPageRules.Text = "Rules";
             this.tabPageRules.UseVisualStyleBackColor = true;
@@ -425,7 +438,7 @@ namespace snorbert.Forms
             this.controlRules.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.controlRules.Location = new System.Drawing.Point(3, 3);
             this.controlRules.Name = "controlRules";
-            this.controlRules.Size = new System.Drawing.Size(792, 447);
+            this.controlRules.Size = new System.Drawing.Size(853, 447);
             this.controlRules.TabIndex = 0;
             // 
             // tabPageSearch
@@ -470,31 +483,11 @@ namespace snorbert.Forms
             this.controlSensors.Size = new System.Drawing.Size(792, 447);
             this.controlSensors.TabIndex = 0;
             // 
-            // menuFileExport
-            // 
-            this.menuFileExport.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.menuFileExportAcknowledgements});
-            this.menuFileExport.Name = "menuFileExport";
-            this.menuFileExport.Size = new System.Drawing.Size(152, 22);
-            this.menuFileExport.Text = "Export";
-            // 
-            // toolStripMenuItem1
-            // 
-            this.toolStripMenuItem1.Name = "toolStripMenuItem1";
-            this.toolStripMenuItem1.Size = new System.Drawing.Size(149, 6);
-            // 
-            // menuFileExportAcknowledgements
-            // 
-            this.menuFileExportAcknowledgements.Name = "menuFileExportAcknowledgements";
-            this.menuFileExportAcknowledgements.Size = new System.Drawing.Size(179, 22);
-            this.menuFileExportAcknowledgements.Text = "Acknowledgements";
-            this.menuFileExportAcknowledgements.Click += new System.EventHandler(this.menuFileExportAcknowledgements_Click);
-            // 
             // FormMain
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(806, 552);
+            this.ClientSize = new System.Drawing.Size(867, 552);
             this.Controls.Add(this.panelControl);
             this.Controls.Add(this.toolStrip);
             this.Controls.Add(this.menuStrip);
@@ -503,7 +496,7 @@ namespace snorbert.Forms
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.KeyPreview = true;
             this.MainMenuStrip = this.menuStrip;
-            this.MinimumSize = new System.Drawing.Size(822, 590);
+            this.MinimumSize = new System.Drawing.Size(883, 590);
             this.Name = "FormMain";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "snorbert";

@@ -44,7 +44,8 @@ namespace snorbert.Forms
             }
             else
             {
-                cboClassification.Select();
+                //cboClassification.Select();
+                txtNotes.Select();
             }
         }
 
@@ -98,69 +99,91 @@ namespace snorbert.Forms
 
             (new Thread(() =>
             {
-                bool acknowledgedPrevious = false;
-                bool errors = false;
-                using (new HourGlass(this))
-                using (NPoco.Database db = new NPoco.Database(Db.GetOpenMySqlConnection()))
+                try
                 {
-                    db.BeginTransaction();
-                    foreach (Event temp in _events)
+                    bool acknowledgedPrevious = false;
+                    bool errors = false;
+                    using (new HourGlass(this))
+                    using (NPoco.Database db = new NPoco.Database(Db.GetOpenMySqlConnection()))
                     {
-                        try
+                        db.BeginTransaction();
+                        foreach (Event temp in _events)
                         {
-                            bool insert = true;
-                            var ack = db.Fetch<Acknowledgment>("select * from acknowledgment where cid=@0 and sid=@1", new object[] { temp.Cid, temp.Sid });
-                            if (ack.Count() > 0)
+                            try
                             {
-                                if (ack.First().Initials.ToUpper() != initials)
+                                bool insert = true;
+                                var ack = db.Fetch<Acknowledgment>("select * from acknowledgment where cid=@0 and sid=@1", new object[] { temp.Cid, temp.Sid });
+                                if (ack.Count() > 0)
                                 {
-                                    acknowledgedPrevious = true;
-                                    insert = false;
+                                    if (ack.First().Initials.ToUpper() != initials)
+                                    {
+                                        acknowledgedPrevious = true;
+                                        insert = false;
+                                    }
+                                    else
+                                    {
+                                        db.Delete(ack.First());
+                                    }
                                 }
-                                else
+
+                                if (insert == true)
                                 {
-                                    db.Delete(ack.First());
+                                    Acknowledgment acknowledgment = new Acknowledgment();
+                                    acknowledgment.Cid = temp.Cid;
+                                    acknowledgment.Sid = temp.Sid;
+                                    acknowledgment.Initials = initials;
+                                    acknowledgment.Notes = notes;
+                                    acknowledgment.Class = acknowledgmentClass.Id;
+                                    acknowledgment.Timestamp = DateTime.Parse(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss"));
+
+                                    db.Insert(acknowledgment);
                                 }
                             }
-
-                            if (insert == true)
+                            catch (Exception ex)
                             {
-                                Acknowledgment acknowledgment = new Acknowledgment();
-                                acknowledgment.Cid = temp.Cid;
-                                acknowledgment.Sid = temp.Sid;
-                                acknowledgment.Initials = initials;
-                                acknowledgment.Notes = notes;
-                                acknowledgment.Class = acknowledgmentClass.Id;
-                                acknowledgment.Timestamp = DateTime.Parse(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss"));
-
-                                db.Insert(acknowledgment);
+                                db.AbortTransaction();
+                                errors = true;
+                                IO.WriteTextToFile("Acknowledgement Insert Error (" + DateTime.Now + "): " + ex.ToString() + Environment.NewLine, 
+                                                   System.IO.Path.Combine(Misc.GetUserDataDirectory(), "Errors.txt"), 
+                                                   true);
+                                break;
                             }
                         }
-                        catch (Exception ex)
+
+                        if (errors == false)
                         {
-                            errors = true;
-                            IO.WriteTextToFile("Acknowledgement Insert Error: " + ex.ToString() + Environment.NewLine, System.IO.Path.Combine(Misc.GetUserDataDirectory(), "Errors.txt"), true); 
+                            db.CompleteTransaction();
                         }
                     }
 
-                    db.CompleteTransaction();
-                }
+                    if (acknowledgedPrevious == true)
+                    {
+                        UserInterface.DisplayMessageBox(this,
+                                                        "Some events were not classified due to being already classified",
+                                                        MessageBoxIcon.Exclamation);
+                    }
 
-                if (acknowledgedPrevious == true)
-                {
-                    UserInterface.DisplayMessageBox(this, 
-                                                    "Some events were not classified due to being already classified", 
-                                                    MessageBoxIcon.Exclamation);
+                    if (errors == true)
+                    {
+                        UserInterface.DisplayMessageBox(this,
+                                                        "Errors occured, check the Errors.txt file",
+                                                        MessageBoxIcon.Exclamation);
+                    }
                 }
-
-                if (errors == true)
+                catch (Exception ex)
                 {
                     UserInterface.DisplayMessageBox(this,
                                                     "Errors occured, check the Errors.txt file",
-                                                    MessageBoxIcon.Exclamation);
+                                                     MessageBoxIcon.Exclamation);
+                    IO.WriteTextToFile("Acknowledgement Insert Error (" + DateTime.Now + "): " + ex.ToString() + Environment.NewLine,
+                                       System.IO.Path.Combine(Misc.GetUserDataDirectory(), "Errors.txt"),
+                                       true);
+                }
+                finally
+                {
+                    this.DialogResult = DialogResult.OK;
                 }
 
-                this.DialogResult = DialogResult.OK;
             })).Start();
         }
 

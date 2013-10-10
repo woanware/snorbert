@@ -46,7 +46,7 @@
             // 
             this.btnCancel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.btnCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-            this.btnCancel.Location = new System.Drawing.Point(336, 126);
+            this.btnCancel.Location = new System.Drawing.Point(336, 196);
             this.btnCancel.Name = "btnCancel";
             this.btnCancel.Size = new System.Drawing.Size(75, 23);
             this.btnCancel.TabIndex = 10;
@@ -57,7 +57,7 @@
             // btnOk
             // 
             this.btnOk.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.btnOk.Location = new System.Drawing.Point(256, 126);
+            this.btnOk.Location = new System.Drawing.Point(256, 196);
             this.btnOk.Name = "btnOk";
             this.btnOk.Size = new System.Drawing.Size(75, 23);
             this.btnOk.TabIndex = 9;
@@ -68,7 +68,7 @@
             // lblName
             // 
             this.lblName.AutoSize = true;
-            this.lblName.Location = new System.Drawing.Point(75, 14);
+            this.lblName.Location = new System.Drawing.Point(8, 11);
             this.lblName.Name = "lblName";
             this.lblName.Size = new System.Drawing.Size(39, 15);
             this.lblName.TabIndex = 0;
@@ -77,7 +77,7 @@
             // lblConnectionString
             // 
             this.lblConnectionString.AutoSize = true;
-            this.lblConnectionString.Location = new System.Drawing.Point(11, 42);
+            this.lblConnectionString.Location = new System.Drawing.Point(8, 55);
             this.lblConnectionString.Name = "lblConnectionString";
             this.lblConnectionString.Size = new System.Drawing.Size(103, 15);
             this.lblConnectionString.TabIndex = 2;
@@ -85,22 +85,22 @@
             // 
             // txtName
             // 
-            this.txtName.Location = new System.Drawing.Point(116, 11);
+            this.txtName.Location = new System.Drawing.Point(10, 29);
             this.txtName.Name = "txtName";
-            this.txtName.Size = new System.Drawing.Size(294, 23);
+            this.txtName.Size = new System.Drawing.Size(401, 23);
             this.txtName.TabIndex = 1;
             // 
             // txtConnectionString
             // 
-            this.txtConnectionString.Location = new System.Drawing.Point(116, 39);
+            this.txtConnectionString.Location = new System.Drawing.Point(10, 75);
             this.txtConnectionString.Name = "txtConnectionString";
-            this.txtConnectionString.Size = new System.Drawing.Size(262, 23);
+            this.txtConnectionString.Size = new System.Drawing.Size(368, 23);
             this.txtConnectionString.TabIndex = 3;
             // 
             // btnTest
             // 
             this.btnTest.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.btnTest.Location = new System.Drawing.Point(382, 39);
+            this.btnTest.Location = new System.Drawing.Point(382, 75);
             this.btnTest.Name = "btnTest";
             this.btnTest.Size = new System.Drawing.Size(28, 23);
             this.btnTest.TabIndex = 4;
@@ -110,22 +110,22 @@
             // 
             // txtCollectionName
             // 
-            this.txtCollectionName.Location = new System.Drawing.Point(117, 94);
+            this.txtCollectionName.Location = new System.Drawing.Point(10, 164);
             this.txtCollectionName.Name = "txtCollectionName";
-            this.txtCollectionName.Size = new System.Drawing.Size(294, 23);
+            this.txtCollectionName.Size = new System.Drawing.Size(401, 23);
             this.txtCollectionName.TabIndex = 8;
             // 
             // txtNetwitnessIp
             // 
-            this.txtNetwitnessIp.Location = new System.Drawing.Point(117, 66);
+            this.txtNetwitnessIp.Location = new System.Drawing.Point(10, 120);
             this.txtNetwitnessIp.Name = "txtNetwitnessIp";
-            this.txtNetwitnessIp.Size = new System.Drawing.Size(294, 23);
+            this.txtNetwitnessIp.Size = new System.Drawing.Size(401, 23);
             this.txtNetwitnessIp.TabIndex = 6;
             // 
             // lblCollectionName
             // 
             this.lblCollectionName.AutoSize = true;
-            this.lblCollectionName.Location = new System.Drawing.Point(18, 97);
+            this.lblCollectionName.Location = new System.Drawing.Point(8, 145);
             this.lblCollectionName.Name = "lblCollectionName";
             this.lblCollectionName.Size = new System.Drawing.Size(96, 15);
             this.lblCollectionName.TabIndex = 7;
@@ -134,7 +134,7 @@
             // lblNetwitnessIp
             // 
             this.lblNetwitnessIp.AutoSize = true;
-            this.lblNetwitnessIp.Location = new System.Drawing.Point(36, 69);
+            this.lblNetwitnessIp.Location = new System.Drawing.Point(8, 101);
             this.lblNetwitnessIp.Name = "lblNetwitnessIp";
             this.lblNetwitnessIp.Size = new System.Drawing.Size(78, 15);
             this.lblNetwitnessIp.TabIndex = 5;
@@ -146,7 +146,7 @@
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.CancelButton = this.btnCancel;
-            this.ClientSize = new System.Drawing.Size(422, 158);
+            this.ClientSize = new System.Drawing.Size(422, 228);
             this.Controls.Add(this.txtCollectionName);
             this.Controls.Add(this.txtNetwitnessIp);
             this.Controls.Add(this.lblCollectionName);

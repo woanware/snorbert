@@ -1,0 +1,9 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<SqlQuery xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+  <Query>SQL_ACKNOWLEDGEMENT_CLASSES</Query>
+  <Data><![CDATA[SELECT id, 
+                        acknowledgment_class.desc
+                   FROM acknowledgment_class 
+               ORDER BY acknowledgment_class.desc]]>
+  </Data>
+</SqlQuery>

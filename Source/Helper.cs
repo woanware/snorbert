@@ -316,13 +316,16 @@ namespace snorbert
         {
             if (list.Items.Count == 0)
             {
+                list.BeginUpdate();
                 foreach (ColumnHeader column in list.Columns)
                 {
                     column.AutoResize(ColumnHeaderAutoResizeStyle.HeaderSize);
                 }
+                list.EndUpdate();
             }
             else
             {
+                list.BeginUpdate();
                 list.Columns[(int)Global.FieldsEvent.SrcIp].AutoResize(ColumnHeaderAutoResizeStyle.ColumnContent);
                 list.Columns[(int)Global.FieldsEvent.SrcPort].AutoResize(ColumnHeaderAutoResizeStyle.ColumnContent);
                 list.Columns[(int)Global.FieldsEvent.DstIp].AutoResize(ColumnHeaderAutoResizeStyle.ColumnContent);
@@ -337,6 +340,8 @@ namespace snorbert
                 {
                     list.Columns[(int)Global.FieldsEvent.Payload].AutoResize(ColumnHeaderAutoResizeStyle.ColumnContent);
                 }
+
+                list.EndUpdate();
             }
         }
     }

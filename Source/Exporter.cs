@@ -125,7 +125,12 @@ namespace snorbert
                 {
                     using (NPoco.Database db = new NPoco.Database(Db.GetOpenMySqlConnection()))
                     {
-                        List<Event> events = db.Fetch<Event>(_sql.GetQuery(snorbert.Configs.Sql.Query.SQL_EVENTS_RULES_FROM_EXPORT), new object[] { dateFrom, sid });
+                        string query = _sql.GetQuery(snorbert.Configs.Sql.Query.SQL_RULES_EVENTS_EXPORT);
+                        query = query.Replace("#WHERE#", @"WHERE exclude.id IS NULL   
+                                                             AND event.timestamp > @0
+			                                                 AND signature.sig_id = @1");
+
+                        List<Event> events = db.Fetch<Event>(query, new object[] { dateFrom, sid });
                         events = Helper.ProcessEventDataSet(events);
 
                         CsvConfiguration csvConfiguration = new CsvConfiguration();
@@ -202,7 +207,13 @@ namespace snorbert
                 {
                     using (NPoco.Database db = new NPoco.Database(Db.GetOpenMySqlConnection()))
                     {
-                        List<Event> events = db.Fetch<Event>(_sql.GetQuery(snorbert.Configs.Sql.Query.SQL_EVENTS_RULES_FROM_TO_EXPORT), new object[] { dateFrom, dateTo, sid });
+                        string query = _sql.GetQuery(snorbert.Configs.Sql.Query.SQL_RULES_EVENTS_EXPORT);
+                        query = query.Replace("#WHERE#", @"WHERE exclude.id IS NULL   
+                                                             AND event.timestamp > @0 
+			                                                 AND event.timestamp < @1
+			                                                 AND signature.sig_id = @2");
+
+                        List<Event> events = db.Fetch<Event>(query, new object[] { dateFrom, dateTo, sid });
                         events = Helper.ProcessEventDataSet(events);
 
                         CsvConfiguration csvConfiguration = new CsvConfiguration();
@@ -299,48 +310,35 @@ namespace snorbert
                         }
                     }
 
-                    using (NPoco.Database dbSqlCe = new NPoco.Database(Db.GetOpenSqlCeConnection(), DatabaseType.SQLCe))
+                    CsvConfiguration csvConfiguration = new CsvConfiguration();
+                    csvConfiguration.Delimiter = '\t';
+
+                    using (FileStream fileStream = new FileStream(filePath, FileMode.Append, FileAccess.Write))
+                    using (StreamWriter streamWriter = new StreamWriter(fileStream))
+                    using (CsvHelper.CsvWriter csvWriter = new CsvHelper.CsvWriter(streamWriter, csvConfiguration))
                     {
-                        CsvConfiguration csvConfiguration = new CsvConfiguration();
-                        csvConfiguration.Delimiter = '\t';
+                        // Write out the file headers
+                        csvWriter.WriteField("Sig. ID");
+                        csvWriter.WriteField("Source IP");
+                        csvWriter.WriteField("Destination IP");
+                        csvWriter.WriteField("FP");
+                        csvWriter.WriteField("Comment");
+                        csvWriter.WriteField("Sig. Name");
+                        csvWriter.WriteField("Timestamp");
+                        csvWriter.WriteField("Sig.");
+                        csvWriter.NextRecord();
 
-                        using (FileStream fileStream = new FileStream(filePath, FileMode.Append, FileAccess.Write))
-                        using (StreamWriter streamWriter = new StreamWriter(fileStream))
-                        using (CsvHelper.CsvWriter csvWriter = new CsvHelper.CsvWriter(streamWriter, csvConfiguration))
+                        foreach (var temp in excludes)
                         {
-                            // Write out the file headers
-                            csvWriter.WriteField("Sig. ID");
-                            csvWriter.WriteField("Source IP");
-                            csvWriter.WriteField("Destination IP");
-                            csvWriter.WriteField("FP");
-                            csvWriter.WriteField("Comment");
-                            csvWriter.WriteField("Sig. Name");
-                            csvWriter.WriteField("Timestamp");
-                            csvWriter.WriteField("Sig.");
+                            csvWriter.WriteField(temp.SigId);
+                            csvWriter.WriteField(temp.SourceIpText);
+                            csvWriter.WriteField(temp.DestinationIpText);
+                            csvWriter.WriteField(temp.FalsePositive);
+                            csvWriter.WriteField(temp.Comment);
+                            csvWriter.WriteField(temp.Rule);
+                            csvWriter.WriteField(temp.Timestamp);
+                            csvWriter.WriteField(temp.Rule);
                             csvWriter.NextRecord();
-
-                            foreach (var temp in excludes)
-                            {
-                                csvWriter.WriteField(temp.SigId);
-                                csvWriter.WriteField(temp.SourceIpText);
-                                csvWriter.WriteField(temp.DestinationIpText);
-                                csvWriter.WriteField(temp.FalsePositive);
-                                csvWriter.WriteField(temp.Comment);
-                                csvWriter.WriteField(temp.Rule);
-                                csvWriter.WriteField(temp.Timestamp);
-
-                                Rule rule = dbSqlCe.SingleOrDefault<Rule>("SELECT * FROM Rules WHERE Sid = @0", new object[] { temp.SigSid.ToString() });
-                                if (rule != null)
-                                {
-                                    csvWriter.WriteField(rule.Data);
-                                }
-                                else
-                                {
-                                    csvWriter.WriteField(string.Empty);
-                                }
-
-                                csvWriter.NextRecord();
-                            }
                         }
                     }
 
@@ -417,13 +415,14 @@ namespace snorbert
         /// <summary>
         /// 
         /// </summary>
-        /// <param name="filePath">The output file name</param>
+        /// <param name="filePath"></param>
         /// <param name="dateFrom"></param>
-        /// <param name="dateTo"></param>
-        /// <param name="sid"></param>
+        /// <param name="initials"></param>
+        /// <param name="text"></param>
         public void ExportAcknowledgmentsFrom(string filePath,
                                               string dateFrom,
-                                              string initials)
+                                              string initials,
+                                              bool text)
         {
             if (IsRunning == true)
             {
@@ -437,33 +436,66 @@ namespace snorbert
             {
                 try
                 {
-                    CsvConfiguration csvConfiguration = new CsvConfiguration();
-                    csvConfiguration.Delimiter = '\t';
-
-                    using (NPoco.Database db = new NPoco.Database(Db.GetOpenMySqlConnection()))
-                    using (FileStream fileStream = new FileStream(filePath, FileMode.Append, FileAccess.Write))
-                    using (StreamWriter streamWriter = new StreamWriter(fileStream))
-                    using (CsvHelper.CsvWriter csvWriter = new CsvHelper.CsvWriter(streamWriter, csvConfiguration))
+                    if (text == true)
                     {
-                        // Write out the file headers
-                        csvWriter.WriteField("Sig Name");
-                        csvWriter.WriteField("Sig SID");
-                        csvWriter.WriteField("Sig GID");
-                        csvWriter.WriteField("Notes");
-                        csvWriter.NextRecord();
-
-                        var data = db.Fetch<Dictionary<string, object>>(_sql.GetQuery(snorbert.Configs.Sql.Query.SQL_ACKNOWLEDGMENT_FROM), new object[] { dateFrom, initials });
-
-                        foreach (Dictionary<string, object> temp in data)
+                        using (NPoco.Database db = new NPoco.Database(Db.GetOpenMySqlConnection()))
+                        using (FileStream fileStream = new FileStream(filePath, FileMode.Append, FileAccess.Write))
+                        using (StreamWriter streamWriter = new StreamWriter(fileStream))
                         {
-                            csvWriter.WriteField(temp["sig_name"].ToString());
-                            csvWriter.WriteField(temp["sig_sid"].ToString());
-                            csvWriter.WriteField(temp["sig_gid"].ToString());
-                            csvWriter.WriteField(temp["notes"].ToString());
-                            csvWriter.NextRecord();
-                        }
+                            string query = _sql.GetQuery(snorbert.Configs.Sql.Query.SQL_ACKNOWLEDGEMENT);
+                            query = query.Replace("#WHERE#", @"WHERE acknowledgment.initials = @0
+                                                                 AND acknowledgment.timestamp > @1");
 
-                        OnComplete();
+                            var data = db.Fetch<Dictionary<string, object>>(query, new object[] { initials, dateFrom });
+
+                            foreach (Dictionary<string, object> temp in data)
+                            {
+                                streamWriter.WriteLine("Signature: " + temp["sig_name"].ToString());
+                                streamWriter.WriteLine("SID/GID: " + temp["sig_sid"].ToString() + "/" + temp["sig_gid"].ToString());
+                                streamWriter.WriteLine("Acknowledgement: " + temp["description"].ToString());
+                                streamWriter.WriteLine("Notes: " + temp["notes"].ToString());
+                                streamWriter.WriteLine(string.Empty);
+                            }
+
+                            OnComplete();
+                        }
+                    }
+                    else
+                    {
+                        CsvConfiguration csvConfiguration = new CsvConfiguration();
+                        csvConfiguration.Delimiter = '\t';
+
+                        using (NPoco.Database db = new NPoco.Database(Db.GetOpenMySqlConnection()))
+                        using (FileStream fileStream = new FileStream(filePath, FileMode.Append, FileAccess.Write))
+                        using (StreamWriter streamWriter = new StreamWriter(fileStream))
+                        using (CsvHelper.CsvWriter csvWriter = new CsvHelper.CsvWriter(streamWriter, csvConfiguration))
+                        {
+                            string query = _sql.GetQuery(snorbert.Configs.Sql.Query.SQL_ACKNOWLEDGEMENT);
+                            query = query.Replace("#WHERE#", @"WHERE acknowledgment.initials = @0
+                                                                 AND acknowledgment.timestamp > @1");
+
+                            var data = db.Fetch<Dictionary<string, object>>(query, new object[] { initials, dateFrom });
+
+                            // Write out the file headers
+                            csvWriter.WriteField("Sig Name");
+                            csvWriter.WriteField("Sig SID");
+                            csvWriter.WriteField("Sig GID");
+                            csvWriter.WriteField("Acknowledgement");
+                            csvWriter.WriteField("Notes");
+                            csvWriter.NextRecord();
+
+                            foreach (Dictionary<string, object> temp in data)
+                            {
+                                csvWriter.WriteField(temp["sig_name"].ToString());
+                                csvWriter.WriteField(temp["sig_sid"].ToString());
+                                csvWriter.WriteField(temp["sig_gid"].ToString());
+                                csvWriter.WriteField(temp["description"].ToString());
+                                csvWriter.WriteField(temp["notes"].ToString());
+                                csvWriter.NextRecord();
+                            }
+
+                            OnComplete();
+                        }
                     }
                 }
                 catch (Exception ex)
@@ -480,12 +512,12 @@ namespace snorbert
         /// <summary>
         /// 
         /// </summary>
-        /// <param name="filePath">The output file name</param>
+        /// <param name="filePath"></param>
         /// <param name="dateFrom"></param>
-        /// <param name="dateTo"></param>
-        /// <param name="sid"></param>
+        /// <param name="text"></param>
         public void ExportAcknowledgmentsFromAll(string filePath,
-                                                 string dateFrom)
+                                                 string dateFrom,
+                                                 bool text)
         {
             if (IsRunning == true)
             {
@@ -499,35 +531,65 @@ namespace snorbert
             {
                 try
                 {
-                    CsvConfiguration csvConfiguration = new CsvConfiguration();
-                    csvConfiguration.Delimiter = '\t';
-
-                    using (NPoco.Database db = new NPoco.Database(Db.GetOpenMySqlConnection()))
-                    using (FileStream fileStream = new FileStream(filePath, FileMode.Append, FileAccess.Write))
-                    using (StreamWriter streamWriter = new StreamWriter(fileStream))
-                    using (CsvHelper.CsvWriter csvWriter = new CsvHelper.CsvWriter(streamWriter, csvConfiguration))
+                    if (text == true)
                     {
-                        // Write out the file headers
-                        csvWriter.WriteField("Sig Name");
-                        csvWriter.WriteField("Sig SID");
-                        csvWriter.WriteField("Sig GID");
-                        csvWriter.WriteField("Initials");
-                        csvWriter.WriteField("Notes");
-                        csvWriter.NextRecord();
-
-                        var data = db.Fetch<Dictionary<string, object>>(_sql.GetQuery(snorbert.Configs.Sql.Query.SQL_ACKNOWLEDGMENT_FROM_ALL), new object[] { dateFrom});
-
-                        foreach (Dictionary<string, object> temp in data)
+                        using (NPoco.Database db = new NPoco.Database(Db.GetOpenMySqlConnection()))
+                        using (FileStream fileStream = new FileStream(filePath, FileMode.Append, FileAccess.Write))
+                        using (StreamWriter streamWriter = new StreamWriter(fileStream))
                         {
-                            csvWriter.WriteField(temp["sig_name"].ToString());
-                            csvWriter.WriteField(temp["sig_sid"].ToString());
-                            csvWriter.WriteField(temp["sig_gid"].ToString());
-                            csvWriter.WriteField(temp["initials"].ToString());
-                            csvWriter.WriteField(temp["notes"].ToString());
-                            csvWriter.NextRecord();
-                        }
+                            string query = _sql.GetQuery(snorbert.Configs.Sql.Query.SQL_ACKNOWLEDGEMENT);
+                            query = query.Replace("#WHERE#", @"WHERE acknowledgment.timestamp > @0");
+                            var data = db.Fetch<Dictionary<string, object>>(query, new object[] { dateFrom });
 
-                        OnComplete();
+                            foreach (Dictionary<string, object> temp in data)
+                            {
+                                streamWriter.WriteLine("Signature: " + temp["sig_name"].ToString());
+                                streamWriter.WriteLine("SID/GID: " + temp["sig_sid"].ToString() + "/" + temp["sig_gid"].ToString());
+                                streamWriter.WriteLine("Initials: " + temp["initials"].ToString());
+                                streamWriter.WriteLine("Acknowledgement: " + temp["description"].ToString());
+                                streamWriter.WriteLine("Notes: " + temp["notes"].ToString());
+                                streamWriter.WriteLine(string.Empty);
+                            }
+
+                            OnComplete();
+                        }
+                    }
+                    else
+                    {
+                        CsvConfiguration csvConfiguration = new CsvConfiguration();
+                        csvConfiguration.Delimiter = '\t';
+
+                        using (NPoco.Database db = new NPoco.Database(Db.GetOpenMySqlConnection()))
+                        using (FileStream fileStream = new FileStream(filePath, FileMode.Append, FileAccess.Write))
+                        using (StreamWriter streamWriter = new StreamWriter(fileStream))
+                        using (CsvHelper.CsvWriter csvWriter = new CsvHelper.CsvWriter(streamWriter, csvConfiguration))
+                        {
+                            string query = _sql.GetQuery(snorbert.Configs.Sql.Query.SQL_ACKNOWLEDGEMENT);
+                            query = query.Replace("#WHERE#", @"WHERE acknowledgment.timestamp > @0");
+                            var data = db.Fetch<Dictionary<string, object>>(query, new object[] { dateFrom });
+
+                            // Write out the file headers
+                            csvWriter.WriteField("Sig Name");
+                            csvWriter.WriteField("Sig SID");
+                            csvWriter.WriteField("Sig GID");
+                            csvWriter.WriteField("Initials");
+                            csvWriter.WriteField("Acknowledgement");
+                            csvWriter.WriteField("Notes");
+                            csvWriter.NextRecord();
+
+                            foreach (Dictionary<string, object> temp in data)
+                            {
+                                csvWriter.WriteField(temp["sig_name"].ToString());
+                                csvWriter.WriteField(temp["sig_sid"].ToString());
+                                csvWriter.WriteField(temp["sig_gid"].ToString());
+                                csvWriter.WriteField(temp["initials"].ToString());
+                                csvWriter.WriteField(temp["description"].ToString());
+                                csvWriter.WriteField(temp["notes"].ToString());
+                                csvWriter.NextRecord();
+                            }
+
+                            OnComplete();
+                        }
                     }
                 }
                 catch (Exception ex)
@@ -544,14 +606,16 @@ namespace snorbert
         /// <summary>
         /// 
         /// </summary>
-        /// <param name="filePath">The output file name</param>
+        /// <param name="filePath"></param>
         /// <param name="dateFrom"></param>
         /// <param name="dateTo"></param>
-        /// <param name="sid"></param>
+        /// <param name="initials"></param>
+        /// <param name="text"></param>
         public void ExportAcknowledgmentsFromTo(string filePath,
                                                 string dateFrom,
                                                 string dateTo,
-                                                string initials)
+                                                string initials,
+                                                bool text)
         {
             if (IsRunning == true)
             {
@@ -565,33 +629,66 @@ namespace snorbert
             {
                 try
                 {
-                    CsvConfiguration csvConfiguration = new CsvConfiguration();
-                    csvConfiguration.Delimiter = '\t';
-
-                    using (NPoco.Database db = new NPoco.Database(Db.GetOpenMySqlConnection()))
-                    using (FileStream fileStream = new FileStream(filePath, FileMode.Append, FileAccess.Write))
-                    using (StreamWriter streamWriter = new StreamWriter(fileStream))
-                    using (CsvHelper.CsvWriter csvWriter = new CsvHelper.CsvWriter(streamWriter, csvConfiguration))
+                    if (text == true)
                     {
-                        // Write out the file headers
-                        csvWriter.WriteField("Sig Name");
-                        csvWriter.WriteField("Sig SID");
-                        csvWriter.WriteField("Sig GID");
-                        csvWriter.WriteField("Notes");
-                        csvWriter.NextRecord();
-
-                        var data = db.Fetch<Dictionary<string, object>>(_sql.GetQuery(snorbert.Configs.Sql.Query.SQL_ACKNOWLEDGMENT_FROM_TO), new object[] { dateFrom, dateTo, initials });
-
-                        foreach (Dictionary<string, object> temp in data)
+                        using (NPoco.Database db = new NPoco.Database(Db.GetOpenMySqlConnection()))
+                        using (FileStream fileStream = new FileStream(filePath, FileMode.Append, FileAccess.Write))
+                        using (StreamWriter streamWriter = new StreamWriter(fileStream))
                         {
-                            csvWriter.WriteField(temp["sig_name"].ToString());
-                            csvWriter.WriteField(temp["sig_sid"].ToString());
-                            csvWriter.WriteField(temp["sig_gid"].ToString());
-                            csvWriter.WriteField(temp["notes"].ToString());
-                            csvWriter.NextRecord();
-                        }
+                            string query = _sql.GetQuery(snorbert.Configs.Sql.Query.SQL_ACKNOWLEDGEMENT);
+                            query = query.Replace("#WHERE#", @"WHERE acknowledgment.initials = @0
+                                                                 AND acknowledgment.timestamp > @1
+                                                                 AND acknowledgment.timestamp < @2");
+                            var data = db.Fetch<Dictionary<string, object>>(query, new object[] { initials, dateFrom, dateTo });
 
-                        OnComplete();
+                            foreach (Dictionary<string, object> temp in data)
+                            {
+                                streamWriter.WriteLine("Signature: " + temp["sig_name"].ToString());
+                                streamWriter.WriteLine("SID/GID: " + temp["sig_sid"].ToString() + "/" + temp["sig_gid"].ToString());
+                                streamWriter.WriteLine("Acknowledgement: " + temp["description"].ToString());
+                                streamWriter.WriteLine("Notes: " + temp["notes"].ToString());
+                                streamWriter.WriteLine(string.Empty);
+                            }
+
+                            OnComplete();
+                        }
+                    }
+                    else
+                    {
+                        CsvConfiguration csvConfiguration = new CsvConfiguration();
+                        csvConfiguration.Delimiter = '\t';
+
+                        using (NPoco.Database db = new NPoco.Database(Db.GetOpenMySqlConnection()))
+                        using (FileStream fileStream = new FileStream(filePath, FileMode.Append, FileAccess.Write))
+                        using (StreamWriter streamWriter = new StreamWriter(fileStream))
+                        using (CsvHelper.CsvWriter csvWriter = new CsvHelper.CsvWriter(streamWriter, csvConfiguration))
+                        {
+                            string query = _sql.GetQuery(snorbert.Configs.Sql.Query.SQL_ACKNOWLEDGEMENT);
+                            query = query.Replace("#WHERE#", @"WHERE acknowledgment.initials = @0
+                                                                 AND acknowledgment.timestamp > @1
+                                                                 AND acknowledgment.timestamp < @2");
+                            var data = db.Fetch<Dictionary<string, object>>(query, new object[] { initials, dateFrom, dateTo });
+
+                            // Write out the file headers
+                            csvWriter.WriteField("Sig Name");
+                            csvWriter.WriteField("Sig SID");
+                            csvWriter.WriteField("Sig GID");
+                            csvWriter.WriteField("Acknowledgement");
+                            csvWriter.WriteField("Notes");
+                            csvWriter.NextRecord();
+
+                            foreach (Dictionary<string, object> temp in data)
+                            {
+                                csvWriter.WriteField(temp["sig_name"].ToString());
+                                csvWriter.WriteField(temp["sig_sid"].ToString());
+                                csvWriter.WriteField(temp["sig_gid"].ToString());
+                                csvWriter.WriteField(temp["description"].ToString());
+                                csvWriter.WriteField(temp["notes"].ToString());
+                                csvWriter.NextRecord();
+                            }
+
+                            OnComplete();
+                        }
                     }
                 }
                 catch (Exception ex)
@@ -608,13 +705,14 @@ namespace snorbert
         /// <summary>
         /// 
         /// </summary>
-        /// <param name="filePath">The output file name</param>
+        /// <param name="filePath"></param>
         /// <param name="dateFrom"></param>
         /// <param name="dateTo"></param>
-        /// <param name="sid"></param>
+        /// <param name="text"></param>
         public void ExportAcknowledgmentsFromToAll(string filePath,
                                                    string dateFrom,
-                                                   string dateTo)
+                                                   string dateTo, 
+                                                   bool text)
         {
             if (IsRunning == true)
             {
@@ -628,35 +726,67 @@ namespace snorbert
             {
                 try
                 {
-                    CsvConfiguration csvConfiguration = new CsvConfiguration();
-                    csvConfiguration.Delimiter = '\t';
-
-                    using (NPoco.Database db = new NPoco.Database(Db.GetOpenMySqlConnection()))
-                    using (FileStream fileStream = new FileStream(filePath, FileMode.Append, FileAccess.Write))
-                    using (StreamWriter streamWriter = new StreamWriter(fileStream))
-                    using (CsvHelper.CsvWriter csvWriter = new CsvHelper.CsvWriter(streamWriter, csvConfiguration))
+                    if (text == true)
                     {
-                        // Write out the file headers
-                        csvWriter.WriteField("Sig Name");
-                        csvWriter.WriteField("Sig SID");
-                        csvWriter.WriteField("Sig GID");
-                        csvWriter.WriteField("Initials");
-                        csvWriter.WriteField("Notes");
-                        csvWriter.NextRecord();
-
-                        var data = db.Fetch<Dictionary<string, object>>(_sql.GetQuery(snorbert.Configs.Sql.Query.SQL_ACKNOWLEDGMENT_FROM_TO_ALL), new object[] { dateFrom, dateTo });
-
-                        foreach (Dictionary<string, object> temp in data)
+                        using (NPoco.Database db = new NPoco.Database(Db.GetOpenMySqlConnection()))
+                        using (FileStream fileStream = new FileStream(filePath, FileMode.Append, FileAccess.Write))
+                        using (StreamWriter streamWriter = new StreamWriter(fileStream))
                         {
-                            csvWriter.WriteField(temp["sig_name"].ToString());
-                            csvWriter.WriteField(temp["sig_sid"].ToString());
-                            csvWriter.WriteField(temp["sig_gid"].ToString());
-                            csvWriter.WriteField(temp["initials"].ToString());
-                            csvWriter.WriteField(temp["notes"].ToString());
-                            csvWriter.NextRecord();
-                        }
+                            string query = _sql.GetQuery(snorbert.Configs.Sql.Query.SQL_ACKNOWLEDGEMENT);
+                            query = query.Replace("#WHERE#", @"WHERE acknowledgment.timestamp > @0
+                                                                 AND acknowledgment.timestamp < @1");
+                            var data = db.Fetch<Dictionary<string, object>>(query, new object[] { dateFrom, dateTo });
 
-                        OnComplete();
+                            foreach (Dictionary<string, object> temp in data)
+                            {
+                                streamWriter.WriteLine("Signature: " + temp["sig_name"].ToString());
+                                streamWriter.WriteLine("SID/GID: " + temp["sig_sid"].ToString() + "/" + temp["sig_gid"].ToString());
+                                streamWriter.WriteLine("Initials: " + temp["initials"].ToString());
+                                streamWriter.WriteLine("Acknowledgement: " + temp["description"].ToString());
+                                streamWriter.WriteLine("Notes: " + temp["notes"].ToString());
+                                streamWriter.WriteLine(string.Empty);
+                            }
+
+                            OnComplete();
+                        }
+                    }
+                    else
+                    {
+                        CsvConfiguration csvConfiguration = new CsvConfiguration();
+                        csvConfiguration.Delimiter = '\t';
+
+                        using (NPoco.Database db = new NPoco.Database(Db.GetOpenMySqlConnection()))
+                        using (FileStream fileStream = new FileStream(filePath, FileMode.Append, FileAccess.Write))
+                        using (StreamWriter streamWriter = new StreamWriter(fileStream))
+                        using (CsvHelper.CsvWriter csvWriter = new CsvHelper.CsvWriter(streamWriter, csvConfiguration))
+                        {
+                            string query = _sql.GetQuery(snorbert.Configs.Sql.Query.SQL_ACKNOWLEDGEMENT);
+                            query = query.Replace("#WHERE#", @"WHERE acknowledgment.timestamp > @0
+                                                                 AND acknowledgment.timestamp < @1");
+                            var data = db.Fetch<Dictionary<string, object>>(query, new object[] { dateFrom, dateTo });
+
+                            // Write out the file headers
+                            csvWriter.WriteField("Sig Name");
+                            csvWriter.WriteField("Sig SID");
+                            csvWriter.WriteField("Sig GID");
+                            csvWriter.WriteField("Initials");
+                            csvWriter.WriteField("Acknowledgement");
+                            csvWriter.WriteField("Notes");
+                            csvWriter.NextRecord();
+
+                            foreach (Dictionary<string, object> temp in data)
+                            {
+                                csvWriter.WriteField(temp["sig_name"].ToString());
+                                csvWriter.WriteField(temp["sig_sid"].ToString());
+                                csvWriter.WriteField(temp["sig_gid"].ToString());
+                                csvWriter.WriteField(temp["initials"].ToString());
+                                csvWriter.WriteField(temp["description"].ToString());
+                                csvWriter.WriteField(temp["notes"].ToString());
+                                csvWriter.NextRecord();
+                            }
+
+                            OnComplete();
+                        }
                     }
                 }
                 catch (Exception ex)

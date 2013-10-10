@@ -216,7 +216,6 @@ namespace snorbert.Controls
         {
             using (new HourGlass(this))
             {
-                //listFilters.ClearObjects();
                 listFilters.SetObjects(_filters);
 
                 if (_filters.Any() == true)
@@ -415,6 +414,28 @@ namespace snorbert.Controls
             using (FormRule form = new FormRule(controlEventInfo.Signature))
             {
                 form.ShowDialog(this);
+            }
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        private void ShowAcknowledgementWindow()
+        {
+            if (listEvents.SelectedObjects.Count == 0)
+            {
+                return;
+            }
+
+            var list = listEvents.SelectedObjects.Cast<Event>().ToList();
+
+            using (FormAcknowledgment formAcknowledgement = new FormAcknowledgment(_acknowledgmentClasses, list, "N/A", _initials))
+            {
+                if (formAcknowledgement.ShowDialog(this) == DialogResult.OK)
+                {
+                    LoadSearch(_currentPage);
+                    _initials = formAcknowledgement.Initials;
+                }
             }
         }
 
@@ -647,6 +668,14 @@ namespace snorbert.Controls
         {
             ShowSignatureWindow();
         }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        public void ShowAcknowledgement()
+        {
+            ShowAcknowledgementWindow();
+        }
         #endregion
 
         #region Event Methods
@@ -794,21 +823,7 @@ namespace snorbert.Controls
         /// <param name="e"></param>
         private void ctxMenuAcknowledgmentSet_Click(object sender, EventArgs e)
         {
-            if (listEvents.SelectedObjects.Count == 0)
-            {
-                return;
-            }
-
-            var list = listEvents.SelectedObjects.Cast<Event>().ToList();
-
-            using (FormAcknowledgment formAcknowledgement = new FormAcknowledgment(_acknowledgmentClasses, list, "N/A", _initials))
-            {
-                if (formAcknowledgement.ShowDialog(this) == DialogResult.OK)
-                {
-                    LoadSearch(_currentPage);
-                    _initials = formAcknowledgement.Initials;
-                }
-            }
+            ShowAcknowledgementWindow();
         }
 
         /// <summary>

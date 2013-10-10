@@ -1,4 +1,6 @@
-﻿namespace snorbert.Forms
+﻿using IPAddressControlLib;
+
+namespace snorbert.Forms
 {
     partial class FormExcludeAdd
     {
@@ -297,7 +299,6 @@
         }
 
         #endregion
-
         private IPAddressControlLib.IPAddressControl ipSource;
         private IPAddressControlLib.IPAddressControl ipDestination;
         private System.Windows.Forms.Label lblSourceIp;

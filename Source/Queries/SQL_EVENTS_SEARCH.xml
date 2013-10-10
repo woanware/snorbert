@@ -37,7 +37,11 @@
 				                IFNULL(tcphdr.tcp_urp, 0) as tcp_urp, 
 				                IFNULL(udphdr.udp_len, 0) as udp_len,   
 				                IFNULL(udphdr.udp_csum, 0) as udp_csum,           
-				                data.data_payload as data_payload     
+				                data.data_payload as data_payload,
+                        IFNULL(acknowledgment.id, 0) as acknowledgment_id,
+                        IFNULL(acknowledgment.initials, '') as initials,
+                        IFNULL(acknowledgment_class.desc, '') as acknowledgment_class,
+                        IFNULL(rule.rule, '') as rule
 			              FROM  (SELECT event.timestamp as timestamp,
 				                        event.sid as sid,
 				                        event.cid as cid,
@@ -49,6 +53,9 @@
 		              LEFT JOIN tcphdr ON (event.sid = tcphdr.sid AND event.cid = tcphdr.cid) 
 		              LEFT JOIN udphdr ON (event.sid = udphdr.sid AND event.cid = udphdr.cid) 
 		              LEFT JOIN signature ON (signature.sig_id = event.signature) 	
+                  LEFT JOIN rule ON (signature.sig_name = rule.sig_name and signature.sig_rev = rule.sig_rev and signature.sig_sid = rule.sig_sid and signature.sig_gid = rule.sig_gid)    
+                  LEFT JOIN acknowledgment on (acknowledgment.sid = event.sid AND acknowledgment.cid = event.cid )
+                  LEFT JOIN acknowledgment_class on (acknowledgment_class.id = acknowledgment.class )
 		              LEFT JOIN sig_class on (signature.sig_class_id = sig_class.sig_class_id)  
                   LEFT JOIN sensor ON (sensor.sid = event.sid )    
 		              LEFT JOIN exclude ON

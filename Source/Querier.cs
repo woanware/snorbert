@@ -17,6 +17,7 @@ namespace snorbert
         public delegate void CompleteEvent<T>(List<T> data);
         public event CompleteEvent<Event> EventQueryComplete;
         public event CompleteEvent<Signature> RuleQueryComplete;
+        public event CompleteEvent<Signature> RuleCheckQueryComplete;
         public event CompleteEvent<Sensor> SensorQueryComplete;
         public event CompleteEvent<string> RuleIpQueryComplete;
         public event Global.MessageEvent Exclamation;
@@ -52,11 +53,11 @@ namespace snorbert
         /// <param name="pageLimit"></param>
         public void QueryEvents(long offset, int pageLimit)
         {
-            if (IsRunning == true)
-            {
-                OnExclamation("Already performing query");
-                return;
-            }
+            //if (IsRunning == true)
+            //{
+            //    //OnExclamation("Already performing query");
+            //    return;
+            //}
 
             IsRunning = true;
 
@@ -88,14 +89,17 @@ namespace snorbert
         /// </summary>
         /// <param name="dateFrom"></param>
         /// <param name="hostName"></param>
+        /// <param name="check"></param>
         public void QueryRulesFrom(string dateFrom,
-                                   string hostName)
+                                   string hostName, 
+                                   bool includeAcks,
+                                   bool check)
         {
-            if (IsRunning == true)
-            {
-                OnExclamation("Already performing query");
-                return;
-            }
+            //if (IsRunning == true)
+            //{
+            //    //OnExclamation("Already performing query");
+            //    return;
+            //}
 
             IsRunning = true;
 
@@ -106,14 +110,40 @@ namespace snorbert
                     using (NPoco.Database db = new NPoco.Database(Db.GetOpenMySqlConnection()))
                     {
                         List<Signature> temp;
-                        string query = string.Empty;
-                        if (hostName == string.Empty)
+                        string query = _sql.GetQuery(Sql.Query.SQL_RULES);
+                        if (includeAcks == true)
                         {
-                            temp = db.Fetch<Signature>(_sql.GetQuery(Sql.Query.SQL_RULES_FROM_ALL), new object[] { dateFrom });
+                            if (hostName == string.Empty)
+                            {
+                                query = query.Replace("#WHERE#", @"WHERE exclude.id IS NULL 
+		                                                             AND event.timestamp > @0");
+                                temp = db.Fetch<Signature>(query, new object[] { dateFrom });
+                            }
+                            else
+                            {
+                                query = query.Replace("#WHERE#", @"WHERE exclude.id IS NULL 
+			                                                         AND event.timestamp > @0
+                                                                     AND event.sid IN (SELECT sid FROM sensor WHERE hostname=@1)");
+                                temp = db.Fetch<Signature>(query, new object[] { dateFrom, hostName });
+                            }
                         }
                         else
                         {
-                            temp = db.Fetch<Signature>(_sql.GetQuery(Sql.Query.SQL_RULES_FROM), new object[] { dateFrom, hostName });
+                            if (hostName == string.Empty)
+                            {
+                                query = query.Replace("#WHERE#", @"WHERE exclude.id IS NULL 
+                                                                     AND (acknowledgment.id IS NULL OR acknowledgment.class = 1)
+		                                                             AND event.timestamp > @0");
+                                temp = db.Fetch<Signature>(query, new object[] { dateFrom });
+                            }
+                            else
+                            {
+                                query = query.Replace("#WHERE#", @"WHERE exclude.id IS NULL 
+                                                                     AND (acknowledgment.id IS NULL OR acknowledgment.class = 1)
+			                                                         AND event.timestamp > @0
+                                                                     AND event.sid IN (SELECT sid FROM sensor WHERE hostname=@1)");
+                                temp = db.Fetch<Signature>(query, new object[] { dateFrom, hostName });
+                            }
                         }
 
                         foreach (var rule in temp)
@@ -128,7 +158,7 @@ namespace snorbert
                             }
                         }
 
-                        OnComplete(temp);
+                        OnComplete(temp, check);
                     }                    
                 }
                 catch (Exception ex)
@@ -148,15 +178,19 @@ namespace snorbert
         /// <param name="dateFrom"></param>
         /// <param name="priority"></param>
         /// <param name="hostName"></param>
+        /// <param name="includeAcks"></param>
+        /// <param name="check"></param>
         public void QueryRulesFromPriority(string dateFrom,
                                            string priority,
-                                           string hostName)
+                                           string hostName,
+                                           bool includeAcks,
+                                           bool check)
         {
-            if (IsRunning == true)
-            {
-                OnExclamation("Already performing query");
-                return;
-            }
+            //if (IsRunning == true)
+            //{
+            //    //OnExclamation("Already performing query");
+            //    return;
+            //}
 
             IsRunning = true;
 
@@ -166,23 +200,57 @@ namespace snorbert
                 {
                     using (NPoco.Database db = new NPoco.Database(Db.GetOpenMySqlConnection()))
                     {
-                        string query = string.Empty;
-                        if (hostName == string.Empty)
+                        List<Signature> temp;
+                        string query = _sql.GetQuery(Sql.Query.SQL_RULES);
+                        if (includeAcks == true)
                         {
-                            query = _sql.GetQuery(Sql.Query.SQL_RULES_FROM_PRIORITY_ALL);
+                            if (hostName == string.Empty)
+                            {
+                                query = query.Replace("#WHERE#", @"WHERE exclude.id IS NULL 
+			                                                         AND event.timestamp > @0
+                                                                     AND signature.sig_priority = @1");
+
+                                temp = db.Fetch<Signature>(query, new object[] { dateFrom, priority });
+                            }
+                            else
+                            {
+                                query = query.Replace("#WHERE#", @"WHERE exclude.id IS NULL 
+			                                                         AND event.timestamp > @0
+                                                                     AND signature.sig_priority = @1
+                                                                     AND event.sid IN (SELECT sid FROM sensor WHERE hostname=@2)");
+
+                                temp = db.Fetch<Signature>(query, new object[] { dateFrom, priority, hostName });
+                            }
                         }
                         else
                         {
-                            query = _sql.GetQuery(Sql.Query.SQL_RULES_FROM_PRIORITY);
+                            if (hostName == string.Empty)
+                            {
+                                query = query.Replace("#WHERE#", @"WHERE exclude.id IS NULL 
+                                                                     AND (acknowledgment.id IS NULL OR acknowledgment.class = 1)
+			                                                         AND event.timestamp > @0
+                                                                     AND signature.sig_priority = @1");
+
+                                temp = db.Fetch<Signature>(query, new object[] { dateFrom, priority });
+                            }
+                            else
+                            {
+                                query = query.Replace("#WHERE#", @"WHERE exclude.id IS NULL 
+                                                                     AND (acknowledgment.id IS NULL OR acknowledgment.class = 1)
+			                                                         AND event.timestamp > @0
+                                                                     AND signature.sig_priority = @1
+                                                                     AND event.sid IN (SELECT sid FROM sensor WHERE hostname=@2)");
+
+                                temp = db.Fetch<Signature>(query, new object[] { dateFrom, priority, hostName });
+                            }
                         }
 
-                        List<Signature> temp = db.Fetch<Signature>(query, new object[] { dateFrom, priority });
                         foreach (var rule in temp)
                         {
                             rule.Text = rule.Name + " (SID: " + rule.Sid.ToString() + "): " + rule.Count.ToString();
                         }
 
-                        OnComplete(temp);
+                        OnComplete(temp, check);
                     }                    
                 }
                 catch (Exception ex)
@@ -202,15 +270,18 @@ namespace snorbert
         /// <param name="dateFrom"></param>
         /// <param name="dateTo"></param>
         /// <param name="hostName"></param>
-        public void QueryRulesToFrom(string dateFrom, 
+        /// <param name="check"></param>
+        public void QueryRulesFromTo(string dateFrom, 
                                      string dateTo,
-                                     string hostName)
+                                     string hostName,
+                                     bool includeAcks,
+                                     bool check)
         {
-            if (IsRunning == true)
-            {
-                OnExclamation("Already performing query");
-                return;
-            }
+            //if (IsRunning == true)
+            //{
+            //    //OnExclamation("Already performing query");
+            //    return;
+            //}
 
             IsRunning = true;
 
@@ -221,14 +292,49 @@ namespace snorbert
                     using (NPoco.Database db = new NPoco.Database(Db.GetOpenMySqlConnection()))
                     {
                         List<Signature> temp;
-                        string query = string.Empty;
-                        if (hostName == string.Empty)
+                        string query = _sql.GetQuery(Sql.Query.SQL_RULES);
+
+                        if (includeAcks == true)
                         {
-                            temp = db.Fetch<Signature>(_sql.GetQuery(Sql.Query.SQL_RULES_FROM_TO_ALL), new object[] { dateFrom, dateTo });
+                            if (hostName == string.Empty)
+                            {
+                                query = query.Replace("#WHERE#", @"WHERE exclude.id IS NULL 
+			                                                         AND event.timestamp > @0 
+			                                                         AND event.timestamp < @1");
+
+                                temp = db.Fetch<Signature>(query, new object[] { dateFrom, dateTo });
+                            }
+                            else
+                            {
+                                query = query.Replace("#WHERE#", @"WHERE exclude.id IS NULL 
+			                                                         AND event.timestamp > @0 
+			                                                         AND event.timestamp < @1
+                                                                     AND event.sid IN (SELECT sid FROM sensor WHERE hostname=@2)");
+
+                                temp = db.Fetch<Signature>(query, new object[] { dateFrom, dateTo, hostName });
+                            }
                         }
                         else
                         {
-                            temp = db.Fetch<Signature>(_sql.GetQuery(Sql.Query.SQL_RULES_FROM_TO), new object[] { dateFrom, dateTo, hostName });
+                            if (hostName == string.Empty)
+                            {
+                                query = query.Replace("#WHERE#", @"WHERE exclude.id IS NULL 
+                                                                     AND (acknowledgment.id IS NULL OR acknowledgment.class = 1)
+			                                                         AND event.timestamp > @0 
+			                                                         AND event.timestamp < @1");
+
+                                temp = db.Fetch<Signature>(query, new object[] { dateFrom, dateTo });
+                            }
+                            else
+                            {
+                                query = query.Replace("#WHERE#", @"WHERE exclude.id IS NULL 
+                                                                     AND (acknowledgment.id IS NULL OR acknowledgment.class = 1)
+			                                                         AND event.timestamp > @0 
+			                                                         AND event.timestamp < @1
+                                                                     AND event.sid IN (SELECT sid FROM sensor WHERE hostname=@2)");
+
+                                temp = db.Fetch<Signature>(query, new object[] { dateFrom, dateTo, hostName });
+                            }
                         }
 
                         foreach (var rule in temp)
@@ -243,7 +349,7 @@ namespace snorbert
                             }
                         }
 
-                        OnComplete(temp);
+                        OnComplete(temp, check);
                     }
                 }
                 catch (Exception ex)
@@ -264,16 +370,20 @@ namespace snorbert
         /// <param name="dateTo"></param>
         /// <param name="priority"></param>
         /// <param name="hostName"></param>
-        public void QueryRulesToFromPriority(string dateFrom,
+        /// <param name="includeAcks"></param>
+        /// <param name="check"></param>
+        public void QueryRulesFromToPriority(string dateFrom,
                                              string dateTo,
                                              string priority,
-                                             string hostName)
+                                             string hostName,
+                                             bool includeAcks,
+                                             bool check)
         {
-            if (IsRunning == true)
-            {
-                OnExclamation("Already performing query");
-                return;
-            }
+            //if (IsRunning == true)
+            //{
+            //    //OnExclamation("Already performing query");
+            //    return;
+            //}
 
             IsRunning = true;
 
@@ -283,23 +393,62 @@ namespace snorbert
                 {
                     using (NPoco.Database db = new NPoco.Database(Db.GetOpenMySqlConnection()))
                     {
-                        string query = string.Empty;
-                        if (hostName == string.Empty)
+                        List<Signature> temp;
+                        string query = _sql.GetQuery(Sql.Query.SQL_RULES);
+
+                        if (includeAcks == true)
                         {
-                            query = _sql.GetQuery(Sql.Query.SQL_RULES_FROM_TO_PRIORITY_ALL);
+                            if (hostName == string.Empty)
+                            {
+                                query = query.Replace("#WHERE#", @"WHERE exclude.id IS NULL 
+			                                                         AND event.timestamp > @0 
+			                                                         AND event.timestamp < @1
+                                                                     AND signature.sig_priority = @2");
+
+                                temp = db.Fetch<Signature>(query, new object[] { dateFrom, dateTo, priority });
+                            }
+                            else
+                            {
+                                query = query.Replace("#WHERE#", @"WHERE exclude.id IS NULL 
+			                                                         AND event.timestamp > @0 
+			                                                         AND event.timestamp < @1
+                                                                     AND signature.sig_priority = @2
+                                                                     AND event.sid IN (SELECT sid FROM sensor WHERE hostname=@3)");
+
+                                temp = db.Fetch<Signature>(query, new object[] { dateFrom, dateTo, priority, hostName });
+                            }
                         }
                         else
                         {
-                            query = _sql.GetQuery(Sql.Query.SQL_RULES_FROM_TO_PRIORITY);
+                            if (hostName == string.Empty)
+                            {
+                                query = query.Replace("#WHERE#", @"WHERE exclude.id IS NULL 
+                                                                     AND (acknowledgment.id IS NULL OR acknowledgment.class = 1)
+			                                                         AND event.timestamp > @0 
+			                                                         AND event.timestamp < @1
+                                                                     AND signature.sig_priority = @2");
+
+                                temp = db.Fetch<Signature>(query, new object[] { dateFrom, dateTo, priority });
+                            }
+                            else
+                            {
+                                query = query.Replace("#WHERE#", @"WHERE exclude.id IS NULL 
+                                                                     AND (acknowledgment.id IS NULL OR acknowledgment.class = 1)
+			                                                         AND event.timestamp > @0 
+			                                                         AND event.timestamp < @1
+                                                                     AND signature.sig_priority = @2
+                                                                     AND event.sid IN (SELECT sid FROM sensor WHERE hostname=@3)");
+
+                                temp = db.Fetch<Signature>(query, new object[] { dateFrom, dateTo, priority, hostName });
+                            }
                         }
 
-                        List<Signature> temp = db.Fetch<Signature>(query, new object[] { dateFrom, dateTo, priority });
                         foreach (var rule in temp)
                         {
                             rule.Text = rule.Name + " (SID: " + rule.Sid.ToString() + "): " + rule.Count.ToString();
                         }
 
-                        OnComplete(temp);
+                        OnComplete(temp, check);
                     }
                 }
                 catch (Exception ex)
@@ -318,17 +467,18 @@ namespace snorbert
         /// </summary>
         /// <param name="offset"></param>
         /// <param name="pageLimit"></param>
-        public void QueryEventsRulesToFrom(string dateFrom, 
+        public void QueryEventsRulesFromTo(string dateFrom, 
                                            string dateTo, 
                                            string sid, 
                                            long offset, 
-                                           int pageLimit)
+                                           int pageLimit,
+                                           bool includeAcks)
         {
-            if (IsRunning == true)
-            {
-                OnExclamation("Already performing query");
-                return;
-            }
+            //if (IsRunning == true)
+            //{
+            //    //OnExclamation("Already performing query");
+            //    return;
+            //}
 
             IsRunning = true;
 
@@ -338,14 +488,28 @@ namespace snorbert
                 {
                     using (NPoco.Database db = new NPoco.Database(Db.GetOpenMySqlConnection()))
                     {
-                        List<Event> data = db.Fetch<Event>(_sql.GetQuery(Sql.Query.SQL_EVENTS_RULES_FROM_TO), new object[] { dateFrom, 
-                                                                                                                         dateTo,
-                                                                                                                         sid, 
-                                                                                                                         offset, 
-                                                                                                                         pageLimit });
+                        List<Event> temp;
+                        string query = _sql.GetQuery(Sql.Query.SQL_RULES_EVENTS);
 
-                        data = Helper.ProcessEventDataSet(data);
-                        OnComplete(data);
+                        if (includeAcks == true)
+                        {
+                            query = query.Replace("#WHERE#", @"WHERE exclude.id IS NULL   
+			                                                     AND event.timestamp > @0 
+			                                                     AND event.timestamp < @1
+			                                                     AND signature.sig_id = @2 LIMIT @3, @4");
+                        }
+                        else
+                        {
+                            query = query.Replace("#WHERE#", @"WHERE exclude.id IS NULL   
+                                                                 AND (acknowledgment.id IS NULL OR acknowledgment.class = 1)
+			                                                     AND event.timestamp > @0 
+			                                                     AND event.timestamp < @1
+			                                                     AND signature.sig_id = @2 LIMIT @3, @4");
+                        }
+
+                        temp = db.Fetch<Event>(query, new object[] { dateFrom, dateTo, sid, offset, pageLimit });
+                        temp = Helper.ProcessEventDataSet(temp);
+                        OnComplete(temp);
                     }
                 }
                 catch (Exception ex)
@@ -367,13 +531,14 @@ namespace snorbert
         public void QueryEventsRulesFrom(string dateFrom, 
                                          string sid, 
                                          long offset, 
-                                         int pageLimit)
+                                         int pageLimit,
+                                         bool includeAcks)
         {
-            if (IsRunning == true)
-            {
-                OnExclamation("Already performing query");
-                return;
-            }
+            //if (IsRunning == true)
+            //{
+            //    //OnExclamation("Already performing query");
+            //    return;
+            //}
 
             IsRunning = true;
 
@@ -383,13 +548,26 @@ namespace snorbert
                 {
                     using (NPoco.Database db = new NPoco.Database(Db.GetOpenMySqlConnection()))
                     {
-                        List<Event> data = db.Fetch<Event>(_sql.GetQuery(Sql.Query.SQL_EVENTS_RULES_FROM), new object[] { dateFrom, 
-                                                                                                                      sid, 
-                                                                                                                      offset, 
-                                                                                                                      pageLimit});
+                        List<Event> temp;
+                        string query = _sql.GetQuery(Sql.Query.SQL_RULES_EVENTS);
 
-                        data = Helper.ProcessEventDataSet(data);
-                        OnComplete(data);
+                        if (includeAcks == true)
+                        {
+                            query = query.Replace("#WHERE#", @"WHERE exclude.id IS NULL   
+			                                                     AND event.timestamp > @0
+			                                                     AND signature.sig_id = @1 LIMIT @2, @3");
+                        }
+                        else
+                        {
+                            query = query.Replace("#WHERE#", @"WHERE exclude.id IS NULL   
+                                                                 AND (acknowledgment.id IS NULL OR acknowledgment.class = 1)
+			                                                     AND event.timestamp > @0
+			                                                     AND signature.sig_id = @1 LIMIT @2, @3");
+                        }
+
+                        temp = db.Fetch<Event>(query, new object[] { dateFrom, sid, offset, pageLimit });
+                        temp = Helper.ProcessEventDataSet(temp);
+                        OnComplete(temp);
                     }
                 }
                 catch (Exception ex)
@@ -411,11 +589,11 @@ namespace snorbert
         public void QuerySearch(string where, 
                                 object[] args)
         {
-            if (IsRunning == true)
-            {
-                OnExclamation("Already performing query");
-                return;
-            }
+            //if (IsRunning == true)
+            //{
+            //    OnExclamation("Already performing query");
+            //    return;
+            //}
 
             IsRunning = true;
 
@@ -447,11 +625,11 @@ namespace snorbert
         /// </summary>
         public void QuerySensors()
         {
-            if (IsRunning == true)
-            {
-                OnExclamation("Already performing query");
-                return;
-            }
+            //if (IsRunning == true)
+            //{
+            //    OnExclamation("Already performing query");
+            //    return;
+            //}
 
             IsRunning = true;
 
@@ -503,11 +681,11 @@ namespace snorbert
                                        string dateTo,
                                        bool sourceIps)
         {
-            if (IsRunning == true)
-            {
-                OnExclamation("Already performing query");
-                return;
-            }
+            //if (IsRunning == true)
+            //{
+            //    OnExclamation("Already performing query");
+            //    return;
+            //}
 
             IsRunning = true;
 
@@ -520,7 +698,12 @@ namespace snorbert
                         List<string> data = new List<string>();
                         if (sourceIps == true)
                         {
-                            List<Event> temp = db.Fetch<Event>(_sql.GetQuery(Sql.Query.SQL_RULES_SRC_IPS_FROM_TO), new object[] { id, dateFrom, dateTo });
+                            string query = _sql.GetQuery(Sql.Query.SQL_RULES_SRC_IPS);
+                            query = query.Replace("#WHERE#", @"WHERE event.signature=@0 
+                                                                 AND event.timestamp > @1
+                                                                 AND event.timestamp < @2");
+
+                            List<Event> temp = db.Fetch<Event>(query, new object[] { id, dateFrom, dateTo });
                             foreach (var rule in temp)
                             {
                                 data.Add(rule.IpSrcTxt);
@@ -528,7 +711,12 @@ namespace snorbert
                         }
                         else
                         {
-                            List<Event> temp = db.Fetch<Event>(_sql.GetQuery(Sql.Query.SQL_RULES_DST_IPS_FROM_TO), new object[] { id, dateFrom, dateTo });
+                            string query = _sql.GetQuery(Sql.Query.SQL_RULES_DST_IPS);
+                            query = query.Replace("#WHERE#", @"WHERE event.signature=@0 
+                                                                 AND event.timestamp > @1
+                                                                 AND event.timestamp < @2");
+
+                            List<Event> temp = db.Fetch<Event>(query, new object[] { id, dateFrom, dateTo });
                             foreach (var rule in temp)
                             {
                                 data.Add(rule.IpDstTxt);
@@ -559,11 +747,11 @@ namespace snorbert
                                      string dateFrom,   
                                      bool sourceIps)
         {
-            if (IsRunning == true)
-            {
-                OnExclamation("Already performing query");
-                return;
-            }
+            //if (IsRunning == true)
+            //{
+            //    OnExclamation("Already performing query");
+            //    return;
+            //}
 
             IsRunning = true;
 
@@ -576,7 +764,11 @@ namespace snorbert
                         List<string> data = new List<string>();
                         if (sourceIps == true)
                         {
-                            List<Event> temp = db.Fetch<Event>(_sql.GetQuery(Sql.Query.SQL_RULES_SRC_IPS_FROM), new object[] { id, dateFrom });
+                            string query = _sql.GetQuery(Sql.Query.SQL_RULES_SRC_IPS);
+                            query = query.Replace("#WHERE#", @"WHERE event.signature=@0
+                                                                 AND event.timestamp > @1");
+
+                            List<Event> temp = db.Fetch<Event>(query, new object[] { id, dateFrom });
                             foreach (var rule in temp)
                             {
                                 data.Add(rule.IpSrcTxt);
@@ -584,7 +776,11 @@ namespace snorbert
                         }
                         else
                         {
-                            List<Event> temp = db.Fetch<Event>(_sql.GetQuery(Sql.Query.SQL_RULES_DST_IPS_FROM), new object[] { id, dateFrom });
+                            string query = _sql.GetQuery(Sql.Query.SQL_RULES_DST_IPS);
+                            query = query.Replace("#WHERE#", @"WHERE event.signature=@0
+                                                                 AND event.timestamp > @1");
+
+                            List<Event> temp = db.Fetch<Event>(query, new object[] { id, dateFrom });
                             foreach (var rule in temp)
                             {
                                 data.Add(rule.IpDstTxt);
@@ -622,12 +818,25 @@ namespace snorbert
         /// <summary>
         /// 
         /// </summary>
-        private void OnComplete(List<Signature> data)
+        /// <param name="data"></param>
+        /// <param name="check"></param>
+        private void OnComplete(List<Signature> data, bool check)
         {
-            var handler = RuleQueryComplete;
-            if (handler != null)
+            if (check == true)
             {
-                handler(data);
+                var handler = RuleCheckQueryComplete;
+                if (handler != null)
+                {
+                    handler(data);
+                }
+            }
+            else
+            {
+                var handler = RuleQueryComplete;
+                if (handler != null)
+                {
+                    handler(data);
+                }
             }
         }
 

@@ -5,23 +5,27 @@ namespace snorbert.Data
     /// <summary>
     /// 
     /// </summary>
-    [TableName("Rules")]
-    [PrimaryKey("Id")]
+    [TableName("rule")]
+    [PrimaryKey("sig_name,sig_rev,sig_sid,sig_gid")]
     public class Rule
     {
-        [Column("Id")]
-        public long Id { get; set; }
-        [Column("Sid")]
+        [Column("sig_name")]
+        public string Name { get; set; }
+        [Column("sig_rev")]
+        public long Rev { get; set; }
+        [Column("sig_sid")]
         public string Sid { get; set; }
-        [Column("Rule")]
+        [Column("sig_gid")]
+        public string Gid { get; set; }
+        [Column("rule")]
         public string Data { get; set; }
-        
+
         /// <summary>
         /// 
         /// </summary>
         public Rule()
         {
-            Sid = string.Empty;
+            Name = string.Empty;
             Data = string.Empty;
         }
     }

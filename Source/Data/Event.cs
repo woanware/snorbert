@@ -109,6 +109,8 @@ namespace snorbert.Data
         public string Initials { get; set; }
         [Column("acknowledgment_class")]
         public string AcknowledgmentClass { get; set; }
+        [Column("rule")]
+        public string Rule { get; set; }
         #endregion
 
         #region Constructor
@@ -123,6 +125,7 @@ namespace snorbert.Data
             TcpFlagsString = string.Empty;
             Initials = string.Empty;
             AcknowledgmentClass = string.Empty;
+            Rule = string.Empty;
         }
         #endregion
     }

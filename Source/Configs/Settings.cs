@@ -19,17 +19,13 @@ namespace snorbert.Configs
         public Size FormSize { get; set; }
         public FormWindowState FormState { get; set; }
         private const string FILENAME = "Settings.xml";
-        public List<RuleFile> RuleFiles { get; set; }
         #endregion
 
         #region Constructor
         /// <summary>
         /// 
         /// </summary>
-        public Settings()
-        {
-            RuleFiles = new List<RuleFile>();
-        }
+        public Settings(){}
         #endregion
 
         #region Public Methods
@@ -62,7 +58,6 @@ namespace snorbert.Configs
                     FormLocation = settings.FormLocation;
                     FormSize = settings.FormSize;
                     FormState = settings.FormState;
-                    RuleFiles = settings.RuleFiles;
                    
                     return string.Empty;
                 }

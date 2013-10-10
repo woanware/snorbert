@@ -57,6 +57,7 @@
             this.label1 = new System.Windows.Forms.Label();
             this.ipSource = new IPAddressControlLib.IPAddressControl();
             this.tabPageSignature = new System.Windows.Forms.TabPage();
+            this.btnLinkedRules = new System.Windows.Forms.Button();
             this.btnRule = new System.Windows.Forms.Button();
             this.txtRule = new System.Windows.Forms.TextBox();
             this.label30 = new System.Windows.Forms.Label();
@@ -112,12 +113,13 @@
             this.tabPageAscii = new System.Windows.Forms.TabPage();
             this.txtPayloadAscii = new System.Windows.Forms.RichTextBox();
             this.tabPageMisc = new System.Windows.Forms.TabPage();
-            this.txtSensorName = new System.Windows.Forms.TextBox();
-            this.lblSensorName = new System.Windows.Forms.Label();
             this.txtEventCid = new System.Windows.Forms.TextBox();
             this.lblEventCid = new System.Windows.Forms.Label();
             this.txtEventSid = new System.Windows.Forms.TextBox();
             this.lblEventSid = new System.Windows.Forms.Label();
+            this.txtSensorName = new System.Windows.Forms.TextBox();
+            this.lblSensorName = new System.Windows.Forms.Label();
+            this.toolTip = new System.Windows.Forms.ToolTip(this.components);
             this.tabEvent.SuspendLayout();
             this.tabPageIpHeader.SuspendLayout();
             this.tabPageSignature.SuspendLayout();
@@ -401,6 +403,7 @@
             // 
             // tabPageSignature
             // 
+            this.tabPageSignature.Controls.Add(this.btnLinkedRules);
             this.tabPageSignature.Controls.Add(this.btnRule);
             this.tabPageSignature.Controls.Add(this.txtRule);
             this.tabPageSignature.Controls.Add(this.label30);
@@ -419,13 +422,24 @@
             this.tabPageSignature.Text = "Signature Info";
             this.tabPageSignature.UseVisualStyleBackColor = true;
             // 
+            // btnLinkedRules
+            // 
+            this.btnLinkedRules.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.btnLinkedRules.Image = ((System.Drawing.Image)(resources.GetObject("btnLinkedRules.Image")));
+            this.btnLinkedRules.Location = new System.Drawing.Point(727, 93);
+            this.btnLinkedRules.Name = "btnLinkedRules";
+            this.btnLinkedRules.Size = new System.Drawing.Size(26, 26);
+            this.btnLinkedRules.TabIndex = 11;
+            this.btnLinkedRules.UseVisualStyleBackColor = true;
+            this.btnLinkedRules.Click += new System.EventHandler(this.btnLinkedRules_Click);
+            // 
             // btnRule
             // 
             this.btnRule.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.btnRule.Image = ((System.Drawing.Image)(resources.GetObject("btnRule.Image")));
-            this.btnRule.Location = new System.Drawing.Point(728, 92);
+            this.btnRule.Location = new System.Drawing.Point(699, 93);
             this.btnRule.Name = "btnRule";
-            this.btnRule.Size = new System.Drawing.Size(29, 29);
+            this.btnRule.Size = new System.Drawing.Size(26, 26);
             this.btnRule.TabIndex = 10;
             this.btnRule.UseVisualStyleBackColor = true;
             this.btnRule.Click += new System.EventHandler(this.btnRule_Click);
@@ -437,7 +451,7 @@
             this.txtRule.Location = new System.Drawing.Point(13, 95);
             this.txtRule.Name = "txtRule";
             this.txtRule.ReadOnly = true;
-            this.txtRule.Size = new System.Drawing.Size(705, 23);
+            this.txtRule.Size = new System.Drawing.Size(681, 23);
             this.txtRule.TabIndex = 9;
             // 
             // label30
@@ -944,25 +958,6 @@
             this.tabPageMisc.Text = "Misc";
             this.tabPageMisc.UseVisualStyleBackColor = true;
             // 
-            // txtSensorName
-            // 
-            this.txtSensorName.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.txtSensorName.Location = new System.Drawing.Point(14, 72);
-            this.txtSensorName.Name = "txtSensorName";
-            this.txtSensorName.ReadOnly = true;
-            this.txtSensorName.Size = new System.Drawing.Size(738, 23);
-            this.txtSensorName.TabIndex = 8;
-            // 
-            // lblSensorName
-            // 
-            this.lblSensorName.AutoSize = true;
-            this.lblSensorName.Location = new System.Drawing.Point(13, 53);
-            this.lblSensorName.Name = "lblSensorName";
-            this.lblSensorName.Size = new System.Drawing.Size(77, 15);
-            this.lblSensorName.TabIndex = 7;
-            this.lblSensorName.Text = "Sensor Name";
-            // 
             // txtEventCid
             // 
             this.txtEventCid.Location = new System.Drawing.Point(73, 27);
@@ -996,6 +991,25 @@
             this.lblEventSid.Size = new System.Drawing.Size(56, 15);
             this.lblEventSid.TabIndex = 9;
             this.lblEventSid.Text = "Event SID";
+            // 
+            // txtSensorName
+            // 
+            this.txtSensorName.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.txtSensorName.Location = new System.Drawing.Point(14, 72);
+            this.txtSensorName.Name = "txtSensorName";
+            this.txtSensorName.ReadOnly = true;
+            this.txtSensorName.Size = new System.Drawing.Size(738, 23);
+            this.txtSensorName.TabIndex = 8;
+            // 
+            // lblSensorName
+            // 
+            this.lblSensorName.AutoSize = true;
+            this.lblSensorName.Location = new System.Drawing.Point(13, 53);
+            this.lblSensorName.Name = "lblSensorName";
+            this.lblSensorName.Size = new System.Drawing.Size(77, 15);
+            this.lblSensorName.TabIndex = 7;
+            this.lblSensorName.Text = "Sensor Name";
             // 
             // ControlEventInfo
             // 
@@ -1115,5 +1129,7 @@
         private System.Windows.Forms.Label lblEventCid;
         private System.Windows.Forms.TextBox txtEventSid;
         private System.Windows.Forms.Label lblEventSid;
+        private System.Windows.Forms.Button btnLinkedRules;
+        private System.Windows.Forms.ToolTip toolTip;
     }
 }
