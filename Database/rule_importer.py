@@ -34,14 +34,20 @@ def import_rules(server, database, user, password, rules_file):
 			match = re.search( r'rev:\s*?(.*?);', line, re.I)
 			if match:
 				rev = match.group(1)
+			else:
+				rev = 1
 				
 			match = re.search( r'sid:\s*?(.*?);', line, re.I)
 			if match:
 				sid = match.group(1)
+			else:
+				continue
 				
 			match = re.search( r'gid:\s*?(.*?);', line, re.I)
 			if match:
 				gid = match.group(1)
+			else 
+				gid = 1
 				
 			try:
 				# Retrieve any existing records
