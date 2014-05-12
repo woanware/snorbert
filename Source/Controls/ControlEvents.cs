@@ -29,6 +29,7 @@ namespace snorbert.Controls
         private Sql _sql;
         private Connection _connection;
         private List<AcknowledgmentClass> _acknowledgmentClasses;
+        private System.Timers.Timer _timerRefresh;
         #endregion
 
         #region Constructor
@@ -50,13 +51,33 @@ namespace snorbert.Controls
             Helper.AddListColumn(listEvents, "Classification", "AcknowledgmentClass");
             Helper.AddListColumn(listEvents, "Initials", "Initials");
             Helper.AddListColumn(listEvents, "Signature", "SigName");
+            Helper.AddListColumn(listEvents, "Sensor", "SensorName");
             Helper.AddListColumn(listEvents, "Payload (ASCII)", "PayloadAscii");
             Helper.ResizeEventListColumns(listEvents, true);
 
             _querier = new Querier();
             _querier.Error += OnQuerier_Error;
             _querier.Exclamation += OnQuerier_Exclamation;
-            _querier.EventQueryComplete += OnQuerier_EventQueryComplete;           
+            _querier.EventQueryComplete += OnQuerier_EventQueryComplete;
+
+
+            Settings settings = new Settings();
+            if (settings.FileExists == true)
+            {
+                string ret = settings.Load();
+                if (ret.Length > 0)
+                {
+                    UserInterface.DisplayErrorMessageBox("An error occurred whilst loading the settings file: " + ret);
+                }
+                else
+                {
+                    _timerRefresh = new System.Timers.Timer();
+                    _timerRefresh.Elapsed += OnTimerRefresh_Elapsed;
+                    _timerRefresh.Interval = (settings.EventsRefresh * 60000); // Convert to milliseconds
+                    _timerRefresh.Enabled = true;
+                }
+            }
+           
         }
         #endregion
 
@@ -561,6 +582,18 @@ namespace snorbert.Controls
         private void ctxMenuCopyCid_Click(object sender, EventArgs e)
         {
             Helper.CopyDataToClipboard(this, listEvents, Global.FieldsEventCopy.Cid);
+        }
+        #endregion
+
+        #region Timer Event Handlers
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void OnTimerRefresh_Elapsed(object sender, System.Timers.ElapsedEventArgs e)
+        {
+            LoadEvents(1);
         }
         #endregion
     }

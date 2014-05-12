@@ -51,7 +51,6 @@
             this.ctxMenuAcknowledgmentClear = new System.Windows.Forms.ToolStripMenuItem();
             this.btnPagingNextPage = new System.Windows.Forms.Button();
             this.btnPagingPreviousPage = new System.Windows.Forms.Button();
-            this.controlEventInfo = new snorbert.Controls.ControlEventInfo();
             this.cboSearch = new System.Windows.Forms.ComboBox();
             this.panelTop = new System.Windows.Forms.Panel();
             this.listFilters = new BrightIdeasSoftware.ObjectListView();
@@ -60,6 +59,7 @@
             this.btnFilterEdit = new System.Windows.Forms.Button();
             this.btnFilterDelete = new System.Windows.Forms.Button();
             this.panelBottom = new System.Windows.Forms.Panel();
+            this.controlEventInfo = new snorbert.Controls.ControlEventInfo();
             ((System.ComponentModel.ISupportInitialize)(this.splitter)).BeginInit();
             this.splitter.Panel1.SuspendLayout();
             this.splitter.Panel2.SuspendLayout();
@@ -283,15 +283,6 @@
             this.btnPagingPreviousPage.UseVisualStyleBackColor = true;
             this.btnPagingPreviousPage.Click += new System.EventHandler(this.btnPagingSearchPreviousPage_Click);
             // 
-            // controlEventInfo
-            // 
-            this.controlEventInfo.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.controlEventInfo.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.controlEventInfo.Location = new System.Drawing.Point(0, 0);
-            this.controlEventInfo.Name = "controlEventInfo";
-            this.controlEventInfo.Size = new System.Drawing.Size(792, 145);
-            this.controlEventInfo.TabIndex = 23;
-            // 
             // cboSearch
             // 
             this.cboSearch.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
@@ -303,6 +294,7 @@
             this.cboSearch.Name = "cboSearch";
             this.cboSearch.Size = new System.Drawing.Size(60, 23);
             this.cboSearch.TabIndex = 27;
+            this.cboSearch.SelectedIndexChanged += new System.EventHandler(this.cboSearch_SelectedIndexChanged);
             // 
             // panelTop
             // 
@@ -388,6 +380,15 @@
             this.panelBottom.Name = "panelBottom";
             this.panelBottom.Size = new System.Drawing.Size(792, 267);
             this.panelBottom.TabIndex = 2;
+            // 
+            // controlEventInfo
+            // 
+            this.controlEventInfo.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.controlEventInfo.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.controlEventInfo.Location = new System.Drawing.Point(0, 0);
+            this.controlEventInfo.Name = "controlEventInfo";
+            this.controlEventInfo.Size = new System.Drawing.Size(792, 145);
+            this.controlEventInfo.TabIndex = 23;
             // 
             // ControlSearch
             // 

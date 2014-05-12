@@ -160,7 +160,23 @@ namespace snorbert.Controls
                 // Misc Tab
                 txtEventSid.Text = temp.Sid.ToString();
                 txtEventCid.Text = temp.Cid.ToString();
-                txtSensorName.Text = temp.SensorName;
+                txtAckNotes.Text = temp.SensorName;
+
+                // Acknowledgement Tab
+                using (NPoco.Database dbMySql = new NPoco.Database(Db.GetOpenMySqlConnection()))
+                {
+                    string query = _sql.GetQuery(snorbert.Configs.Sql.Query.SQL_ACKNOWLEDGEMENT_DETAILS);
+                    query = query.Replace("#WHERE#", @"WHERE acknowledgment.id = @0");
+
+                    List<Acknowledgment> acknowledgment = dbMySql.Fetch<Acknowledgment>(query, new object[] { temp.AcknowledgmentId });
+                    if (acknowledgment.Any())
+                    {
+                        txtAckInitials.Text = acknowledgment.First().Initials;
+                        txtAckClassification.Text = acknowledgment.First().Description;
+                        txtAckNotes.Text = acknowledgment.First().Notes;
+                        txtAckTimestamp.Text = acknowledgment.First().Timestamp.ToString();
+                    }
+                }
             }
         }
 
@@ -169,55 +185,75 @@ namespace snorbert.Controls
         /// </summary>
         public void ClearControls()
         {
-            // IP Tab
-            ipSource.Text = string.Empty;
-            ipDest.Text = string.Empty;
-            txtIpCsum.Text = string.Empty;
-            txtIpFlags.Text = string.Empty;
-            txtIpHlen.Text = string.Empty;
-            txtIpId.Text = string.Empty;
-            txtIpLen.Text = string.Empty;
-            txtIpOff.Text = string.Empty;
-            txtIpProto.Text = string.Empty;
-            txtIpTos.Text = string.Empty;
-            txtIpTtl.Text = string.Empty;
-            txtIpVer.Text = string.Empty;
+            MethodInvoker methodInvoker = delegate
+            {
+                using (new HourGlass(this))
+                {
+                    // IP Tab
+                    ipSource.Text = string.Empty;
+                    ipDest.Text = string.Empty;
+                    txtIpCsum.Text = string.Empty;
+                    txtIpFlags.Text = string.Empty;
+                    txtIpHlen.Text = string.Empty;
+                    txtIpId.Text = string.Empty;
+                    txtIpLen.Text = string.Empty;
+                    txtIpOff.Text = string.Empty;
+                    txtIpProto.Text = string.Empty;
+                    txtIpTos.Text = string.Empty;
+                    txtIpTtl.Text = string.Empty;
+                    txtIpVer.Text = string.Empty;
 
-            // Signature Tab
-            txtSigCategory.Text = string.Empty;
-            txtSigGenId.Text = string.Empty;
-            txtSigSigRev.Text = string.Empty;
-            txtSigSigId.Text = string.Empty;
-            txtRule.Text = string.Empty;
+                    // Signature Tab
+                    txtSigCategory.Text = string.Empty;
+                    txtSigGenId.Text = string.Empty;
+                    txtSigSigRev.Text = string.Empty;
+                    txtSigSigId.Text = string.Empty;
+                    txtRule.Text = string.Empty;
 
-            // TCP Tab
-            txtTcpAck.Text = string.Empty;
-            txtTcpCsum.Text = string.Empty;
-            txtTcpDstPort.Text = string.Empty;
-            txtTcpFlags.Text = string.Empty;
-            txtTcpOff.Text = string.Empty;
-            txtTcpRes.Text = string.Empty;
-            txtTcpSeq.Text = string.Empty;
-            txtTcpSrcPrt.Text = string.Empty;
-            txtTcpUrp.Text = string.Empty;
-            txtTcpWin.Text = string.Empty;
+                    // TCP Tab
+                    txtTcpAck.Text = string.Empty;
+                    txtTcpCsum.Text = string.Empty;
+                    txtTcpDstPort.Text = string.Empty;
+                    txtTcpFlags.Text = string.Empty;
+                    txtTcpOff.Text = string.Empty;
+                    txtTcpRes.Text = string.Empty;
+                    txtTcpSeq.Text = string.Empty;
+                    txtTcpSrcPrt.Text = string.Empty;
+                    txtTcpUrp.Text = string.Empty;
+                    txtTcpWin.Text = string.Empty;
 
-            // UDP Tab
-            txtUdpSrcPort.Text = string.Empty;
-            txtUdpDstPort.Text = string.Empty;
-            txtUdpLen.Text = string.Empty;
-            txtUdpCsum.Text = string.Empty;
+                    // UDP Tab
+                    txtUdpSrcPort.Text = string.Empty;
+                    txtUdpDstPort.Text = string.Empty;
+                    txtUdpLen.Text = string.Empty;
+                    txtUdpCsum.Text = string.Empty;
 
-            // References Tab
-            listReferences.ClearObjects();
-            ResizeReferenceListColumns();
+                    // References Tab
+                    listReferences.ClearObjects();
+                    ResizeReferenceListColumns();
 
-            // Payload Tab (HEX)
-            DynamicByteProvider dynamicByteProvider = new DynamicByteProvider(new byte[] { });
-            hexEvent.ByteProvider = dynamicByteProvider;
+                    // Payload Tab (HEX)
+                    DynamicByteProvider dynamicByteProvider = new DynamicByteProvider(new byte[] { });
+                    hexEvent.ByteProvider = dynamicByteProvider;
 
-            // Payload Tab (ASCII)
-            txtPayloadAscii.Text = string.Empty;
+                    // Payload Tab (ASCII)
+                    txtPayloadAscii.Text = string.Empty;
+
+                    // Acknowledgement Tab
+                    txtAckInitials.Text = string.Empty;
+                    txtAckClassification.Text = string.Empty;
+                    txtAckNotes.Text = string.Empty;
+                }
+            };
+
+            if (this.InvokeRequired == true)
+            {
+                this.BeginInvoke(methodInvoker);
+            }
+            else
+            {
+                methodInvoker.Invoke();
+            }
         }
         #endregion
 

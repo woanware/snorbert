@@ -18,6 +18,7 @@ namespace snorbert.Configs
         public Point FormLocation { get; set; }
         public Size FormSize { get; set; }
         public FormWindowState FormState { get; set; }
+        public int EventsRefresh { get; set; } // Minutes
         private const string FILENAME = "Settings.xml";
         #endregion
 
@@ -25,7 +26,10 @@ namespace snorbert.Configs
         /// <summary>
         /// 
         /// </summary>
-        public Settings(){}
+        public Settings()
+        {
+            EventsRefresh = 5;
+        }
         #endregion
 
         #region Public Methods
@@ -58,6 +62,7 @@ namespace snorbert.Configs
                     FormLocation = settings.FormLocation;
                     FormSize = settings.FormSize;
                     FormState = settings.FormState;
+                    EventsRefresh = settings.EventsRefresh;
                    
                     return string.Empty;
                 }

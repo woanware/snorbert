@@ -4,6 +4,8 @@
   <Data><![CDATA[SELECT distinct IFNULL(cast(inet_ntoa(iphdr.ip_src) as char(15)), 0) as ip_src
                    FROM event
               LEFT JOIN iphdr ON (event.sid = iphdr.sid AND event.cid = iphdr.cid)
+			  LEFT JOIN acknowledgment on (acknowledgment.sid = event.sid AND acknowledgment.cid = event.cid )
+			  LEFT JOIN acknowledgment_class on (acknowledgment_class.id = acknowledgment.class )
                   #WHERE#]]>
   </Data>
 </SqlQuery>

@@ -58,7 +58,11 @@
             this.ctxMenuSep2 = new System.Windows.Forms.ToolStripSeparator();
             this.ctxMenuExtractIpInfo = new System.Windows.Forms.ToolStripMenuItem();
             this.ctxMenuExtractIpInfoUniqueSource = new System.Windows.Forms.ToolStripMenuItem();
+            this.ctxMenuExtractIpInfoUniqueSourceList = new System.Windows.Forms.ToolStripMenuItem();
+            this.ctxMenuExtractIpInfoUniqueSourceCsv = new System.Windows.Forms.ToolStripMenuItem();
             this.ctxMenuExtractIpInfoUniqueDestination = new System.Windows.Forms.ToolStripMenuItem();
+            this.ctxMenuExtractIpInfoUniqueDestinationList = new System.Windows.Forms.ToolStripMenuItem();
+            this.ctxMenuExtractIpInfoUniqueDestinationCsv = new System.Windows.Forms.ToolStripMenuItem();
             this.ctxMenuSep3 = new System.Windows.Forms.ToolStripSeparator();
             this.ctxMenuExport = new System.Windows.Forms.ToolStripMenuItem();
             this.ctxMenuExportAll = new System.Windows.Forms.ToolStripMenuItem();
@@ -358,17 +362,49 @@
             // 
             // ctxMenuExtractIpInfoUniqueSource
             // 
+            this.ctxMenuExtractIpInfoUniqueSource.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.ctxMenuExtractIpInfoUniqueSourceList,
+            this.ctxMenuExtractIpInfoUniqueSourceCsv});
             this.ctxMenuExtractIpInfoUniqueSource.Name = "ctxMenuExtractIpInfoUniqueSource";
             this.ctxMenuExtractIpInfoUniqueSource.Size = new System.Drawing.Size(175, 22);
             this.ctxMenuExtractIpInfoUniqueSource.Text = "Unique Source";
-            this.ctxMenuExtractIpInfoUniqueSource.Click += new System.EventHandler(this.ctxMenuExtractIpInfoUniqueSource_Click);
+            // 
+            // ctxMenuExtractIpInfoUniqueSourceList
+            // 
+            this.ctxMenuExtractIpInfoUniqueSourceList.Name = "ctxMenuExtractIpInfoUniqueSourceList";
+            this.ctxMenuExtractIpInfoUniqueSourceList.Size = new System.Drawing.Size(95, 22);
+            this.ctxMenuExtractIpInfoUniqueSourceList.Text = "List";
+            this.ctxMenuExtractIpInfoUniqueSourceList.Click += new System.EventHandler(this.ctxMenuExtractIpInfoUniqueSourceList_Click);
+            // 
+            // ctxMenuExtractIpInfoUniqueSourceCsv
+            // 
+            this.ctxMenuExtractIpInfoUniqueSourceCsv.Name = "ctxMenuExtractIpInfoUniqueSourceCsv";
+            this.ctxMenuExtractIpInfoUniqueSourceCsv.Size = new System.Drawing.Size(95, 22);
+            this.ctxMenuExtractIpInfoUniqueSourceCsv.Text = "CSV";
+            this.ctxMenuExtractIpInfoUniqueSourceCsv.Click += new System.EventHandler(this.ctxMenuExtractIpInfoUniqueSourceCsv_Click);
             // 
             // ctxMenuExtractIpInfoUniqueDestination
             // 
+            this.ctxMenuExtractIpInfoUniqueDestination.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.ctxMenuExtractIpInfoUniqueDestinationList,
+            this.ctxMenuExtractIpInfoUniqueDestinationCsv});
             this.ctxMenuExtractIpInfoUniqueDestination.Name = "ctxMenuExtractIpInfoUniqueDestination";
             this.ctxMenuExtractIpInfoUniqueDestination.Size = new System.Drawing.Size(175, 22);
             this.ctxMenuExtractIpInfoUniqueDestination.Text = "Unique Destination";
-            this.ctxMenuExtractIpInfoUniqueDestination.Click += new System.EventHandler(this.ctxMenuExtractIpInfoUniqueDestination_Click);
+            // 
+            // ctxMenuExtractIpInfoUniqueDestinationList
+            // 
+            this.ctxMenuExtractIpInfoUniqueDestinationList.Name = "ctxMenuExtractIpInfoUniqueDestinationList";
+            this.ctxMenuExtractIpInfoUniqueDestinationList.Size = new System.Drawing.Size(95, 22);
+            this.ctxMenuExtractIpInfoUniqueDestinationList.Text = "List";
+            this.ctxMenuExtractIpInfoUniqueDestinationList.Click += new System.EventHandler(this.ctxMenuExtractIpInfoUniqueDestinationList_Click);
+            // 
+            // ctxMenuExtractIpInfoUniqueDestinationCsv
+            // 
+            this.ctxMenuExtractIpInfoUniqueDestinationCsv.Name = "ctxMenuExtractIpInfoUniqueDestinationCsv";
+            this.ctxMenuExtractIpInfoUniqueDestinationCsv.Size = new System.Drawing.Size(95, 22);
+            this.ctxMenuExtractIpInfoUniqueDestinationCsv.Text = "CSV";
+            this.ctxMenuExtractIpInfoUniqueDestinationCsv.Click += new System.EventHandler(this.ctxMenuExtractIpInfoUniqueDestinationCsv_Click);
             // 
             // ctxMenuSep3
             // 
@@ -794,5 +830,9 @@
         private System.Windows.Forms.ToolStripMenuItem ctxMenuSignature;
         private System.Windows.Forms.ToolStripMenuItem ctxMenuCopyCid;
         private System.Windows.Forms.CheckBox chkIncludeAcknowledged;
+        private System.Windows.Forms.ToolStripMenuItem ctxMenuExtractIpInfoUniqueSourceList;
+        private System.Windows.Forms.ToolStripMenuItem ctxMenuExtractIpInfoUniqueSourceCsv;
+        private System.Windows.Forms.ToolStripMenuItem ctxMenuExtractIpInfoUniqueDestinationList;
+        private System.Windows.Forms.ToolStripMenuItem ctxMenuExtractIpInfoUniqueDestinationCsv;
     }
 }

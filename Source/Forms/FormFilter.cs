@@ -183,6 +183,7 @@ namespace snorbert.Forms
             AddFilterDefinition("Sensor", "event.sid", Global.FilterType.Sensor);
             AddFilterDefinition("Initials", "acknowledgment.initials", Global.FilterType.Initials);
             AddFilterDefinition("Acknowledgement Classifications", "acknowledgment.class", Global.FilterType.AcknowledgementClass);
+            AddFilterDefinition("Acknowledgement Notes", "acknowledgment.notes", Global.FilterType.AcknowledgementNotes);
         }
 
         /// <summary>
@@ -337,6 +338,8 @@ namespace snorbert.Forms
                     cboCondition.Items.Clear();
                     cboCondition.Items.Add("=");
                     cboCondition.Items.Add("!=");
+                    cboCondition.Items.Add(">");
+                    cboCondition.Items.Add("<");
 
                     cboValue.Visible = false;
                     txtValue.Visible = false;
@@ -443,6 +446,15 @@ namespace snorbert.Forms
                     txtValue.Visible = true;
                     ipValue.Visible = false;
                     break;
+                case Global.FilterType.AcknowledgementNotes:
+                    cboCondition.Items.Clear();
+                    cboCondition.Items.Add("LIKE");
+                    cboCondition.Items.Add("NOT LIKE");
+
+                    cboValue.Visible = false;
+                    txtValue.Visible = true;
+                    ipValue.Visible = false;
+                    break;
             }
 
             cboCondition.Select();
@@ -540,6 +552,10 @@ namespace snorbert.Forms
                     return payloadHex; // Test if hex?
                 case Global.FilterType.Initials:
                     return txtValue.Text.ToUpper();
+                case Global.FilterType.AcknowledgementNotes:
+                    string notes = txtValue.Text;
+                    notes = notes.Replace("%", string.Empty);
+                    return "%" + notes + "%";
                 default:
                     return string.Empty;
             }

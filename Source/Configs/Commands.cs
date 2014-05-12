@@ -109,7 +109,6 @@ namespace snorbert.Configs
         {
             get
             {
-                //string path = System.IO.Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), @"woanware\" + Application.ProductName + @"\");
                 return File.Exists(GetPath());
             }
         }

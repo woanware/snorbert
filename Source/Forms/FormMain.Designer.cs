@@ -40,8 +40,6 @@ namespace snorbert.Forms
             this.menuTools = new System.Windows.Forms.ToolStripMenuItem();
             this.menuToolsConnections = new System.Windows.Forms.ToolStripMenuItem();
             this.menuToolsSep1 = new System.Windows.Forms.ToolStripSeparator();
-            this.menuToolsImportRules = new System.Windows.Forms.ToolStripMenuItem();
-            this.menuToolsSep2 = new System.Windows.Forms.ToolStripSeparator();
             this.menuToolsExcludes = new System.Windows.Forms.ToolStripMenuItem();
             this.menuToolsExcludeConfiguration = new System.Windows.Forms.ToolStripMenuItem();
             this.menuToolsExcludesExport = new System.Windows.Forms.ToolStripMenuItem();
@@ -145,8 +143,6 @@ namespace snorbert.Forms
             this.menuTools.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.menuToolsConnections,
             this.menuToolsSep1,
-            this.menuToolsImportRules,
-            this.menuToolsSep2,
             this.menuToolsExcludes});
             this.menuTools.Name = "menuTools";
             this.menuTools.Size = new System.Drawing.Size(48, 20);
@@ -155,19 +151,14 @@ namespace snorbert.Forms
             // menuToolsConnections
             // 
             this.menuToolsConnections.Name = "menuToolsConnections";
-            this.menuToolsConnections.Size = new System.Drawing.Size(141, 22);
+            this.menuToolsConnections.Size = new System.Drawing.Size(152, 22);
             this.menuToolsConnections.Text = "Connections";
             this.menuToolsConnections.Click += new System.EventHandler(this.menuToolsConnections_Click);
             // 
             // menuToolsSep1
             // 
             this.menuToolsSep1.Name = "menuToolsSep1";
-            this.menuToolsSep1.Size = new System.Drawing.Size(138, 6);
-            // 
-            // menuToolsSep2
-            // 
-            this.menuToolsSep2.Name = "menuToolsSep2";
-            this.menuToolsSep2.Size = new System.Drawing.Size(138, 6);
+            this.menuToolsSep1.Size = new System.Drawing.Size(149, 6);
             // 
             // menuToolsExcludes
             // 
@@ -175,7 +166,7 @@ namespace snorbert.Forms
             this.menuToolsExcludeConfiguration,
             this.menuToolsExcludesExport});
             this.menuToolsExcludes.Name = "menuToolsExcludes";
-            this.menuToolsExcludes.Size = new System.Drawing.Size(141, 22);
+            this.menuToolsExcludes.Size = new System.Drawing.Size(152, 22);
             this.menuToolsExcludes.Text = "&Excludes";
             // 
             // menuToolsExcludeConfiguration
@@ -405,7 +396,7 @@ namespace snorbert.Forms
             this.tabPageEvents.Location = new System.Drawing.Point(4, 24);
             this.tabPageEvents.Name = "tabPageEvents";
             this.tabPageEvents.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPageEvents.Size = new System.Drawing.Size(798, 453);
+            this.tabPageEvents.Size = new System.Drawing.Size(859, 453);
             this.tabPageEvents.TabIndex = 0;
             this.tabPageEvents.Text = "Events";
             this.tabPageEvents.UseVisualStyleBackColor = true;
@@ -418,7 +409,7 @@ namespace snorbert.Forms
             this.controlEvents.Location = new System.Drawing.Point(3, 3);
             this.controlEvents.Margin = new System.Windows.Forms.Padding(0);
             this.controlEvents.Name = "controlEvents";
-            this.controlEvents.Size = new System.Drawing.Size(792, 447);
+            this.controlEvents.Size = new System.Drawing.Size(853, 447);
             this.controlEvents.TabIndex = 0;
             // 
             // tabPageRules
@@ -447,7 +438,7 @@ namespace snorbert.Forms
             this.tabPageSearch.Location = new System.Drawing.Point(4, 24);
             this.tabPageSearch.Name = "tabPageSearch";
             this.tabPageSearch.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPageSearch.Size = new System.Drawing.Size(798, 453);
+            this.tabPageSearch.Size = new System.Drawing.Size(859, 453);
             this.tabPageSearch.TabIndex = 2;
             this.tabPageSearch.Text = "Search";
             this.tabPageSearch.UseVisualStyleBackColor = true;
@@ -459,7 +450,7 @@ namespace snorbert.Forms
             this.controlSearch.Location = new System.Drawing.Point(3, 3);
             this.controlSearch.Margin = new System.Windows.Forms.Padding(0);
             this.controlSearch.Name = "controlSearch";
-            this.controlSearch.Size = new System.Drawing.Size(792, 447);
+            this.controlSearch.Size = new System.Drawing.Size(853, 447);
             this.controlSearch.TabIndex = 0;
             // 
             // tabPageSensors
@@ -468,7 +459,7 @@ namespace snorbert.Forms
             this.tabPageSensors.Location = new System.Drawing.Point(4, 24);
             this.tabPageSensors.Name = "tabPageSensors";
             this.tabPageSensors.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPageSensors.Size = new System.Drawing.Size(798, 453);
+            this.tabPageSensors.Size = new System.Drawing.Size(859, 453);
             this.tabPageSensors.TabIndex = 3;
             this.tabPageSensors.Text = "Sensors";
             this.tabPageSensors.UseVisualStyleBackColor = true;
@@ -480,7 +471,7 @@ namespace snorbert.Forms
             this.controlSensors.Location = new System.Drawing.Point(3, 3);
             this.controlSensors.Margin = new System.Windows.Forms.Padding(0);
             this.controlSensors.Name = "controlSensors";
-            this.controlSensors.Size = new System.Drawing.Size(792, 447);
+            this.controlSensors.Size = new System.Drawing.Size(853, 447);
             this.controlSensors.TabIndex = 0;
             // 
             // FormMain
@@ -544,7 +535,6 @@ namespace snorbert.Forms
         private System.Windows.Forms.ToolStripMenuItem ctxMenuCopyTimestamp;
         private System.Windows.Forms.ToolStripMenuItem ctxMenuCopyPayloadAscii;
         private System.Windows.Forms.ToolStripSeparator menuToolsSep1;
-        private System.Windows.Forms.ToolStripMenuItem menuToolsImportRules;
         private System.Windows.Forms.ToolStripLabel toolStripLabel1;
         private System.Windows.Forms.ToolStripComboBox cboConnections;
         private System.Windows.Forms.ToolStripLabel toolStripLabel2;
@@ -561,7 +551,6 @@ namespace snorbert.Forms
         private ControlSensors controlSensors;
         private System.Windows.Forms.ToolStripMenuItem menuHelpHelp;
         private System.Windows.Forms.ToolStripSeparator menuHelpSep1;
-        private System.Windows.Forms.ToolStripSeparator menuToolsSep2;
         private System.Windows.Forms.ToolStripMenuItem menuToolsExcludes;
         private System.Windows.Forms.ToolStripMenuItem menuToolsExcludeConfiguration;
         private System.Windows.Forms.ToolStripMenuItem menuToolsExcludesExport;

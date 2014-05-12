@@ -235,6 +235,11 @@ namespace snorbert.Controls
         /// <param name="page"></param>
         private void LoadSearch(long page)
         {
+            if (_filters == null)
+            {
+                return;
+            }
+
             _currentPage = page;
             _hourGlass = new HourGlass(this);
             SetProcessingStatus(false);
@@ -865,6 +870,18 @@ namespace snorbert.Controls
                 SetProcessingStatus(true);
                 LoadSearch(_currentPage);
             })).Start();
+        }
+        #endregion
+
+        #region Combobox Event Handlers
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void cboSearch_SelectedIndexChanged(object sender, EventArgs e)
+        {
+             LoadSearch(1);
         }
         #endregion
     }

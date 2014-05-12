@@ -19,7 +19,9 @@ namespace snorbert
         public event CompleteEvent<Signature> RuleQueryComplete;
         public event CompleteEvent<Signature> RuleCheckQueryComplete;
         public event CompleteEvent<Sensor> SensorQueryComplete;
-        public event CompleteEvent<string> RuleIpQueryComplete;
+        public event CompleteEvent<string> RuleIpCsvQueryComplete;
+        public event CompleteEvent<string> RuleIpListQueryComplete;
+        public event CompleteEvent<Event> AcknowledgementSearchQueryComplete;
         public event Global.MessageEvent Exclamation;
         public event Global.MessageEvent Error;
         #endregion
@@ -132,14 +134,14 @@ namespace snorbert
                             if (hostName == string.Empty)
                             {
                                 query = query.Replace("#WHERE#", @"WHERE exclude.id IS NULL 
-                                                                     AND (acknowledgment.id IS NULL OR acknowledgment.class = 1)
+                                                                     AND (acknowledgment.id = NULL OR acknowledgment.id = 0 OR acknowledgment.class = 1)
 		                                                             AND event.timestamp > @0");
                                 temp = db.Fetch<Signature>(query, new object[] { dateFrom });
                             }
                             else
                             {
                                 query = query.Replace("#WHERE#", @"WHERE exclude.id IS NULL 
-                                                                     AND (acknowledgment.id IS NULL OR acknowledgment.class = 1)
+                                                                     AND (acknowledgment.id = NULL OR acknowledgment.id = 0 OR acknowledgment.class = 1)
 			                                                         AND event.timestamp > @0
                                                                      AND event.sid IN (SELECT sid FROM sensor WHERE hostname=@1)");
                                 temp = db.Fetch<Signature>(query, new object[] { dateFrom, hostName });
@@ -227,7 +229,7 @@ namespace snorbert
                             if (hostName == string.Empty)
                             {
                                 query = query.Replace("#WHERE#", @"WHERE exclude.id IS NULL 
-                                                                     AND (acknowledgment.id IS NULL OR acknowledgment.class = 1)
+                                                                     AND (acknowledgment.id = NULL OR acknowledgment.id = 0 OR acknowledgment.class = 1)
 			                                                         AND event.timestamp > @0
                                                                      AND signature.sig_priority = @1");
 
@@ -236,7 +238,7 @@ namespace snorbert
                             else
                             {
                                 query = query.Replace("#WHERE#", @"WHERE exclude.id IS NULL 
-                                                                     AND (acknowledgment.id IS NULL OR acknowledgment.class = 1)
+                                                                     AND (acknowledgment.id = NULL OR acknowledgment.id = 0 OR acknowledgment.class = 1)
 			                                                         AND event.timestamp > @0
                                                                      AND signature.sig_priority = @1
                                                                      AND event.sid IN (SELECT sid FROM sensor WHERE hostname=@2)");
@@ -319,7 +321,7 @@ namespace snorbert
                             if (hostName == string.Empty)
                             {
                                 query = query.Replace("#WHERE#", @"WHERE exclude.id IS NULL 
-                                                                     AND (acknowledgment.id IS NULL OR acknowledgment.class = 1)
+                                                                     AND (acknowledgment.id = NULL OR acknowledgment.id = 0 OR acknowledgment.class = 1)
 			                                                         AND event.timestamp > @0 
 			                                                         AND event.timestamp < @1");
 
@@ -328,7 +330,7 @@ namespace snorbert
                             else
                             {
                                 query = query.Replace("#WHERE#", @"WHERE exclude.id IS NULL 
-                                                                     AND (acknowledgment.id IS NULL OR acknowledgment.class = 1)
+                                                                     AND (acknowledgment.id = NULL OR acknowledgment.id = 0 OR acknowledgment.class = 1)
 			                                                         AND event.timestamp > @0 
 			                                                         AND event.timestamp < @1
                                                                      AND event.sid IN (SELECT sid FROM sensor WHERE hostname=@2)");
@@ -423,7 +425,7 @@ namespace snorbert
                             if (hostName == string.Empty)
                             {
                                 query = query.Replace("#WHERE#", @"WHERE exclude.id IS NULL 
-                                                                     AND (acknowledgment.id IS NULL OR acknowledgment.class = 1)
+                                                                     AND (acknowledgment.id = NULL OR acknowledgment.id = 0 OR acknowledgment.class = 1)
 			                                                         AND event.timestamp > @0 
 			                                                         AND event.timestamp < @1
                                                                      AND signature.sig_priority = @2");
@@ -433,7 +435,7 @@ namespace snorbert
                             else
                             {
                                 query = query.Replace("#WHERE#", @"WHERE exclude.id IS NULL 
-                                                                     AND (acknowledgment.id IS NULL OR acknowledgment.class = 1)
+                                                                     AND (acknowledgment.id = NULL OR acknowledgment.id = 0 OR acknowledgment.class = 1)
 			                                                         AND event.timestamp > @0 
 			                                                         AND event.timestamp < @1
                                                                      AND signature.sig_priority = @2
@@ -501,7 +503,7 @@ namespace snorbert
                         else
                         {
                             query = query.Replace("#WHERE#", @"WHERE exclude.id IS NULL   
-                                                                 AND (acknowledgment.id IS NULL OR acknowledgment.class = 1)
+                                                                 AND (acknowledgment.id = NULL OR acknowledgment.id = 0 OR acknowledgment.class = 1)
 			                                                     AND event.timestamp > @0 
 			                                                     AND event.timestamp < @1
 			                                                     AND signature.sig_id = @2 LIMIT @3, @4");
@@ -560,7 +562,7 @@ namespace snorbert
                         else
                         {
                             query = query.Replace("#WHERE#", @"WHERE exclude.id IS NULL   
-                                                                 AND (acknowledgment.id IS NULL OR acknowledgment.class = 1)
+                                                                 AND (acknowledgment.id = NULL OR acknowledgment.id = 0 OR acknowledgment.class = 1)
 			                                                     AND event.timestamp > @0
 			                                                     AND signature.sig_id = @1 LIMIT @2, @3");
                         }
@@ -679,7 +681,9 @@ namespace snorbert
         public void QueryRuleIpsFromTo(string id,
                                        string dateFrom,
                                        string dateTo,
-                                       bool sourceIps)
+                                       bool includeAcks,
+                                       bool sourceIps,
+                                       bool csv)
         {
             //if (IsRunning == true)
             //{
@@ -696,34 +700,68 @@ namespace snorbert
                     using (NPoco.Database db = new NPoco.Database(Db.GetOpenMySqlConnection()))
                     {
                         List<string> data = new List<string>();
-                        if (sourceIps == true)
+                        if (includeAcks == true)
                         {
-                            string query = _sql.GetQuery(Sql.Query.SQL_RULES_SRC_IPS);
-                            query = query.Replace("#WHERE#", @"WHERE event.signature=@0 
+                            if (sourceIps == true)
+                            {
+                                string query = _sql.GetQuery(Sql.Query.SQL_RULES_SRC_IPS);
+                                query = query.Replace("#WHERE#", @"WHERE event.signature=@0 
                                                                  AND event.timestamp > @1
                                                                  AND event.timestamp < @2");
 
-                            List<Event> temp = db.Fetch<Event>(query, new object[] { id, dateFrom, dateTo });
-                            foreach (var rule in temp)
+                                List<Event> temp = db.Fetch<Event>(query, new object[] { id, dateFrom, dateTo });
+                                foreach (var rule in temp)
+                                {
+                                    data.Add(rule.IpSrcTxt);
+                                }
+                            }
+                            else
                             {
-                                data.Add(rule.IpSrcTxt);
+                                string query = _sql.GetQuery(Sql.Query.SQL_RULES_DST_IPS);
+                                query = query.Replace("#WHERE#", @"WHERE event.signature=@0 
+                                                                 AND event.timestamp > @1
+                                                                 AND event.timestamp < @2");
+
+                                List<Event> temp = db.Fetch<Event>(query, new object[] { id, dateFrom, dateTo });
+                                foreach (var rule in temp)
+                                {
+                                    data.Add(rule.IpDstTxt);
+                                }
                             }
                         }
                         else
                         {
-                            string query = _sql.GetQuery(Sql.Query.SQL_RULES_DST_IPS);
-                            query = query.Replace("#WHERE#", @"WHERE event.signature=@0 
-                                                                 AND event.timestamp > @1
-                                                                 AND event.timestamp < @2");
-
-                            List<Event> temp = db.Fetch<Event>(query, new object[] { id, dateFrom, dateTo });
-                            foreach (var rule in temp)
+                            if (sourceIps == true)
                             {
-                                data.Add(rule.IpDstTxt);
+                                string query = _sql.GetQuery(Sql.Query.SQL_RULES_SRC_IPS);
+                                query = query.Replace("#WHERE#", @"WHERE event.signature=@0 
+                                                                     AND (acknowledgment.id = NULL OR acknowledgment.id = 0 OR acknowledgment.class = 1)
+                                                                     AND event.timestamp > @1
+                                                                     AND event.timestamp < @2");
+
+                                List<Event> temp = db.Fetch<Event>(query, new object[] { id, dateFrom, dateTo });
+                                foreach (var rule in temp)
+                                {
+                                    data.Add(rule.IpSrcTxt);
+                                }
+                            }
+                            else
+                            {
+                                string query = _sql.GetQuery(Sql.Query.SQL_RULES_DST_IPS);
+                                query = query.Replace("#WHERE#", @"WHERE event.signature=@0 
+                                                                     AND (acknowledgment.id = NULL OR acknowledgment.id = 0 OR acknowledgment.class = 1)
+                                                                     AND event.timestamp > @1
+                                                                     AND event.timestamp < @2");
+
+                                List<Event> temp = db.Fetch<Event>(query, new object[] { id, dateFrom, dateTo });
+                                foreach (var rule in temp)
+                                {
+                                    data.Add(rule.IpDstTxt);
+                                }
                             }
                         }
 
-                        OnComplete(data);
+                        OnComplete(data, csv);
                     }
                 }
                 catch (Exception ex)
@@ -742,10 +780,14 @@ namespace snorbert
         /// </summary>
         /// <param name="id"></param>
         /// <param name="dateFrom"></param>
+        /// <param name="includeAcks"></param>
         /// <param name="sourceIps"></param>
+        /// <param name="csv"></param>
         public void QueryRuleIpsFrom(string id,
-                                     string dateFrom,   
-                                     bool sourceIps)
+                                     string dateFrom,
+                                     bool includeAcks,
+                                     bool sourceIps,
+                                     bool csv)
         {
             //if (IsRunning == true)
             //{
@@ -762,32 +804,65 @@ namespace snorbert
                     using (NPoco.Database db = new NPoco.Database(Db.GetOpenMySqlConnection()))
                     {
                         List<string> data = new List<string>();
-                        if (sourceIps == true)
-                        {
-                            string query = _sql.GetQuery(Sql.Query.SQL_RULES_SRC_IPS);
-                            query = query.Replace("#WHERE#", @"WHERE event.signature=@0
-                                                                 AND event.timestamp > @1");
 
-                            List<Event> temp = db.Fetch<Event>(query, new object[] { id, dateFrom });
-                            foreach (var rule in temp)
+                        if (includeAcks == true)
+                        {
+                            if (sourceIps == true)
                             {
-                                data.Add(rule.IpSrcTxt);
+                                string query = _sql.GetQuery(Sql.Query.SQL_RULES_SRC_IPS);
+                                query = query.Replace("#WHERE#", @"WHERE event.signature=@0
+                                                                     AND event.timestamp > @1");
+
+                                List<Event> temp = db.Fetch<Event>(query, new object[] { id, dateFrom });
+                                foreach (var rule in temp)
+                                {
+                                    data.Add(rule.IpSrcTxt);
+                                }
+                            }
+                            else
+                            {
+                                string query = _sql.GetQuery(Sql.Query.SQL_RULES_DST_IPS);
+                                query = query.Replace("#WHERE#", @"WHERE event.signature=@0
+                                                                     AND event.timestamp > @1");
+
+                                List<Event> temp = db.Fetch<Event>(query, new object[] { id, dateFrom });
+                                foreach (var rule in temp)
+                                {
+                                    data.Add(rule.IpDstTxt);
+                                }
                             }
                         }
                         else
                         {
-                            string query = _sql.GetQuery(Sql.Query.SQL_RULES_DST_IPS);
-                            query = query.Replace("#WHERE#", @"WHERE event.signature=@0
-                                                                 AND event.timestamp > @1");
-
-                            List<Event> temp = db.Fetch<Event>(query, new object[] { id, dateFrom });
-                            foreach (var rule in temp)
+                            if (sourceIps == true)
                             {
-                                data.Add(rule.IpDstTxt);
+                                string query = _sql.GetQuery(Sql.Query.SQL_RULES_SRC_IPS);
+                                query = query.Replace("#WHERE#", @"WHERE event.signature=@0
+                                                                     AND (acknowledgment.id = 0 OR acknowledgment.class = 1)
+                                                                     AND event.timestamp > @1");
+
+                                List<Event> temp = db.Fetch<Event>(query, new object[] { id, dateFrom });
+                                foreach (var rule in temp)
+                                {
+                                    data.Add(rule.IpSrcTxt);
+                                }
+                            }
+                            else
+                            {
+                                string query = _sql.GetQuery(Sql.Query.SQL_RULES_DST_IPS);
+                                query = query.Replace("#WHERE#", @"WHERE event.signature=@0
+                                                                     AND (acknowledgment.id = 0 OR acknowledgment.class = 1)
+                                                                     AND event.timestamp > @1");
+
+                                List<Event> temp = db.Fetch<Event>(query, new object[] { id, dateFrom });
+                                foreach (var rule in temp)
+                                {
+                                    data.Add(rule.IpDstTxt);
+                                }
                             }
                         }
 
-                        OnComplete(data);
+                        OnComplete(data, csv);
                     }
                 }
                 catch (Exception ex)
@@ -855,12 +930,23 @@ namespace snorbert
         /// <summary>
         /// 
         /// </summary>
-        private void OnComplete(List<string> data)
+        private void OnComplete(List<string> data, bool csv)
         {
-            var handler = RuleIpQueryComplete;
-            if (handler != null)
+            if (csv == true)
             {
-                handler(data);
+                var handler = RuleIpCsvQueryComplete;
+                if (handler != null)
+                {
+                    handler(data);
+                }
+            }
+            else
+            {
+                var handler = RuleIpListQueryComplete;
+                if (handler != null)
+                {
+                    handler(data);
+                }
             }
         }
 

@@ -18,6 +18,8 @@ namespace snorbert.Data
         public long Sid { get; set; }
         [Column("initials")]
         public string Initials { get; set; }
+        [Column("description")]
+        public string Description { get; set; }
         [Column("notes")]
         public string Notes { get; set; }
         [Column("class")]

@@ -34,7 +34,8 @@ namespace snorbert.Configs
             SQL_EXCLUDE,
             SQL_SENSORS_HOSTNAME,
             SQL_ACKNOWLEDGEMENT,
-            SQL_ACKNOWLEDGEMENT_CLASSES
+            SQL_ACKNOWLEDGEMENT_CLASSES,
+            SQL_ACKNOWLEDGEMENT_DETAILS
         }
         #endregion
 

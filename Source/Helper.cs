@@ -163,15 +163,26 @@ namespace snorbert
                                               string dstIp,
                                               string dstPort,
                                               string protocol,
-                                              string sensorId)
+                                              string sensorId,
+                                              string sensorName,
+                                              string timestamp)
         {
             string temp = command;
+
             temp = temp.Replace("#IP_SRC#", srcIp);
             temp = temp.Replace("#IP_DST#", dstIp);
             temp = temp.Replace("#PORT_SRC#", srcPort);
             temp = temp.Replace("#PORT_DST#", dstPort);
             temp = temp.Replace("#PROTO#", protocol);
             temp = temp.Replace("#SENSOR_ID#", sensorId);
+            temp = temp.Replace("#SENSOR_NAME#", sensorName);
+            temp = temp.Replace("#TIMESTAMP#", timestamp);
+
+            if (command.StartsWith("http://") |
+                command.StartsWith("https://"))
+            {
+                temp = System.Uri.EscapeUriString(temp);
+            }
 
             return temp;
         }

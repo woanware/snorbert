@@ -117,9 +117,16 @@
             this.lblEventCid = new System.Windows.Forms.Label();
             this.txtEventSid = new System.Windows.Forms.TextBox();
             this.lblEventSid = new System.Windows.Forms.Label();
-            this.txtSensorName = new System.Windows.Forms.TextBox();
-            this.lblSensorName = new System.Windows.Forms.Label();
+            this.tabPageAcknowledgement = new System.Windows.Forms.TabPage();
+            this.txtAckNotes = new System.Windows.Forms.TextBox();
+            this.lblAckNotes = new System.Windows.Forms.Label();
+            this.txtAckClassification = new System.Windows.Forms.TextBox();
+            this.lblAckClassification = new System.Windows.Forms.Label();
+            this.txtAckInitials = new System.Windows.Forms.TextBox();
+            this.lblAckInitials = new System.Windows.Forms.Label();
             this.toolTip = new System.Windows.Forms.ToolTip(this.components);
+            this.txtAckTimestamp = new System.Windows.Forms.TextBox();
+            this.lblAckTimestamp = new System.Windows.Forms.Label();
             this.tabEvent.SuspendLayout();
             this.tabPageIpHeader.SuspendLayout();
             this.tabPageSignature.SuspendLayout();
@@ -131,6 +138,7 @@
             this.ctxMenuHex.SuspendLayout();
             this.tabPageAscii.SuspendLayout();
             this.tabPageMisc.SuspendLayout();
+            this.tabPageAcknowledgement.SuspendLayout();
             this.SuspendLayout();
             // 
             // tabEvent
@@ -143,6 +151,7 @@
             this.tabEvent.Controls.Add(this.tabPageHex);
             this.tabEvent.Controls.Add(this.tabPageAscii);
             this.tabEvent.Controls.Add(this.tabPageMisc);
+            this.tabEvent.Controls.Add(this.tabPageAcknowledgement);
             this.tabEvent.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tabEvent.Location = new System.Drawing.Point(0, 0);
             this.tabEvent.Name = "tabEvent";
@@ -948,8 +957,6 @@
             this.tabPageMisc.Controls.Add(this.lblEventCid);
             this.tabPageMisc.Controls.Add(this.txtEventSid);
             this.tabPageMisc.Controls.Add(this.lblEventSid);
-            this.tabPageMisc.Controls.Add(this.txtSensorName);
-            this.tabPageMisc.Controls.Add(this.lblSensorName);
             this.tabPageMisc.Location = new System.Drawing.Point(4, 24);
             this.tabPageMisc.Name = "tabPageMisc";
             this.tabPageMisc.Padding = new System.Windows.Forms.Padding(3);
@@ -992,24 +999,95 @@
             this.lblEventSid.TabIndex = 9;
             this.lblEventSid.Text = "Event SID";
             // 
-            // txtSensorName
+            // tabPageAcknowledgement
             // 
-            this.txtSensorName.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            this.tabPageAcknowledgement.Controls.Add(this.txtAckTimestamp);
+            this.tabPageAcknowledgement.Controls.Add(this.lblAckTimestamp);
+            this.tabPageAcknowledgement.Controls.Add(this.txtAckNotes);
+            this.tabPageAcknowledgement.Controls.Add(this.lblAckNotes);
+            this.tabPageAcknowledgement.Controls.Add(this.txtAckClassification);
+            this.tabPageAcknowledgement.Controls.Add(this.lblAckClassification);
+            this.tabPageAcknowledgement.Controls.Add(this.txtAckInitials);
+            this.tabPageAcknowledgement.Controls.Add(this.lblAckInitials);
+            this.tabPageAcknowledgement.Location = new System.Drawing.Point(4, 24);
+            this.tabPageAcknowledgement.Name = "tabPageAcknowledgement";
+            this.tabPageAcknowledgement.Size = new System.Drawing.Size(762, 140);
+            this.tabPageAcknowledgement.TabIndex = 8;
+            this.tabPageAcknowledgement.Text = "Acknowledgement";
+            this.tabPageAcknowledgement.UseVisualStyleBackColor = true;
+            // 
+            // txtAckNotes
+            // 
+            this.txtAckNotes.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.txtSensorName.Location = new System.Drawing.Point(14, 72);
-            this.txtSensorName.Name = "txtSensorName";
-            this.txtSensorName.ReadOnly = true;
-            this.txtSensorName.Size = new System.Drawing.Size(738, 23);
-            this.txtSensorName.TabIndex = 8;
+            this.txtAckNotes.Location = new System.Drawing.Point(13, 75);
+            this.txtAckNotes.Multiline = true;
+            this.txtAckNotes.Name = "txtAckNotes";
+            this.txtAckNotes.ReadOnly = true;
+            this.txtAckNotes.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
+            this.txtAckNotes.Size = new System.Drawing.Size(738, 55);
+            this.txtAckNotes.TabIndex = 17;
             // 
-            // lblSensorName
+            // lblAckNotes
             // 
-            this.lblSensorName.AutoSize = true;
-            this.lblSensorName.Location = new System.Drawing.Point(13, 53);
-            this.lblSensorName.Name = "lblSensorName";
-            this.lblSensorName.Size = new System.Drawing.Size(77, 15);
-            this.lblSensorName.TabIndex = 7;
-            this.lblSensorName.Text = "Sensor Name";
+            this.lblAckNotes.AutoSize = true;
+            this.lblAckNotes.Location = new System.Drawing.Point(12, 56);
+            this.lblAckNotes.Name = "lblAckNotes";
+            this.lblAckNotes.Size = new System.Drawing.Size(38, 15);
+            this.lblAckNotes.TabIndex = 16;
+            this.lblAckNotes.Text = "Notes";
+            // 
+            // txtAckClassification
+            // 
+            this.txtAckClassification.Location = new System.Drawing.Point(91, 27);
+            this.txtAckClassification.Name = "txtAckClassification";
+            this.txtAckClassification.ReadOnly = true;
+            this.txtAckClassification.Size = new System.Drawing.Size(205, 23);
+            this.txtAckClassification.TabIndex = 15;
+            // 
+            // lblAckClassification
+            // 
+            this.lblAckClassification.AutoSize = true;
+            this.lblAckClassification.Location = new System.Drawing.Point(89, 7);
+            this.lblAckClassification.Name = "lblAckClassification";
+            this.lblAckClassification.Size = new System.Drawing.Size(77, 15);
+            this.lblAckClassification.TabIndex = 13;
+            this.lblAckClassification.Text = "Classification";
+            // 
+            // txtAckInitials
+            // 
+            this.txtAckInitials.Location = new System.Drawing.Point(14, 27);
+            this.txtAckInitials.Name = "txtAckInitials";
+            this.txtAckInitials.ReadOnly = true;
+            this.txtAckInitials.Size = new System.Drawing.Size(66, 23);
+            this.txtAckInitials.TabIndex = 14;
+            // 
+            // lblAckInitials
+            // 
+            this.lblAckInitials.AutoSize = true;
+            this.lblAckInitials.Location = new System.Drawing.Point(13, 7);
+            this.lblAckInitials.Name = "lblAckInitials";
+            this.lblAckInitials.Size = new System.Drawing.Size(41, 15);
+            this.lblAckInitials.TabIndex = 12;
+            this.lblAckInitials.Text = "Initials";
+            // 
+            // txtAckTimestamp
+            // 
+            this.txtAckTimestamp.Location = new System.Drawing.Point(307, 27);
+            this.txtAckTimestamp.Name = "txtAckTimestamp";
+            this.txtAckTimestamp.ReadOnly = true;
+            this.txtAckTimestamp.Size = new System.Drawing.Size(205, 23);
+            this.txtAckTimestamp.TabIndex = 19;
+            // 
+            // lblAckTimestamp
+            // 
+            this.lblAckTimestamp.AutoSize = true;
+            this.lblAckTimestamp.Location = new System.Drawing.Point(305, 7);
+            this.lblAckTimestamp.Name = "lblAckTimestamp";
+            this.lblAckTimestamp.Size = new System.Drawing.Size(67, 15);
+            this.lblAckTimestamp.TabIndex = 18;
+            this.lblAckTimestamp.Text = "Timestamp";
             // 
             // ControlEventInfo
             // 
@@ -1035,6 +1113,8 @@
             this.tabPageAscii.ResumeLayout(false);
             this.tabPageMisc.ResumeLayout(false);
             this.tabPageMisc.PerformLayout();
+            this.tabPageAcknowledgement.ResumeLayout(false);
+            this.tabPageAcknowledgement.PerformLayout();
             this.ResumeLayout(false);
 
         }
@@ -1123,13 +1203,20 @@
         private System.Windows.Forms.ToolStripMenuItem ctxMenuHexCopyHexSpaces;
         private System.Windows.Forms.ToolStripMenuItem ctxMenuHexCopyHexNoSpaces;
         private System.Windows.Forms.TabPage tabPageMisc;
-        private System.Windows.Forms.TextBox txtSensorName;
-        private System.Windows.Forms.Label lblSensorName;
         private System.Windows.Forms.TextBox txtEventCid;
         private System.Windows.Forms.Label lblEventCid;
         private System.Windows.Forms.TextBox txtEventSid;
         private System.Windows.Forms.Label lblEventSid;
         private System.Windows.Forms.Button btnLinkedRules;
         private System.Windows.Forms.ToolTip toolTip;
+        private System.Windows.Forms.TabPage tabPageAcknowledgement;
+        private System.Windows.Forms.TextBox txtAckClassification;
+        private System.Windows.Forms.Label lblAckClassification;
+        private System.Windows.Forms.TextBox txtAckInitials;
+        private System.Windows.Forms.Label lblAckInitials;
+        private System.Windows.Forms.TextBox txtAckNotes;
+        private System.Windows.Forms.Label lblAckNotes;
+        private System.Windows.Forms.TextBox txtAckTimestamp;
+        private System.Windows.Forms.Label lblAckTimestamp;
     }
 }

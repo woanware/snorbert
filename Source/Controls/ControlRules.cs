@@ -90,7 +90,8 @@ namespace snorbert.Controls
             _querier.RuleQueryComplete += OnQuerier_RuleQueryComplete;
             _querier.RuleCheckQueryComplete += OnQuerier_RuleCheckQueryComplete;
             _querier.EventQueryComplete += OnQuerier_EventQueryComplete;
-            _querier.RuleIpQueryComplete += OnQuerier_RuleIpQueryComplete;
+            _querier.RuleIpCsvQueryComplete += OnQuerier_RuleIpCsvQueryComplete;
+            _querier.RuleIpListQueryComplete += OnQuerier_RuleIpListQueryComplete;
 
             _exporter = new Exporter();
             _exporter.Complete += OnExporter_Complete;
@@ -98,15 +99,18 @@ namespace snorbert.Controls
             _exporter.Exclamation += OnExporter_Exclamation;
 
             _commands = new Commands();
-            string ret = _commands.Load();
-            if (ret.Length > 0)
+            if (_commands.FileExists == true)
             {
-                //UserInterface.DisplayErrorMessageBox(this, "An error occurred whilst loading the commands: " + ret);
+                string ret1 = _commands.Load();
+                if (ret1.Length > 0)
+                {
+                    UserInterface.DisplayErrorMessageBox(this, "An error occurred whilst loading the commands: " + ret1);
+                }
             }
-
+           
             _alerts = new Alerts();
-            ret = _alerts.Load();
-            if (ret.Length == 0)
+            string ret2 = _alerts.Load();
+            if (ret2.Length == 0)
             {
                 if (_alerts.Interval > 0)
                 {
@@ -483,7 +487,28 @@ namespace snorbert.Controls
         /// 
         /// </summary>
         /// <param name="data"></param>
-        private void OnQuerier_RuleIpQueryComplete(List<string> data)
+        /// <param name="csv"></param>
+        private void OnQuerier_RuleIpListQueryComplete(List<string> data)
+        {
+            OnQuerier_RuleIpQueryComplete(data, false);
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="data"></param>
+        /// <param name="csv"></param>
+        private void OnQuerier_RuleIpCsvQueryComplete(List<string> data)
+        {
+            OnQuerier_RuleIpQueryComplete(data, true);
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="data"></param>
+        /// <param name="csv"></param>
+        private void OnQuerier_RuleIpQueryComplete(List<string> data, bool csv)
         {
             MethodInvoker methodInvoker = delegate
             {
@@ -495,15 +520,19 @@ namespace snorbert.Controls
                         return;
                     }
 
-                    StringBuilder output = new StringBuilder();
-                    foreach (string ip in data)
+                    string output = string.Empty;
+                    if (csv == true)
                     {
-                        output.AppendLine(ip);
+                        output = string.Join(",", data);
+                    }
+                    else
+                    {
+                        output = string.Join(Environment.NewLine, data);
                     }
 
                     if (data.Count > 0)
                     {
-                        Clipboard.SetText(output.ToString());
+                        Clipboard.SetText(output);
                         OnMessage(data.Count + " IP addresses copied to the clipboard");
                     }
                     else
@@ -1603,34 +1632,7 @@ namespace snorbert.Controls
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        private void ctxMenuExtractIpInfoUniqueSource_Click(object sender, EventArgs e)
-        {
-            _hourGlass = new HourGlass(this);
-            SetProcessingStatus(false);
-
-            Signature rule = (Signature)cboRule.Items[cboRule.SelectedIndex];
-
-            if (dtpDateTo.Checked == true)
-            {
-                _querier.QueryRuleIpsFromTo(rule.Id.ToString(),
-                                            dtpDateFrom.Value.Date.ToString("yyyy-MM-dd") + " " + cboTimeFrom.Text + ":00",
-                                            dtpDateTo.Value.Date.ToString("yyyy-MM-dd") + " " + cboTimeTo.Text + ":00", 
-                                            true);
-            }
-            else
-            {
-                _querier.QueryRuleIpsFrom(rule.Id.ToString(),
-                                          dtpDateFrom.Value.Date.ToString("yyyy-MM-dd") + " " + cboTimeFrom.Text + ":00",
-                                          true);
-            }
-        }
-
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void ctxMenuExtractIpInfoUniqueDestination_Click(object sender, EventArgs e)
+        private void ctxMenuExtractIpInfoUniqueSourceList_Click(object sender, EventArgs e)
         {
             _hourGlass = new HourGlass(this);
             SetProcessingStatus(false);
@@ -1642,13 +1644,110 @@ namespace snorbert.Controls
                 _querier.QueryRuleIpsFromTo(rule.Id.ToString(),
                                             dtpDateFrom.Value.Date.ToString("yyyy-MM-dd") + " " + cboTimeFrom.Text + ":00",
                                             dtpDateTo.Value.Date.ToString("yyyy-MM-dd") + " " + cboTimeTo.Text + ":00",
+                                            chkIncludeAcknowledged.Checked,
+                                            true, 
                                             false);
             }
             else
             {
                 _querier.QueryRuleIpsFrom(rule.Id.ToString(),
                                           dtpDateFrom.Value.Date.ToString("yyyy-MM-dd") + " " + cboTimeFrom.Text + ":00",
+                                          chkIncludeAcknowledged.Checked,
+                                          true,
                                           false);
+            }
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void ctxMenuExtractIpInfoUniqueSourceCsv_Click(object sender, EventArgs e)
+        {
+            _hourGlass = new HourGlass(this);
+            SetProcessingStatus(false);
+
+            Signature rule = (Signature)cboRule.Items[cboRule.SelectedIndex];
+
+            if (dtpDateTo.Checked == true)
+            {
+                _querier.QueryRuleIpsFromTo(rule.Id.ToString(),
+                                            dtpDateFrom.Value.Date.ToString("yyyy-MM-dd") + " " + cboTimeFrom.Text + ":00",
+                                            dtpDateTo.Value.Date.ToString("yyyy-MM-dd") + " " + cboTimeTo.Text + ":00",
+                                            chkIncludeAcknowledged.Checked,
+                                            true,
+                                            true);
+            }
+            else
+            {
+                _querier.QueryRuleIpsFrom(rule.Id.ToString(),
+                                          dtpDateFrom.Value.Date.ToString("yyyy-MM-dd") + " " + cboTimeFrom.Text + ":00",
+                                          chkIncludeAcknowledged.Checked,
+                                          true,
+                                          true);
+            }
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void ctxMenuExtractIpInfoUniqueDestinationList_Click(object sender, EventArgs e)
+        {
+            _hourGlass = new HourGlass(this);
+            SetProcessingStatus(false);
+
+            Signature rule = (Signature)cboRule.Items[cboRule.SelectedIndex];
+
+            if (dtpDateTo.Checked == true)
+            {
+                _querier.QueryRuleIpsFromTo(rule.Id.ToString(),
+                                            dtpDateFrom.Value.Date.ToString("yyyy-MM-dd") + " " + cboTimeFrom.Text + ":00",
+                                            dtpDateTo.Value.Date.ToString("yyyy-MM-dd") + " " + cboTimeTo.Text + ":00",
+                                            chkIncludeAcknowledged.Checked,
+                                            false,
+                                            false);
+            }
+            else
+            {
+                _querier.QueryRuleIpsFrom(rule.Id.ToString(),
+                                          dtpDateFrom.Value.Date.ToString("yyyy-MM-dd") + " " + cboTimeFrom.Text + ":00",
+                                          chkIncludeAcknowledged.Checked,
+                                          false,
+                                          false);
+            }
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void ctxMenuExtractIpInfoUniqueDestinationCsv_Click(object sender, EventArgs e)
+        {
+            _hourGlass = new HourGlass(this);
+            SetProcessingStatus(false);
+
+            Signature rule = (Signature)cboRule.Items[cboRule.SelectedIndex];
+
+            if (dtpDateTo.Checked == true)
+            {
+                _querier.QueryRuleIpsFromTo(rule.Id.ToString(),
+                                            dtpDateFrom.Value.Date.ToString("yyyy-MM-dd") + " " + cboTimeFrom.Text + ":00",
+                                            dtpDateTo.Value.Date.ToString("yyyy-MM-dd") + " " + cboTimeTo.Text + ":00",
+                                            chkIncludeAcknowledged.Checked,
+                                            false,
+                                            true);
+            }
+            else
+            {
+                _querier.QueryRuleIpsFrom(rule.Id.ToString(),
+                                          dtpDateFrom.Value.Date.ToString("yyyy-MM-dd") + " " + cboTimeFrom.Text + ":00",
+                                          chkIncludeAcknowledged.Checked,
+                                          false,
+                                          true);
             }
         }
 
@@ -1872,13 +1971,17 @@ namespace snorbert.Controls
 
             ToolStripMenuItem ctxMenuCommand = (ToolStripMenuItem)sender;
 
+            double unix = Misc.ConvertToUnixTimestamp(temp.Timestamp);
+
             string command = Helper.ConstructCommand(ctxMenuCommand.Tag.ToString(),
                                                      temp.IpSrcTxt,
                                                      temp.SrcPort.ToString(),
                                                      temp.IpDstTxt,
                                                      temp.DstPort.ToString(),
                                                      temp.Protocol,
-                                                     temp.Sid.ToString());
+                                                     temp.Sid.ToString(),
+                                                     temp.SensorName,
+                                                     unix.ToString());
 
             Misc.ShellExecuteFile(command);
         }

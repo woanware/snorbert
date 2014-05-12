@@ -117,7 +117,8 @@ namespace snorbert
             Sensor,
             Protocol,
             AcknowledgementClass,
-            Initials
+            Initials,
+            AcknowledgementNotes
         }
         #endregion
     }

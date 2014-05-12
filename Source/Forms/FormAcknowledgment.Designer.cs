@@ -121,7 +121,7 @@
             // txtNotes
             // 
             this.txtNotes.Location = new System.Drawing.Point(12, 110);
-            this.txtNotes.MaxLength = 100;
+            this.txtNotes.MaxLength = 500;
             this.txtNotes.Multiline = true;
             this.txtNotes.Name = "txtNotes";
             this.txtNotes.Size = new System.Drawing.Size(434, 68);

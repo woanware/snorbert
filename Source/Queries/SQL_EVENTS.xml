@@ -44,7 +44,7 @@
 				                        event.signature
 			                      FROM event
 		                    ORDER BY event.timestamp  desc
-			                    LIMIT @0,@1) as event                                         
+			                    ) as event                                         
 	            LEFT JOIN data ON (data.sid = event.sid AND data.cid = event.cid )    
 	            LEFT JOIN iphdr  ON (event.sid = iphdr.sid AND event.cid = iphdr.cid) 
 	            LEFT JOIN tcphdr ON (event.sid = tcphdr.sid AND event.cid = tcphdr.cid) 
@@ -59,12 +59,13 @@
 	  		          OR (exclude.ip_dst = iphdr.ip_dst AND exclude.port_dst = tcphdr.tcp_dport)
 		              OR (exclude.ip_src = iphdr.ip_src AND exclude.port_src = udphdr.udp_sport)
 	  		          OR (exclude.ip_dst = iphdr.ip_dst AND exclude.port_dst = udphdr.udp_dport))	 			   		
-	                OR (exclude.ip_dst = 0 OR exclude.ip_dst = iphdr.ip_dst)
-	               AND (exclude.ip_src = 0 OR exclude.ip_src = iphdr.ip_src)
+	                OR (exclude.ip_dst = 0 OR (exclude.ip_dst = iphdr.ip_dst))
+	               AND (exclude.ip_src = 0 OR (exclude.ip_src = iphdr.ip_src))
 	               AND (exclude.port_src = 0 OR (exclude.port_src = tcphdr.tcp_sport OR exclude.port_src = udphdr.udp_sport))
 	               AND (exclude.port_dst = 0 OR (exclude.port_dst = tcphdr.tcp_dport OR exclude.port_dst = udphdr.udp_dport))	       
-             		 AND (exclude.sig_id = 0 OR exclude.sig_id = event.signature)
+             		 AND (exclude.sig_id = 0 OR (exclude.sig_id = event.signature))
 		             AND (exclude.ip_proto = iphdr.ip_proto)
                )
-			            WHERE exclude.id IS NULL]]></Data>
+			            WHERE exclude.id IS NULL 
+                  LIMIT @0,@1]]></Data>
   </SqlQuery>

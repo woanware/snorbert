@@ -1,5 +1,41 @@
 # History #
 
+**v1.2.5**
+
+- Fixed acknowledgment queries. Thanks DanO
+
+**v1.2.4**
+
+- Fixed SQL queries where a join occurred to the acknowledgement table. Thanks CalG
+- Added an auto-refresh to the Events list. To configure set the EventsRefresh attribute in the Settings.xml
+- Modified  Acknowledgement schema to increase the 'notes' field from VARCHAR 100 to 500
+- Updated 'rule_importer.py' so that there is a bulk mode. Thanks AdrianC
+- Modified the Events list query as it was limiting the number of results returned due to the LIMIT clause being performed on a sub-query
+- Added new Acknowledgement tab which displays the Initials, Timestamp, Classification and Notes for an individual event
+- Modified the Search tab to allow LIKE/NOT LIKE wild card searches on the Acknowledgement Notes field
+
+**v1.2.3**
+
+- Modified the Search tab to allow IP (Source & Destination) range searches e.g. IP > 10.0.0.1 AND IP < 10.0.0.254. Thanks OliverF
+- Modified the Search tab to refresh the search results when the "Condition" drop down is change
+- Modified the IP address control used on the Filter window so that TAB works within each segment within the IP address
+- Modified the "Extract Unique IP" functionality so that the output is in either list or CSV form. This allows for easier queries in other software such as NetWitness where the IP list is expected in CSV form. Thanks ChrisB
+
+**v1.2.2**
+
+- Add more command replacement strings (Thanks DanO) e.g.
+
+		#SENSOR_NAME#
+		#TIMESTAMP#
+
+- The commands functionality now URL encodes the data if "http" or "https" is detected
+- Corrected a missing colon in the python rule importer script. Thanks DanO
+
+**v1.2.1**
+
+- Removed erroneous Tools menu entry e.g. import rules. Thanks DanO
+- Fixed the extract unique source/destination IP address functionality. Thanks DannyF
+
 **v1.2.0**
 
 - Added new "rules" table to the barnyard/snort schema which will store the signature/rule information. This removes the import process which occurs on startup and therefore the dependency on SQL CE
@@ -27,7 +63,7 @@
 
 - Rewrote most of the queries involved in the loading of rules and events so that it is easier to view events that have already been acknowledged. Thanks DannyF
 - Rewrote the rest of the queries to use dynamic WHERE clauses which has reduced the query files from 31 to 17
-- Corrected tab order on the Acknowledement Export window
+- Corrected tab order on the Acknowledgement Export window
 - Removed selected item check when extracting unique source/destination IP addresses. Thanks ChrisB
 
 **v1.1.5**
@@ -120,13 +156,12 @@
 - Modified to allow the filtering of Rules on a per sensor basis
 - Modified to allow user configurable commands to be executed via the Rules list context menu. The commands are stored in the Commands.xml file located in the user’s application data directory for the application. The command strings will have data substitutions applied using the following mark up so that event data can be passed to the commands:
 
-    \#IP_SRC\#
-    \#IP_DST\#
-    \#PORT_SRC\# 
-    \#PORT_DST\#
-    \#PROTO\#
-    \#SENSOR_ID\#
-
+    	#IP_SRC#
+    	#IP_DST#
+    	#PORT_SRC# 
+    	#PORT_DST#
+    	#PROTO#
+    	#SENSOR_ID#
 
 - Modified to allow better multi-user collaboration. The user can now right click on an event(s) and use the Acknowledgment context menu item to categorise the event. The user should set event(s) to “Unclassified” when initially looking into an Event, and then assign the actual category once the analysis is complete
 - Modified to set use F1 key to set the current set of events to Taken

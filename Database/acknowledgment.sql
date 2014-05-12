@@ -4,7 +4,7 @@ CREATE TABLE `acknowledgment` (
 	`sid` INT(10) UNSIGNED NOT NULL,
 	`initials` VARCHAR(3) NOT NULL,
 	`class` INT(10) UNSIGNED NOT NULL,
-	`notes` VARCHAR(100) NULL DEFAULT NULL,
+	`notes` VARCHAR(500) NULL DEFAULT NULL,
 	`timestamp` DATETIME NOT NULL,
 	PRIMARY KEY (`id`),
 	UNIQUE INDEX `unique` (`cid`, `sid`),
