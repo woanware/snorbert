@@ -22,8 +22,9 @@ INSERT INTO `acknowledgment_class` (`id`, `desc`) VALUES
 	(8, 'Virus Infection'),
 	(9, 'False Positive'),
 	(10, 'Email Spam'),
-	(11, 'DNS Lookup');
-	(12, 'Web Based Attack');
+	(11, 'DNS Lookup'),
+	(12, 'Web Based Attack'),
+	(13, 'True Positive, Non-Malicious');
 /*!40000 ALTER TABLE `acknowledgment_class` ENABLE KEYS */;
 /*!40014 SET FOREIGN_KEY_CHECKS=1 */;
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;

@@ -3,5 +3,5 @@ CREATE TABLE `acknowledgment_class` (
 	`desc` VARCHAR(35) NOT NULL,
 	PRIMARY KEY (`id`)
 )
-COLLATE='latin1_swedish_ci'
-ENGINE=InnoDB;
+ENGINE=InnoDB
+AUTO_INCREMENT=0;

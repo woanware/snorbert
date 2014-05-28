@@ -18,7 +18,7 @@ namespace snorbert.Data
         public long Sid { get; set; }
         [Column("initials")]
         public string Initials { get; set; }
-        [Column("description")]
+        [ResultColumn]
         public string Description { get; set; }
         [Column("notes")]
         public string Notes { get; set; }
@@ -26,5 +26,7 @@ namespace snorbert.Data
         public long Class { get; set; }
         [Column("timestamp")]
         public DateTime Timestamp { get; set; }
+        [Column("successful")]
+        public bool Successful { get; set; }
     }
 }

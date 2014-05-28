@@ -5,4 +5,5 @@ CREATE TABLE rule (
   sig_gid INT UNSIGNED,
   rule VARCHAR(1000) NOT NULL,
   PRIMARY KEY (sig_name, sig_rev, sig_sid, sig_gid)
-);
+)
+ENGINE=InnoDB;

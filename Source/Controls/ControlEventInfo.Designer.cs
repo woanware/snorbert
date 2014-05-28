@@ -118,6 +118,10 @@
             this.txtEventSid = new System.Windows.Forms.TextBox();
             this.lblEventSid = new System.Windows.Forms.Label();
             this.tabPageAcknowledgement = new System.Windows.Forms.TabPage();
+            this.label31 = new System.Windows.Forms.Label();
+            this.chkAckSuccessful = new System.Windows.Forms.CheckBox();
+            this.txtAckTimestamp = new System.Windows.Forms.TextBox();
+            this.lblAckTimestamp = new System.Windows.Forms.Label();
             this.txtAckNotes = new System.Windows.Forms.TextBox();
             this.lblAckNotes = new System.Windows.Forms.Label();
             this.txtAckClassification = new System.Windows.Forms.TextBox();
@@ -125,8 +129,8 @@
             this.txtAckInitials = new System.Windows.Forms.TextBox();
             this.lblAckInitials = new System.Windows.Forms.Label();
             this.toolTip = new System.Windows.Forms.ToolTip(this.components);
-            this.txtAckTimestamp = new System.Windows.Forms.TextBox();
-            this.lblAckTimestamp = new System.Windows.Forms.Label();
+            this.txtSensor = new System.Windows.Forms.TextBox();
+            this.lblSensor = new System.Windows.Forms.Label();
             this.tabEvent.SuspendLayout();
             this.tabPageIpHeader.SuspendLayout();
             this.tabPageSignature.SuspendLayout();
@@ -953,6 +957,8 @@
             // 
             // tabPageMisc
             // 
+            this.tabPageMisc.Controls.Add(this.txtSensor);
+            this.tabPageMisc.Controls.Add(this.lblSensor);
             this.tabPageMisc.Controls.Add(this.txtEventCid);
             this.tabPageMisc.Controls.Add(this.lblEventCid);
             this.tabPageMisc.Controls.Add(this.txtEventSid);
@@ -976,7 +982,7 @@
             // lblEventCid
             // 
             this.lblEventCid.AutoSize = true;
-            this.lblEventCid.Location = new System.Drawing.Point(73, 8);
+            this.lblEventCid.Location = new System.Drawing.Point(71, 8);
             this.lblEventCid.Name = "lblEventCid";
             this.lblEventCid.Size = new System.Drawing.Size(58, 15);
             this.lblEventCid.TabIndex = 11;
@@ -1001,6 +1007,8 @@
             // 
             // tabPageAcknowledgement
             // 
+            this.tabPageAcknowledgement.Controls.Add(this.label31);
+            this.tabPageAcknowledgement.Controls.Add(this.chkAckSuccessful);
             this.tabPageAcknowledgement.Controls.Add(this.txtAckTimestamp);
             this.tabPageAcknowledgement.Controls.Add(this.lblAckTimestamp);
             this.tabPageAcknowledgement.Controls.Add(this.txtAckNotes);
@@ -1015,6 +1023,42 @@
             this.tabPageAcknowledgement.TabIndex = 8;
             this.tabPageAcknowledgement.Text = "Acknowledgement";
             this.tabPageAcknowledgement.UseVisualStyleBackColor = true;
+            // 
+            // label31
+            // 
+            this.label31.AutoSize = true;
+            this.label31.Location = new System.Drawing.Point(517, 10);
+            this.label31.Name = "label31";
+            this.label31.Size = new System.Drawing.Size(62, 15);
+            this.label31.TabIndex = 21;
+            this.label31.Text = "Successful";
+            // 
+            // chkAckSuccessful
+            // 
+            this.chkAckSuccessful.AutoSize = true;
+            this.chkAckSuccessful.Enabled = false;
+            this.chkAckSuccessful.Location = new System.Drawing.Point(541, 30);
+            this.chkAckSuccessful.Name = "chkAckSuccessful";
+            this.chkAckSuccessful.Size = new System.Drawing.Size(15, 14);
+            this.chkAckSuccessful.TabIndex = 20;
+            this.chkAckSuccessful.UseVisualStyleBackColor = true;
+            // 
+            // txtAckTimestamp
+            // 
+            this.txtAckTimestamp.Location = new System.Drawing.Point(307, 27);
+            this.txtAckTimestamp.Name = "txtAckTimestamp";
+            this.txtAckTimestamp.ReadOnly = true;
+            this.txtAckTimestamp.Size = new System.Drawing.Size(205, 23);
+            this.txtAckTimestamp.TabIndex = 19;
+            // 
+            // lblAckTimestamp
+            // 
+            this.lblAckTimestamp.AutoSize = true;
+            this.lblAckTimestamp.Location = new System.Drawing.Point(305, 7);
+            this.lblAckTimestamp.Name = "lblAckTimestamp";
+            this.lblAckTimestamp.Size = new System.Drawing.Size(67, 15);
+            this.lblAckTimestamp.TabIndex = 18;
+            this.lblAckTimestamp.Text = "Timestamp";
             // 
             // txtAckNotes
             // 
@@ -1072,22 +1116,22 @@
             this.lblAckInitials.TabIndex = 12;
             this.lblAckInitials.Text = "Initials";
             // 
-            // txtAckTimestamp
+            // txtSensor
             // 
-            this.txtAckTimestamp.Location = new System.Drawing.Point(307, 27);
-            this.txtAckTimestamp.Name = "txtAckTimestamp";
-            this.txtAckTimestamp.ReadOnly = true;
-            this.txtAckTimestamp.Size = new System.Drawing.Size(205, 23);
-            this.txtAckTimestamp.TabIndex = 19;
+            this.txtSensor.Location = new System.Drawing.Point(322, 27);
+            this.txtSensor.Name = "txtSensor";
+            this.txtSensor.ReadOnly = true;
+            this.txtSensor.Size = new System.Drawing.Size(233, 23);
+            this.txtSensor.TabIndex = 14;
             // 
-            // lblAckTimestamp
+            // lblSensor
             // 
-            this.lblAckTimestamp.AutoSize = true;
-            this.lblAckTimestamp.Location = new System.Drawing.Point(305, 7);
-            this.lblAckTimestamp.Name = "lblAckTimestamp";
-            this.lblAckTimestamp.Size = new System.Drawing.Size(67, 15);
-            this.lblAckTimestamp.TabIndex = 18;
-            this.lblAckTimestamp.Text = "Timestamp";
+            this.lblSensor.AutoSize = true;
+            this.lblSensor.Location = new System.Drawing.Point(319, 8);
+            this.lblSensor.Name = "lblSensor";
+            this.lblSensor.Size = new System.Drawing.Size(42, 15);
+            this.lblSensor.TabIndex = 13;
+            this.lblSensor.Text = "Sensor";
             // 
             // ControlEventInfo
             // 
@@ -1218,5 +1262,9 @@
         private System.Windows.Forms.Label lblAckNotes;
         private System.Windows.Forms.TextBox txtAckTimestamp;
         private System.Windows.Forms.Label lblAckTimestamp;
+        private System.Windows.Forms.Label label31;
+        private System.Windows.Forms.CheckBox chkAckSuccessful;
+        private System.Windows.Forms.TextBox txtSensor;
+        private System.Windows.Forms.Label lblSensor;
     }
 }

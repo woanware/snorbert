@@ -160,7 +160,7 @@ namespace snorbert.Controls
                 // Misc Tab
                 txtEventSid.Text = temp.Sid.ToString();
                 txtEventCid.Text = temp.Cid.ToString();
-                txtAckNotes.Text = temp.SensorName;
+                txtSensor.Text = temp.SensorName;
 
                 // Acknowledgement Tab
                 using (NPoco.Database dbMySql = new NPoco.Database(Db.GetOpenMySqlConnection()))
@@ -175,6 +175,7 @@ namespace snorbert.Controls
                         txtAckClassification.Text = acknowledgment.First().Description;
                         txtAckNotes.Text = acknowledgment.First().Notes;
                         txtAckTimestamp.Text = acknowledgment.First().Timestamp.ToString();
+                        chkAckSuccessful.Checked = acknowledgment.First().Successful;
                     }
                 }
             }
@@ -243,6 +244,8 @@ namespace snorbert.Controls
                     txtAckInitials.Text = string.Empty;
                     txtAckClassification.Text = string.Empty;
                     txtAckNotes.Text = string.Empty;
+                    txtAckTimestamp.Text = string.Empty;
+                    chkAckSuccessful.Checked = false;
                 }
             };
 

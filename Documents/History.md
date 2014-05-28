@@ -1,5 +1,19 @@
 # History #
 
+**v1.2.6.2**
+
+- Added/readded Sensor to the the Misc tab on the lower event details tab. Thanks RussellH 
+
+**v1.2.6.1**
+
+- Prevented Acknowledgment.Description being processed by NPoco. Thanks DanO
+
+**v1.2.6**
+
+- More fixes to acknowledgment queries. Thanks DanO
+- Included new acknowledgment classes. Thanks MattN
+- Modified the acknowledging to include a "Successful" flag to allow for more granular classification. Thanks MattN
+
 **v1.2.5**
 
 - Fixed acknowledgment queries. Thanks DanO

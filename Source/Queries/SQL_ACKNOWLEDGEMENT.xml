@@ -3,6 +3,7 @@
   <Query>SQL_ACKNOWLEDGEMENT</Query>
   <Data><![CDATA[SELECT acknowledgment.notes,
                        	acknowledgment_class.desc as description,
+                        acknowledgment.successful,
                         signature.sig_name,
                         signature.sig_sid,
                         signature.sig_gid

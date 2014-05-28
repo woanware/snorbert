@@ -134,14 +134,14 @@ namespace snorbert
                             if (hostName == string.Empty)
                             {
                                 query = query.Replace("#WHERE#", @"WHERE exclude.id IS NULL 
-                                                                     AND (acknowledgment.id = NULL OR acknowledgment.id = 0 OR acknowledgment.class = 1)
+                                                                     AND (acknowledgment.id IS NULL OR acknowledgment.id = 0 OR acknowledgment.class = 1)
 		                                                             AND event.timestamp > @0");
                                 temp = db.Fetch<Signature>(query, new object[] { dateFrom });
                             }
                             else
                             {
                                 query = query.Replace("#WHERE#", @"WHERE exclude.id IS NULL 
-                                                                     AND (acknowledgment.id = NULL OR acknowledgment.id = 0 OR acknowledgment.class = 1)
+                                                                     AND (acknowledgment.id IS NULL OR acknowledgment.id = 0 OR acknowledgment.class = 1)
 			                                                         AND event.timestamp > @0
                                                                      AND event.sid IN (SELECT sid FROM sensor WHERE hostname=@1)");
                                 temp = db.Fetch<Signature>(query, new object[] { dateFrom, hostName });
@@ -229,7 +229,7 @@ namespace snorbert
                             if (hostName == string.Empty)
                             {
                                 query = query.Replace("#WHERE#", @"WHERE exclude.id IS NULL 
-                                                                     AND (acknowledgment.id = NULL OR acknowledgment.id = 0 OR acknowledgment.class = 1)
+                                                                     AND (acknowledgment.id IS NULL OR acknowledgment.id = 0 OR acknowledgment.class = 1)
 			                                                         AND event.timestamp > @0
                                                                      AND signature.sig_priority = @1");
 
@@ -238,7 +238,7 @@ namespace snorbert
                             else
                             {
                                 query = query.Replace("#WHERE#", @"WHERE exclude.id IS NULL 
-                                                                     AND (acknowledgment.id = NULL OR acknowledgment.id = 0 OR acknowledgment.class = 1)
+                                                                     AND (acknowledgment.id IS NULL OR acknowledgment.id = 0 OR acknowledgment.class = 1)
 			                                                         AND event.timestamp > @0
                                                                      AND signature.sig_priority = @1
                                                                      AND event.sid IN (SELECT sid FROM sensor WHERE hostname=@2)");
@@ -321,7 +321,7 @@ namespace snorbert
                             if (hostName == string.Empty)
                             {
                                 query = query.Replace("#WHERE#", @"WHERE exclude.id IS NULL 
-                                                                     AND (acknowledgment.id = NULL OR acknowledgment.id = 0 OR acknowledgment.class = 1)
+                                                                     AND (acknowledgment.id IS NULL OR acknowledgment.id = 0 OR acknowledgment.class = 1)
 			                                                         AND event.timestamp > @0 
 			                                                         AND event.timestamp < @1");
 
@@ -330,7 +330,7 @@ namespace snorbert
                             else
                             {
                                 query = query.Replace("#WHERE#", @"WHERE exclude.id IS NULL 
-                                                                     AND (acknowledgment.id = NULL OR acknowledgment.id = 0 OR acknowledgment.class = 1)
+                                                                     AND (acknowledgment.id IS NULL OR acknowledgment.id = 0 OR acknowledgment.class = 1)
 			                                                         AND event.timestamp > @0 
 			                                                         AND event.timestamp < @1
                                                                      AND event.sid IN (SELECT sid FROM sensor WHERE hostname=@2)");
@@ -425,7 +425,7 @@ namespace snorbert
                             if (hostName == string.Empty)
                             {
                                 query = query.Replace("#WHERE#", @"WHERE exclude.id IS NULL 
-                                                                     AND (acknowledgment.id = NULL OR acknowledgment.id = 0 OR acknowledgment.class = 1)
+                                                                     AND (acknowledgment.id IS NULL OR acknowledgment.id = 0 OR acknowledgment.class = 1)
 			                                                         AND event.timestamp > @0 
 			                                                         AND event.timestamp < @1
                                                                      AND signature.sig_priority = @2");
@@ -435,7 +435,7 @@ namespace snorbert
                             else
                             {
                                 query = query.Replace("#WHERE#", @"WHERE exclude.id IS NULL 
-                                                                     AND (acknowledgment.id = NULL OR acknowledgment.id = 0 OR acknowledgment.class = 1)
+                                                                     AND (acknowledgment.id IS NULL OR acknowledgment.id = 0 OR acknowledgment.class = 1)
 			                                                         AND event.timestamp > @0 
 			                                                         AND event.timestamp < @1
                                                                      AND signature.sig_priority = @2
@@ -503,7 +503,7 @@ namespace snorbert
                         else
                         {
                             query = query.Replace("#WHERE#", @"WHERE exclude.id IS NULL   
-                                                                 AND (acknowledgment.id = NULL OR acknowledgment.id = 0 OR acknowledgment.class = 1)
+                                                                 AND (acknowledgment.id IS NULL OR acknowledgment.id = 0 OR acknowledgment.class = 1)
 			                                                     AND event.timestamp > @0 
 			                                                     AND event.timestamp < @1
 			                                                     AND signature.sig_id = @2 LIMIT @3, @4");
@@ -562,7 +562,7 @@ namespace snorbert
                         else
                         {
                             query = query.Replace("#WHERE#", @"WHERE exclude.id IS NULL   
-                                                                 AND (acknowledgment.id = NULL OR acknowledgment.id = 0 OR acknowledgment.class = 1)
+                                                                 AND (acknowledgment.id IS NULL OR acknowledgment.id = 0 OR acknowledgment.class = 1)
 			                                                     AND event.timestamp > @0
 			                                                     AND signature.sig_id = @1 LIMIT @2, @3");
                         }
@@ -735,7 +735,7 @@ namespace snorbert
                             {
                                 string query = _sql.GetQuery(Sql.Query.SQL_RULES_SRC_IPS);
                                 query = query.Replace("#WHERE#", @"WHERE event.signature=@0 
-                                                                     AND (acknowledgment.id = NULL OR acknowledgment.id = 0 OR acknowledgment.class = 1)
+                                                                     AND (acknowledgment.id IS NULL OR acknowledgment.id = 0 OR acknowledgment.class = 1)
                                                                      AND event.timestamp > @1
                                                                      AND event.timestamp < @2");
 
@@ -749,7 +749,7 @@ namespace snorbert
                             {
                                 string query = _sql.GetQuery(Sql.Query.SQL_RULES_DST_IPS);
                                 query = query.Replace("#WHERE#", @"WHERE event.signature=@0 
-                                                                     AND (acknowledgment.id = NULL OR acknowledgment.id = 0 OR acknowledgment.class = 1)
+                                                                     AND (acknowledgment.id IS NULL OR acknowledgment.id = 0 OR acknowledgment.class = 1)
                                                                      AND event.timestamp > @1
                                                                      AND event.timestamp < @2");
 
@@ -838,7 +838,7 @@ namespace snorbert
                             {
                                 string query = _sql.GetQuery(Sql.Query.SQL_RULES_SRC_IPS);
                                 query = query.Replace("#WHERE#", @"WHERE event.signature=@0
-                                                                     AND (acknowledgment.id = 0 OR acknowledgment.class = 1)
+                                                                     AND (acknowledgment.id IS NULL OR acknowledgment.id = 0 OR acknowledgment.class = 1)
                                                                      AND event.timestamp > @1");
 
                                 List<Event> temp = db.Fetch<Event>(query, new object[] { id, dateFrom });
@@ -851,7 +851,7 @@ namespace snorbert
                             {
                                 string query = _sql.GetQuery(Sql.Query.SQL_RULES_DST_IPS);
                                 query = query.Replace("#WHERE#", @"WHERE event.signature=@0
-                                                                     AND (acknowledgment.id = 0 OR acknowledgment.class = 1)
+                                                                     AND (acknowledgment.id IS NULL OR acknowledgment.id = 0 OR acknowledgment.class = 1)
                                                                      AND event.timestamp > @1");
 
                                 List<Event> temp = db.Fetch<Event>(query, new object[] { id, dateFrom });

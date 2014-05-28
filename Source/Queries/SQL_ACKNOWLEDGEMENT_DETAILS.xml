@@ -5,7 +5,8 @@
     <![CDATA[SELECT acknowledgment.notes as notes,
                     acknowledgment_class.desc as description,
                     acknowledgment.initials as initials,
-                    acknowledgment.timestamp as timestamp
+                    acknowledgment.timestamp as timestamp,
+                    acknowledgment.successful
                FROM event
          RIGHT JOIN acknowledgment on (acknowledgment.sid = event.sid AND acknowledgment.cid = event.cid )
           LEFT JOIN acknowledgment_class on (acknowledgment_class.id = acknowledgment.class )

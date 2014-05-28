@@ -6,12 +6,12 @@ CREATE TABLE `acknowledgment` (
 	`class` INT(10) UNSIGNED NOT NULL,
 	`notes` VARCHAR(500) NULL DEFAULT NULL,
 	`timestamp` DATETIME NOT NULL,
+	`successful` BIT(1) NULL DEFAULT NULL,
 	PRIMARY KEY (`id`),
 	UNIQUE INDEX `unique` (`cid`, `sid`),
 	INDEX `cid` (`cid`),
 	INDEX `sid` (`sid`),
 	INDEX `timestamp` (`timestamp`)
 )
-COLLATE='latin1_swedish_ci'
 ENGINE=InnoDB
-AUTO_INCREMENT=23;
+AUTO_INCREMENT=0;

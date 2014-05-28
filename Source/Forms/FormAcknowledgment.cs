@@ -93,6 +93,7 @@ namespace snorbert.Forms
             AcknowledgmentClass acknowledgmentClass = (AcknowledgmentClass)cboClassification.Items[cboClassification.SelectedIndex];
             string initials = txtInitials.Text.ToUpper();
             string notes = txtNotes.Text;
+            bool successful = chkSuccessful.Checked;
 
             btnOk.Enabled = false;
             btnCancel.Enabled = false;
@@ -134,6 +135,7 @@ namespace snorbert.Forms
                                     acknowledgment.Initials = initials;
                                     acknowledgment.Notes = notes;
                                     acknowledgment.Class = acknowledgmentClass.Id;
+                                    acknowledgment.Successful = successful;
                                     acknowledgment.Timestamp = DateTime.Parse(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss"));
 
                                     db.Insert(acknowledgment);

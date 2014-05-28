@@ -39,6 +39,7 @@
             this.cboClassification = new System.Windows.Forms.ComboBox();
             this.txtNotes = new System.Windows.Forms.TextBox();
             this.label1 = new System.Windows.Forms.Label();
+            this.chkSuccessful = new System.Windows.Forms.CheckBox();
             this.SuspendLayout();
             // 
             // lblInitials
@@ -72,7 +73,7 @@
             // 
             this.btnCancel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.btnCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-            this.btnCancel.Location = new System.Drawing.Point(372, 232);
+            this.btnCancel.Location = new System.Drawing.Point(372, 248);
             this.btnCancel.Name = "btnCancel";
             this.btnCancel.Size = new System.Drawing.Size(75, 23);
             this.btnCancel.TabIndex = 9;
@@ -83,7 +84,7 @@
             // btnOk
             // 
             this.btnOk.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.btnOk.Location = new System.Drawing.Point(292, 232);
+            this.btnOk.Location = new System.Drawing.Point(292, 248);
             this.btnOk.Name = "btnOk";
             this.btnOk.Size = new System.Drawing.Size(75, 23);
             this.btnOk.TabIndex = 8;
@@ -136,13 +137,24 @@
             this.label1.TabIndex = 4;
             this.label1.Text = "Notes";
             // 
+            // chkSuccessful
+            // 
+            this.chkSuccessful.AutoSize = true;
+            this.chkSuccessful.Location = new System.Drawing.Point(12, 230);
+            this.chkSuccessful.Name = "chkSuccessful";
+            this.chkSuccessful.Size = new System.Drawing.Size(81, 19);
+            this.chkSuccessful.TabIndex = 10;
+            this.chkSuccessful.Text = "Successful";
+            this.chkSuccessful.UseVisualStyleBackColor = true;
+            // 
             // FormAcknowledgment
             // 
             this.AcceptButton = this.btnOk;
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.CancelButton = this.btnCancel;
-            this.ClientSize = new System.Drawing.Size(459, 266);
+            this.ClientSize = new System.Drawing.Size(459, 282);
+            this.Controls.Add(this.chkSuccessful);
             this.Controls.Add(this.txtNotes);
             this.Controls.Add(this.label1);
             this.Controls.Add(this.cboClassification);
@@ -179,5 +191,6 @@
         private System.Windows.Forms.ComboBox cboClassification;
         private System.Windows.Forms.TextBox txtNotes;
         private System.Windows.Forms.Label label1;
+        private System.Windows.Forms.CheckBox chkSuccessful;
     }
 }

@@ -14,6 +14,5 @@ CREATE TABLE `exclude` (
 	INDEX `ip_src` (`ip_src`),
 	INDEX `ip_dst` (`ip_dst`)
 )
-COLLATE='latin1_swedish_ci'
 ENGINE=InnoDB
 AUTO_INCREMENT=0;
