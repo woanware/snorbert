@@ -1,11 +1,10 @@
 # History #
 
-**v1.2.6.2**
+**v1.2.7**
 
+- Updated the MySQL .Net provider to v6.8.3.
+- Updated NPoco to v2.4.67
 - Added/readded Sensor to the the Misc tab on the lower event details tab. Thanks RussellH 
-
-**v1.2.6.1**
-
 - Prevented Acknowledgment.Description being processed by NPoco. Thanks DanO
 
 **v1.2.6**

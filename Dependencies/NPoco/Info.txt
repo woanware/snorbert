@@ -1,1 +1,1 @@
-NPoco.2.0.6-alpha
+https://github.com/schotime/NPoco/releases/tag/rel-2.4.67
