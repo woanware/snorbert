@@ -1,5 +1,14 @@
 # History #
 
+**v1.2.8**
+
+- Fixed the exporter on the Rules tab as the query column name had changed
+- Added Payload (HEX) to the exporter on the Rules tab. Thanks RussellH
+
+**v1.2.7.1**
+
+- Fixes to the acknowledgement exporting. Thanks DanO
+
 **v1.2.7**
 
 - Updated the MySQL .Net provider to v6.8.3.

@@ -355,5 +355,15 @@ namespace snorbert
                 list.EndUpdate();
             }
         }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="data"></param>
+        /// <returns></returns>
+        public static string ConvertByteArrayToHexString(byte[] data)
+        {
+            return BitConverter.ToString(data).Replace("-", ""); ;
+        }
     }
 }

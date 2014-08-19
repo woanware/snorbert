@@ -128,7 +128,7 @@ namespace snorbert
                         string query = _sql.GetQuery(snorbert.Configs.Sql.Query.SQL_RULES_EVENTS_EXPORT);
                         query = query.Replace("#WHERE#", @"WHERE exclude.id IS NULL   
                                                              AND event.timestamp > @0
-			                                                 AND signature.sig_id = @1");
+			                                                 AND signature.sig_sid = @1");
 
                         List<Event> events = db.Fetch<Event>(query, new object[] { dateFrom, sid });
                         events = Helper.ProcessEventDataSet(events);
@@ -150,6 +150,7 @@ namespace snorbert
                             csvWriter.WriteField("Timestamp");
                             csvWriter.WriteField("TCP Flags");
                             csvWriter.WriteField("Payload (ASCII)");
+                            csvWriter.WriteField("Payload (HEX)");
                             csvWriter.NextRecord();
 
                             foreach (var item in events)
@@ -163,6 +164,7 @@ namespace snorbert
                                 csvWriter.WriteField(item.Timestamp);
                                 csvWriter.WriteField(item.TcpFlagsString);
                                 csvWriter.WriteField(item.PayloadAscii);
+                                csvWriter.WriteField(Helper.ConvertByteArrayToHexString(item.PayloadHex));
                                 csvWriter.NextRecord();
                             }
                         }
@@ -211,7 +213,7 @@ namespace snorbert
                         query = query.Replace("#WHERE#", @"WHERE exclude.id IS NULL   
                                                              AND event.timestamp > @0 
 			                                                 AND event.timestamp < @1
-			                                                 AND signature.sig_id = @2");
+			                                                 AND signature.sig_sid = @2");
 
                         List<Event> events = db.Fetch<Event>(query, new object[] { dateFrom, dateTo, sid });
                         events = Helper.ProcessEventDataSet(events);
@@ -233,6 +235,7 @@ namespace snorbert
                             csvWriter.WriteField("Timestamp");
                             csvWriter.WriteField("TCP Flags");
                             csvWriter.WriteField("Payload (ASCII)");
+                            csvWriter.WriteField("Payload (HEX)");
                             csvWriter.NextRecord();
 
                             foreach (var item in events)
@@ -246,6 +249,7 @@ namespace snorbert
                                 csvWriter.WriteField(item.Timestamp);
                                 csvWriter.WriteField(item.TcpFlagsString);
                                 csvWriter.WriteField(item.PayloadAscii);
+                                csvWriter.WriteField( Helper.ConvertByteArrayToHexString(item.PayloadHex));
                                 csvWriter.NextRecord();
                             }
                         }
@@ -452,7 +456,14 @@ namespace snorbert
                             {
                                 streamWriter.WriteLine("Signature: " + temp["sig_name"].ToString());
                                 streamWriter.WriteLine("SID/GID: " + temp["sig_sid"].ToString() + "/" + temp["sig_gid"].ToString());
-                                streamWriter.WriteLine("Acknowledgement: " + temp["description"].ToString() + " (" + temp["successful"].ToString() + ")");
+                                if (temp["successful"] == null)
+                                {
+                                    streamWriter.WriteLine("Acknowledgement: " + temp["description"].ToString()); 
+                                }
+                                else
+                                {
+                                    streamWriter.WriteLine("Acknowledgement: " + temp["description"].ToString() + " (" + temp["successful"].ToString() + ")");
+                                }                                
                                 streamWriter.WriteLine("Notes: " + temp["notes"].ToString());
                                 streamWriter.WriteLine(string.Empty);
                             }
@@ -484,12 +495,19 @@ namespace snorbert
                             csvWriter.WriteField("Notes");
                             csvWriter.NextRecord();
 
-                            foreach (Dictionary<string, object> temp in data)
+                            foreach (Dictionary<string, object> temp in data) 
                             {
                                 csvWriter.WriteField(temp["sig_name"].ToString());
                                 csvWriter.WriteField(temp["sig_sid"].ToString());
                                 csvWriter.WriteField(temp["sig_gid"].ToString());
-                                csvWriter.WriteField(temp["description"].ToString() + " (" + temp["successful"].ToString() + ")");
+                                if (temp["successful"] == null)
+                                {
+                                    csvWriter.WriteField(temp["description"].ToString());
+                                } 
+                                else 
+                                {
+                                    csvWriter.WriteField(temp["description"].ToString() + " (" + temp["successful"].ToString() + ")");
+                                }
                                 csvWriter.WriteField(temp["notes"].ToString());
                                 csvWriter.NextRecord();
                             }
@@ -546,7 +564,14 @@ namespace snorbert
                                 streamWriter.WriteLine("Signature: " + temp["sig_name"].ToString());
                                 streamWriter.WriteLine("SID/GID: " + temp["sig_sid"].ToString() + "/" + temp["sig_gid"].ToString());
                                 streamWriter.WriteLine("Initials: " + temp["initials"].ToString());
-                                streamWriter.WriteLine("Acknowledgement: " + temp["description"].ToString() + " (" + temp["successful"].ToString() + ")");
+                                if (temp["successful"] == null)
+                                {
+                                    streamWriter.WriteLine("Acknowledgement: " + temp["description"].ToString());
+                                }
+                                else
+                                {
+                                    streamWriter.WriteLine("Acknowledgement: " + temp["description"].ToString() + " (" + temp["successful"].ToString() + ")");
+                                }    
                                 streamWriter.WriteLine("Notes: " + temp["notes"].ToString());
                                 streamWriter.WriteLine(string.Empty);
                             }
@@ -583,7 +608,14 @@ namespace snorbert
                                 csvWriter.WriteField(temp["sig_sid"].ToString());
                                 csvWriter.WriteField(temp["sig_gid"].ToString());
                                 csvWriter.WriteField(temp["initials"].ToString());
-                                csvWriter.WriteField(temp["description"].ToString() + " (" + temp["successful"].ToString() + ")");
+                                if (temp["successful"] == null)
+                                {
+                                    csvWriter.WriteField(temp["description"].ToString());
+                                }
+                                else
+                                {
+                                    csvWriter.WriteField(temp["description"].ToString() + " (" + temp["successful"].ToString() + ")");
+                                }
                                 csvWriter.WriteField(temp["notes"].ToString());
                                 csvWriter.NextRecord();
                             }
@@ -645,7 +677,14 @@ namespace snorbert
                             {
                                 streamWriter.WriteLine("Signature: " + temp["sig_name"].ToString());
                                 streamWriter.WriteLine("SID/GID: " + temp["sig_sid"].ToString() + "/" + temp["sig_gid"].ToString());
-                                streamWriter.WriteLine("Acknowledgement: " + temp["description"].ToString() + " (" + temp["successful"].ToString() + ")");
+                                if (temp["successful"] == null)
+                                {
+                                    streamWriter.WriteLine("Acknowledgement: " + temp["description"].ToString());
+                                }
+                                else
+                                {
+                                    streamWriter.WriteLine("Acknowledgement: " + temp["description"].ToString() + " (" + temp["successful"].ToString() + ")");
+                                }    
                                 streamWriter.WriteLine("Notes: " + temp["notes"].ToString());
                                 streamWriter.WriteLine(string.Empty);
                             }
@@ -682,7 +721,14 @@ namespace snorbert
                                 csvWriter.WriteField(temp["sig_name"].ToString());
                                 csvWriter.WriteField(temp["sig_sid"].ToString());
                                 csvWriter.WriteField(temp["sig_gid"].ToString());
-                                csvWriter.WriteField(temp["description"].ToString() + " (" + temp["successful"].ToString() + ")");
+                                if (temp["successful"] == null)
+                                {
+                                    csvWriter.WriteField(temp["description"].ToString());
+                                }
+                                else
+                                {
+                                    csvWriter.WriteField(temp["description"].ToString() + " (" + temp["successful"].ToString() + ")");
+                                }
                                 csvWriter.WriteField(temp["notes"].ToString());
                                 csvWriter.NextRecord();
                             }
@@ -742,7 +788,14 @@ namespace snorbert
                                 streamWriter.WriteLine("Signature: " + temp["sig_name"].ToString());
                                 streamWriter.WriteLine("SID/GID: " + temp["sig_sid"].ToString() + "/" + temp["sig_gid"].ToString());
                                 streamWriter.WriteLine("Initials: " + temp["initials"].ToString());
-                                streamWriter.WriteLine("Acknowledgement: " + temp["description"].ToString() + " (" + temp["successful"].ToString() + ")");
+                                if (temp["successful"] == null)
+                                {
+                                    streamWriter.WriteLine("Acknowledgement: " + temp["description"].ToString());
+                                }
+                                else
+                                {
+                                    streamWriter.WriteLine("Acknowledgement: " + temp["description"].ToString() + " (" + temp["successful"].ToString() + ")");
+                                }    
                                 streamWriter.WriteLine("Notes: " + temp["notes"].ToString());
                                 streamWriter.WriteLine(string.Empty);
                             }
@@ -780,7 +833,14 @@ namespace snorbert
                                 csvWriter.WriteField(temp["sig_sid"].ToString());
                                 csvWriter.WriteField(temp["sig_gid"].ToString());
                                 csvWriter.WriteField(temp["initials"].ToString());
-                                csvWriter.WriteField(temp["description"].ToString() + " (" + temp["successful"].ToString() + ")");
+                                if (temp["successful"] == null)
+                                {
+                                    csvWriter.WriteField(temp["description"].ToString());
+                                }
+                                else
+                                {
+                                    csvWriter.WriteField(temp["description"].ToString() + " (" + temp["successful"].ToString() + ")");
+                                }
                                 csvWriter.WriteField(temp["notes"].ToString());
                                 csvWriter.NextRecord();
                             }
