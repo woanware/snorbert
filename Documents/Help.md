@@ -39,7 +39,7 @@ snorbert requires a number of changes to the snort/barnyard database schema. The
 
 Then the data population script (acknowledgment\_class.data.sql) should be run to populate the **acknowledgment_class** table. The exclude table facilities the ability to exclude particular rules, IP addresses etc. The **acknowledgement** tables allow for better collaborative working so that one analyst can see that another analyst is already working on a particular rule.
 
-To use the "rule" functionality you must run the import.py python script which will populate the "rule" table. This can be implemented as a cron job or whenever your rules have changed
+It should be noted that signatures with a **sig_priority** of 99 will not be shown on the rules tab, unless the user explictly selects the 99 priority value in the drop down located on the Rules tab. 
 
 # Usage #
 
@@ -60,15 +60,15 @@ Note that the default command timeout can be configured for each instance, this 
 
 ## Rules/Signatures ##
 
-The snort rule set can be imported into snorbert, this allows the signature/rule to be displayed that relates to a specific event. The screenshot below shows the signature details:
+The Signature Info tab provides details about the signature used in the alert. The rules is directly loaded from the database when the event details are retrieved. The screen shot below shows the signature details:
 
 ![](Rules.png)
  
 To view the full rule in a separate window, click the button next to the rule, the following window will be displayed:
 
 ![](Rule.png)
- 
-The rules can be imported manually via the Tools->Import Rules menu or they can be copied into the Rules directory located in the applications installation directory. The automated import will check the file names/timestamps and only import new or changed files.
+
+The second button allows the user to view rules that are linked using the Snort **flowbits:isset** details.
 
 ## False Positives ##
 

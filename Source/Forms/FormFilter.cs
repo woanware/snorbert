@@ -19,7 +19,6 @@ namespace snorbert.Forms
         private List<Filter> _filters;
         private Filter _filter;
         private List<FilterDefinition> _filterDefinitions;
-        private List<NameValue> _priorities;
         private List<NameValue> _classifications;
         private List<NameValue> _acknowledgementClasses;
         private List<NameValue> _sensors;
@@ -47,27 +46,6 @@ namespace snorbert.Forms
             cboField.Items.AddRange(_filterDefinitions.ToArray());
         }
         #endregion
-
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="db"></param>
-        public void LoadPriorities(NPoco.Database db)
-        {
-            using (new HourGlass(this))
-            {
-                List<Signature> data = db.Fetch<Signature>(_sql.GetQuery(Sql.Query.SQL_SIG_PRIORITIES));
-
-                _priorities = new List<NameValue>();
-                foreach (var result in data)
-                {
-                    NameValue nameValue = new NameValue();
-                    nameValue.Name = result.Priority;
-                    nameValue.Value = result.Priority;
-                    _priorities.Add(nameValue);
-                }
-            }
-        }
 
         /// <summary>
         /// 
@@ -155,8 +133,7 @@ namespace snorbert.Forms
                 nameValue.Name = Global.Protocols.Icmp.GetEnumDescription();
                 nameValue.Value = ((int)Global.Protocols.Icmp).ToString();
                 _protocols.Add(nameValue);
-            }
-            
+            }            
         }
 
         /// <summary>
@@ -179,7 +156,7 @@ namespace snorbert.Forms
             AddFilterDefinition("End Time", "event.timestamp", Global.FilterType.Timestamp);
             AddFilterDefinition("Payload (ASCII)", "data.data_payload", Global.FilterType.PayloadAscii);
             AddFilterDefinition("Payload (HEX)", "data.data_payload", Global.FilterType.PayloadHex);
-            AddFilterDefinition("Severity", "signature.sig_priority", Global.FilterType.Severity);
+            AddFilterDefinition("Severity", "signature.sig_priority", Global.FilterType.Numeric);
             AddFilterDefinition("Sensor", "event.sid", Global.FilterType.Sensor);
             AddFilterDefinition("Initials", "acknowledgment.initials", Global.FilterType.Initials);
             AddFilterDefinition("Acknowledgement Classifications", "acknowledgment.class", Global.FilterType.AcknowledgementClass);
@@ -384,21 +361,6 @@ namespace snorbert.Forms
                     txtValue.Visible = false;
                     ipValue.Visible = false;
                     break;
-                case Global.FilterType.Severity:
-                    cboCondition.Items.Clear();
-                    cboCondition.Items.Add("=");
-                    cboCondition.Items.Add("!=");
-
-                    cboValue.Items.Clear();
-                    cboValue.DisplayMember = "Name";
-                    cboValue.ValueMember = "Value";
-                    cboValue.Items.AddRange(_priorities.ToArray());
-                    UserInterface.SetDropDownWidth(cboValue);
-                    
-                    cboValue.Visible = true;
-                    txtValue.Visible = false;
-                    ipValue.Visible = false;
-                    break;
                 case Global.FilterType.Initials:
                 case Global.FilterType.Text:
                     cboCondition.Items.Clear();
@@ -472,7 +434,6 @@ namespace snorbert.Forms
             {
                 case Global.FilterType.AcknowledgementClass:
                 case Global.FilterType.Classification:
-                case Global.FilterType.Severity:
                 case Global.FilterType.Sensor:
                 case Global.FilterType.Protocol:
                     if (cboValue.SelectedIndex == -1)
@@ -575,7 +536,6 @@ namespace snorbert.Forms
                 case Global.FilterType.Numeric:
                     return txtValue.Text;
                 case Global.FilterType.AcknowledgementClass:
-                case Global.FilterType.Severity:
                 case Global.FilterType.Sensor:
                 case Global.FilterType.Classification:
                 case Global.FilterType.Protocol:
@@ -641,11 +601,6 @@ namespace snorbert.Forms
                     case Global.FilterType.PayloadHex:
                         txtValue.Text = _filter.Value;
                         break;
-                    case Global.FilterType.Severity:
-                        UserInterface.LocateAndSelectNameValueCombo(cboValue, _filter.Value, true);
-                        break;
-                    //case Global.FilterType.SignatureName:
-                    //case Global.FilterType.SignatureId:
                     case Global.FilterType.Classification:
                     case Global.FilterType.Sensor:
                     case Global.FilterType.Protocol:
@@ -670,7 +625,6 @@ namespace snorbert.Forms
 
             using (NPoco.Database db = new NPoco.Database(Db.GetOpenMySqlConnection()))
             {
-                LoadPriorities(db);
                 LoadClassifications(db);
                 LoadAcknowledgementClasses(db);
                 LoadSensors(db);

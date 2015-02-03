@@ -1897,6 +1897,39 @@ namespace snorbert.Controls
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
+        private void ctxMenuNwQuerySrcToDstEventTimestamps_Click(object sender, EventArgs e)
+        {
+            if (listEvents.SelectedObjects.Count != 1)
+            {
+                return;
+            }
+
+            Event temp = (Event)listEvents.SelectedObjects[0];
+            if (temp == null)
+            {
+                UserInterface.DisplayErrorMessageBox(this, "Unable to locate event");
+                return;
+            }
+
+            string query = Helper.ConstructNetWitnessUrl(_connection.ConcentratorIp,
+                                                         _connection.CollectionName,
+                                                         temp.IpSrcTxt,
+                                                         temp.SrcPort.ToString(),
+                                                         temp.IpDstTxt,
+                                                         temp.DstPort.ToString(),
+                                                         temp.Protocol,
+                                                         temp.Timestamp);
+
+            Clipboard.SetText(query);
+
+            OnMessage("NetWitness query copied to the clipboard");
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void ctxMenuNwQuerySrcPriorTraffic_Click(object sender, EventArgs e)
         {
             if (listEvents.SelectedObjects.Count != 1)

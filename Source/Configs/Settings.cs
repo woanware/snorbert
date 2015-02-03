@@ -49,10 +49,6 @@ namespace snorbert.Configs
                 }
 
                 XmlSerializer serializer = new XmlSerializer(typeof(Settings));
-                if (File.Exists(path) == false)
-                {
-                    return "Cannot locate settings file: " + path;
-                }
 
                 FileInfo info = new FileInfo(path);
                 using (FileStream stream = info.OpenRead())
@@ -93,6 +89,13 @@ namespace snorbert.Configs
         {
             try
             {
+                string path = GetPath();
+
+                if (System.IO.Directory.Exists(Misc.GetUserDataDirectory()) == false)
+                {
+                    System.IO.Directory.CreateDirectory(Misc.GetUserDataDirectory());
+                }
+
                 XmlSerializer serializer = new XmlSerializer(typeof(Settings));
                 using (StreamWriter writer = new StreamWriter(GetPath(), false))
                 {

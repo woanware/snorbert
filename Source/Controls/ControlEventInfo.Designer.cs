@@ -113,10 +113,14 @@
             this.tabPageAscii = new System.Windows.Forms.TabPage();
             this.txtPayloadAscii = new System.Windows.Forms.RichTextBox();
             this.tabPageMisc = new System.Windows.Forms.TabPage();
+            this.txtSensor = new System.Windows.Forms.TextBox();
+            this.lblSensor = new System.Windows.Forms.Label();
             this.txtEventCid = new System.Windows.Forms.TextBox();
             this.lblEventCid = new System.Windows.Forms.Label();
             this.txtEventSid = new System.Windows.Forms.TextBox();
             this.lblEventSid = new System.Windows.Forms.Label();
+            this.tabPageDns = new System.Windows.Forms.TabPage();
+            this.txtDns = new System.Windows.Forms.RichTextBox();
             this.tabPageAcknowledgement = new System.Windows.Forms.TabPage();
             this.label31 = new System.Windows.Forms.Label();
             this.chkAckSuccessful = new System.Windows.Forms.CheckBox();
@@ -129,8 +133,9 @@
             this.txtAckInitials = new System.Windows.Forms.TextBox();
             this.lblAckInitials = new System.Windows.Forms.Label();
             this.toolTip = new System.Windows.Forms.ToolTip(this.components);
-            this.txtSensor = new System.Windows.Forms.TextBox();
-            this.lblSensor = new System.Windows.Forms.Label();
+            this.vS2012LightTheme1 = new WeifenLuo.WinFormsUI.Docking.VS2012LightTheme();
+            this.txtPriority = new System.Windows.Forms.TextBox();
+            this.lblMiscPriority = new System.Windows.Forms.Label();
             this.tabEvent.SuspendLayout();
             this.tabPageIpHeader.SuspendLayout();
             this.tabPageSignature.SuspendLayout();
@@ -142,6 +147,7 @@
             this.ctxMenuHex.SuspendLayout();
             this.tabPageAscii.SuspendLayout();
             this.tabPageMisc.SuspendLayout();
+            this.tabPageDns.SuspendLayout();
             this.tabPageAcknowledgement.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -155,6 +161,7 @@
             this.tabEvent.Controls.Add(this.tabPageHex);
             this.tabEvent.Controls.Add(this.tabPageAscii);
             this.tabEvent.Controls.Add(this.tabPageMisc);
+            this.tabEvent.Controls.Add(this.tabPageDns);
             this.tabEvent.Controls.Add(this.tabPageAcknowledgement);
             this.tabEvent.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tabEvent.Location = new System.Drawing.Point(0, 0);
@@ -945,6 +952,7 @@
             // 
             // txtPayloadAscii
             // 
+            this.txtPayloadAscii.DetectUrls = false;
             this.txtPayloadAscii.Dock = System.Windows.Forms.DockStyle.Fill;
             this.txtPayloadAscii.Font = new System.Drawing.Font("Consolas", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.txtPayloadAscii.Location = new System.Drawing.Point(0, 0);
@@ -957,6 +965,8 @@
             // 
             // tabPageMisc
             // 
+            this.tabPageMisc.Controls.Add(this.txtPriority);
+            this.tabPageMisc.Controls.Add(this.lblMiscPriority);
             this.tabPageMisc.Controls.Add(this.txtSensor);
             this.tabPageMisc.Controls.Add(this.lblSensor);
             this.tabPageMisc.Controls.Add(this.txtEventCid);
@@ -970,6 +980,23 @@
             this.tabPageMisc.TabIndex = 7;
             this.tabPageMisc.Text = "Misc";
             this.tabPageMisc.UseVisualStyleBackColor = true;
+            // 
+            // txtSensor
+            // 
+            this.txtSensor.Location = new System.Drawing.Point(322, 27);
+            this.txtSensor.Name = "txtSensor";
+            this.txtSensor.ReadOnly = true;
+            this.txtSensor.Size = new System.Drawing.Size(233, 23);
+            this.txtSensor.TabIndex = 14;
+            // 
+            // lblSensor
+            // 
+            this.lblSensor.AutoSize = true;
+            this.lblSensor.Location = new System.Drawing.Point(319, 8);
+            this.lblSensor.Name = "lblSensor";
+            this.lblSensor.Size = new System.Drawing.Size(42, 15);
+            this.lblSensor.TabIndex = 13;
+            this.lblSensor.Text = "Sensor";
             // 
             // txtEventCid
             // 
@@ -1004,6 +1031,30 @@
             this.lblEventSid.Size = new System.Drawing.Size(56, 15);
             this.lblEventSid.TabIndex = 9;
             this.lblEventSid.Text = "Event SID";
+            // 
+            // tabPageDns
+            // 
+            this.tabPageDns.Controls.Add(this.txtDns);
+            this.tabPageDns.Location = new System.Drawing.Point(4, 24);
+            this.tabPageDns.Name = "tabPageDns";
+            this.tabPageDns.Padding = new System.Windows.Forms.Padding(3);
+            this.tabPageDns.Size = new System.Drawing.Size(762, 140);
+            this.tabPageDns.TabIndex = 9;
+            this.tabPageDns.Text = "DNS";
+            this.tabPageDns.UseVisualStyleBackColor = true;
+            // 
+            // txtDns
+            // 
+            this.txtDns.DetectUrls = false;
+            this.txtDns.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.txtDns.Font = new System.Drawing.Font("Consolas", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.txtDns.Location = new System.Drawing.Point(3, 3);
+            this.txtDns.Name = "txtDns";
+            this.txtDns.ReadOnly = true;
+            this.txtDns.ScrollBars = System.Windows.Forms.RichTextBoxScrollBars.ForcedBoth;
+            this.txtDns.Size = new System.Drawing.Size(756, 134);
+            this.txtDns.TabIndex = 1;
+            this.txtDns.Text = "";
             // 
             // tabPageAcknowledgement
             // 
@@ -1116,22 +1167,22 @@
             this.lblAckInitials.TabIndex = 12;
             this.lblAckInitials.Text = "Initials";
             // 
-            // txtSensor
+            // txtPriority
             // 
-            this.txtSensor.Location = new System.Drawing.Point(322, 27);
-            this.txtSensor.Name = "txtSensor";
-            this.txtSensor.ReadOnly = true;
-            this.txtSensor.Size = new System.Drawing.Size(233, 23);
-            this.txtSensor.TabIndex = 14;
+            this.txtPriority.Location = new System.Drawing.Point(565, 27);
+            this.txtPriority.Name = "txtPriority";
+            this.txtPriority.ReadOnly = true;
+            this.txtPriority.Size = new System.Drawing.Size(48, 23);
+            this.txtPriority.TabIndex = 16;
             // 
-            // lblSensor
+            // lblMiscPriority
             // 
-            this.lblSensor.AutoSize = true;
-            this.lblSensor.Location = new System.Drawing.Point(319, 8);
-            this.lblSensor.Name = "lblSensor";
-            this.lblSensor.Size = new System.Drawing.Size(42, 15);
-            this.lblSensor.TabIndex = 13;
-            this.lblSensor.Text = "Sensor";
+            this.lblMiscPriority.AutoSize = true;
+            this.lblMiscPriority.Location = new System.Drawing.Point(562, 8);
+            this.lblMiscPriority.Name = "lblMiscPriority";
+            this.lblMiscPriority.Size = new System.Drawing.Size(45, 15);
+            this.lblMiscPriority.TabIndex = 15;
+            this.lblMiscPriority.Text = "Priority";
             // 
             // ControlEventInfo
             // 
@@ -1157,6 +1208,7 @@
             this.tabPageAscii.ResumeLayout(false);
             this.tabPageMisc.ResumeLayout(false);
             this.tabPageMisc.PerformLayout();
+            this.tabPageDns.ResumeLayout(false);
             this.tabPageAcknowledgement.ResumeLayout(false);
             this.tabPageAcknowledgement.PerformLayout();
             this.ResumeLayout(false);
@@ -1266,5 +1318,10 @@
         private System.Windows.Forms.CheckBox chkAckSuccessful;
         private System.Windows.Forms.TextBox txtSensor;
         private System.Windows.Forms.Label lblSensor;
+        private System.Windows.Forms.TabPage tabPageDns;
+        private WeifenLuo.WinFormsUI.Docking.VS2012LightTheme vS2012LightTheme1;
+        private System.Windows.Forms.RichTextBox txtDns;
+        private System.Windows.Forms.TextBox txtPriority;
+        private System.Windows.Forms.Label lblMiscPriority;
     }
 }

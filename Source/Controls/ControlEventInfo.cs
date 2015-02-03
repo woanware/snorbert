@@ -8,6 +8,7 @@ using NPoco;
 using snorbert.Forms;
 using snorbert.Configs;
 using snorbert.Data;
+using ARSoft.Tools.Net.Dns;
 
 namespace snorbert.Controls
 {
@@ -85,6 +86,17 @@ namespace snorbert.Controls
                     tabEvent.TabPages.Remove(tabPageUdpHeader);
                 }
 
+                // DNS Tab
+                if (temp.TcpDstPort == 53 || temp.TcpSrcPort == 53 || temp.UdpDstPort == 53 || temp.UdpSrcPort == 53)
+                {
+                    if (tabEvent.TabPages.Contains(tabPageDns) == false)
+                    {
+                        tabEvent.TabPages.Insert(tabEvent.TabPages.Count - 2, tabPageDns);
+                    }
+                } else {
+                     tabEvent.TabPages.Remove(tabPageDns);
+                }
+
                 // IP Tab
                 ipSource.Text = temp.IpSrcTxt.ToString();
                 ipDest.Text = temp.IpDstTxt.ToString();
@@ -142,11 +154,63 @@ namespace snorbert.Controls
                 
                 ResizeReferenceListColumns();
 
+                txtDns.Text = string.Empty;
+
                 // Payload Tab (HEX)
                 if (temp.PayloadHex != null)
                 {
                     DynamicByteProvider dynamicByteProvider = new DynamicByteProvider(temp.PayloadHex);
                     hexEvent.ByteProvider = dynamicByteProvider;
+
+                    if (temp.TcpDstPort == 53 || temp.TcpSrcPort == 53 || temp.UdpDstPort == 53 || temp.UdpSrcPort == 53)
+                    {
+                        try
+                        {
+                            DnsMessage dm = ARSoft.Tools.Net.Dns.DnsMessage.Parse(temp.PayloadHex);
+                            if (dm.Questions.Count > 0) 
+                            {
+                                txtDns.Text = "Questions:" + Environment.NewLine;
+                                foreach (ARSoft.Tools.Net.Dns.DnsQuestion q in dm.Questions)
+                                {
+                                    txtDns.Text += q.ToString() + Environment.NewLine;
+                                }
+
+                                txtDns.Text += Environment.NewLine;
+                            }
+
+                            if (dm.AnswerRecords.Count > 0)
+                            {
+                                txtDns.Text += "Answers:" + Environment.NewLine;
+                                foreach (ARSoft.Tools.Net.Dns.DnsRecordBase r in dm.AnswerRecords)
+                                {
+                                    txtDns.Text += r.ToString() + Environment.NewLine;
+                                }
+
+                                txtDns.Text += Environment.NewLine;
+                            }
+
+                            if (dm.AuthorityRecords.Count > 0)
+                            {
+                                txtDns.Text += "Authority Records:" + Environment.NewLine;
+                                foreach (ARSoft.Tools.Net.Dns.DnsRecordBase r in dm.AuthorityRecords)
+                                {
+                                    txtDns.Text += r.ToString() + Environment.NewLine;
+                                }
+
+                                txtDns.Text += Environment.NewLine;
+                            }
+
+                            if (dm.AdditionalRecords.Count > 0)
+                            {
+                                txtDns.Text += "AdditionalRecords:" + Environment.NewLine;
+                                foreach (ARSoft.Tools.Net.Dns.DnsRecordBase r in dm.AdditionalRecords)
+                                {
+                                    txtDns.Text += r.ToString() + Environment.NewLine;
+                                }
+                            }
+                        }
+                        catch (Exception ex){}
+                    }
                 }
                 else
                 {
@@ -161,6 +225,7 @@ namespace snorbert.Controls
                 txtEventSid.Text = temp.Sid.ToString();
                 txtEventCid.Text = temp.Cid.ToString();
                 txtSensor.Text = temp.SensorName;
+                txtPriority.Text = temp.SigPriority.ToString();
 
                 // Acknowledgement Tab
                 using (NPoco.Database dbMySql = new NPoco.Database(Db.GetOpenMySqlConnection()))
@@ -246,6 +311,15 @@ namespace snorbert.Controls
                     txtAckNotes.Text = string.Empty;
                     txtAckTimestamp.Text = string.Empty;
                     chkAckSuccessful.Checked = false;
+
+                    // Misc Tab
+                    txtEventSid.Text = string.Empty;
+                    txtEventCid.Text = string.Empty;
+                    txtSensor.Text = string.Empty;
+                    txtPriority.Text = string.Empty;
+
+                    // DNS Tab
+                    txtDns.Text = string.Empty;
                 }
             };
 

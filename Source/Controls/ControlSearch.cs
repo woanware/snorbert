@@ -85,7 +85,6 @@ namespace snorbert.Controls
                 using (NPoco.Database db = new NPoco.Database(Db.GetOpenMySqlConnection()))
                 {
                     formFilter.LoadClassifications(db);
-                    formFilter.LoadPriorities(db);
                 }
 
                 if (formFilter.ShowDialog(this) == System.Windows.Forms.DialogResult.Cancel)

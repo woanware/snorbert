@@ -95,6 +95,7 @@
             this.dtpDateFrom = new System.Windows.Forms.DateTimePicker();
             this.btnRefresh = new System.Windows.Forms.Button();
             this.controlEventInfo = new snorbert.Controls.ControlEventInfo();
+            this.ctxMenuNwQuerySrcToDstEventTimestamps = new System.Windows.Forms.ToolStripMenuItem();
             ((System.ComponentModel.ISupportInitialize)(this.splitter)).BeginInit();
             this.splitter.Panel1.SuspendLayout();
             this.splitter.Panel2.SuspendLayout();
@@ -197,7 +198,7 @@
             this.ctxMenuCommands});
             this.ctxMenuEvent.Name = "ctxMenuEvent";
             this.ctxMenuEvent.RenderMode = System.Windows.Forms.ToolStripRenderMode.System;
-            this.ctxMenuEvent.Size = new System.Drawing.Size(189, 244);
+            this.ctxMenuEvent.Size = new System.Drawing.Size(189, 266);
             this.ctxMenuEvent.Opening += new System.ComponentModel.CancelEventHandler(this.ctxMenuEvent_Opening);
             // 
             // ctxMenuPayload
@@ -457,6 +458,7 @@
             // 
             this.ctxMenuNwQuery.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.ctxMenuNwQuerySrcToDst,
+            this.ctxMenuNwQuerySrcToDstEventTimestamps,
             this.ctxMenuNwQuerySrcPriorTraffic,
             this.ctxMenuNwQueryDstPriorTraffic});
             this.ctxMenuNwQuery.Name = "ctxMenuNwQuery";
@@ -466,21 +468,21 @@
             // ctxMenuNwQuerySrcToDst
             // 
             this.ctxMenuNwQuerySrcToDst.Name = "ctxMenuNwQuerySrcToDst";
-            this.ctxMenuNwQuerySrcToDst.Size = new System.Drawing.Size(202, 22);
-            this.ctxMenuNwQuerySrcToDst.Text = "Src <- -> Dest";
+            this.ctxMenuNwQuerySrcToDst.Size = new System.Drawing.Size(256, 22);
+            this.ctxMenuNwQuerySrcToDst.Text = "Src <- -> Dest (Last 24 Hours)";
             this.ctxMenuNwQuerySrcToDst.Click += new System.EventHandler(this.ctxMenuNwQuerySrcToDst_Click);
             // 
             // ctxMenuNwQuerySrcPriorTraffic
             // 
             this.ctxMenuNwQuerySrcPriorTraffic.Name = "ctxMenuNwQuerySrcPriorTraffic";
-            this.ctxMenuNwQuerySrcPriorTraffic.Size = new System.Drawing.Size(202, 22);
+            this.ctxMenuNwQuerySrcPriorTraffic.Size = new System.Drawing.Size(256, 22);
             this.ctxMenuNwQuerySrcPriorTraffic.Text = "Source Prior Traffic ";
             this.ctxMenuNwQuerySrcPriorTraffic.Click += new System.EventHandler(this.ctxMenuNwQuerySrcPriorTraffic_Click);
             // 
             // ctxMenuNwQueryDstPriorTraffic
             // 
             this.ctxMenuNwQueryDstPriorTraffic.Name = "ctxMenuNwQueryDstPriorTraffic";
-            this.ctxMenuNwQueryDstPriorTraffic.Size = new System.Drawing.Size(202, 22);
+            this.ctxMenuNwQueryDstPriorTraffic.Size = new System.Drawing.Size(256, 22);
             this.ctxMenuNwQueryDstPriorTraffic.Text = "Destination Prior Traffic ";
             this.ctxMenuNwQueryDstPriorTraffic.Click += new System.EventHandler(this.ctxMenuNwQueryDstPriorTraffic_Click);
             // 
@@ -745,6 +747,13 @@
             this.controlEventInfo.Size = new System.Drawing.Size(866, 200);
             this.controlEventInfo.TabIndex = 1;
             // 
+            // ctxMenuNwQuerySrcToDstEventTimestamps
+            // 
+            this.ctxMenuNwQuerySrcToDstEventTimestamps.Name = "ctxMenuNwQuerySrcToDstEventTimestamps";
+            this.ctxMenuNwQuerySrcToDstEventTimestamps.Size = new System.Drawing.Size(256, 22);
+            this.ctxMenuNwQuerySrcToDstEventTimestamps.Text = "Src <- -> Dest (Event Timestamps)";
+            this.ctxMenuNwQuerySrcToDstEventTimestamps.Click += new System.EventHandler(this.ctxMenuNwQuerySrcToDstEventTimestamps_Click);
+            // 
             // ControlRules
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
@@ -834,5 +843,6 @@
         private System.Windows.Forms.ToolStripMenuItem ctxMenuExtractIpInfoUniqueSourceCsv;
         private System.Windows.Forms.ToolStripMenuItem ctxMenuExtractIpInfoUniqueDestinationList;
         private System.Windows.Forms.ToolStripMenuItem ctxMenuExtractIpInfoUniqueDestinationCsv;
+        private System.Windows.Forms.ToolStripMenuItem ctxMenuNwQuerySrcToDstEventTimestamps;
     }
 }

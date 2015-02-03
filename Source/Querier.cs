@@ -118,12 +118,14 @@ namespace snorbert
                             if (hostName == string.Empty)
                             {
                                 query = query.Replace("#WHERE#", @"WHERE exclude.id IS NULL 
+                                                                     AND signature.sig_priority != 99
 		                                                             AND event.timestamp > @0");
                                 temp = db.Fetch<Signature>(query, new object[] { dateFrom });
                             }
                             else
                             {
                                 query = query.Replace("#WHERE#", @"WHERE exclude.id IS NULL 
+                                                                     AND signature.sig_priority != 99
 			                                                         AND event.timestamp > @0
                                                                      AND event.sid IN (SELECT sid FROM sensor WHERE hostname=@1)");
                                 temp = db.Fetch<Signature>(query, new object[] { dateFrom, hostName });
@@ -134,6 +136,7 @@ namespace snorbert
                             if (hostName == string.Empty)
                             {
                                 query = query.Replace("#WHERE#", @"WHERE exclude.id IS NULL 
+                                                                     AND signature.sig_priority != 99
                                                                      AND (acknowledgment.id IS NULL OR acknowledgment.id = 0 OR acknowledgment.class = 1)
 		                                                             AND event.timestamp > @0");
                                 temp = db.Fetch<Signature>(query, new object[] { dateFrom });
@@ -141,6 +144,7 @@ namespace snorbert
                             else
                             {
                                 query = query.Replace("#WHERE#", @"WHERE exclude.id IS NULL 
+                                                                     AND signature.sig_priority != 99
                                                                      AND (acknowledgment.id IS NULL OR acknowledgment.id = 0 OR acknowledgment.class = 1)
 			                                                         AND event.timestamp > @0
                                                                      AND event.sid IN (SELECT sid FROM sensor WHERE hostname=@1)");
@@ -301,6 +305,7 @@ namespace snorbert
                             if (hostName == string.Empty)
                             {
                                 query = query.Replace("#WHERE#", @"WHERE exclude.id IS NULL 
+                                                                     AND signature.sig_priority != 99
 			                                                         AND event.timestamp > @0 
 			                                                         AND event.timestamp < @1");
 
@@ -309,6 +314,7 @@ namespace snorbert
                             else
                             {
                                 query = query.Replace("#WHERE#", @"WHERE exclude.id IS NULL 
+                                                                     AND signature.sig_priority != 99
 			                                                         AND event.timestamp > @0 
 			                                                         AND event.timestamp < @1
                                                                      AND event.sid IN (SELECT sid FROM sensor WHERE hostname=@2)");
